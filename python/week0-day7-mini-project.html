@@ -1,0 +1,2579 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Week 0: Mini-Project | Day 7</title>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg-dark: #0c0a14;
+            --bg-card: #14111f;
+            --bg-input: #1e1a2d;
+            --border: #2d2844;
+            --text-primary: #f0ecf9;
+            --text-secondary: #a8a0be;
+            --text-muted: #6d6485;
+            --accent-gold: #fbbf24;
+            --accent-amber: #f59e0b;
+            --accent-orange: #fb923c;
+            --accent-purple: #a78bfa;
+            --accent-blue: #60a5fa;
+            --accent-green: #4ade80;
+            --accent-red: #f87171;
+            --accent-cyan: #22d3ee;
+            --accent-pink: #f472b6;
+            --gradient-start: #fbbf24;
+            --gradient-mid: #f59e0b;
+            --gradient-end: #ea580c;
+        }
+
+        body {
+            font-family: 'Space Grotesk', sans-serif;
+            background: var(--bg-dark);
+            color: var(--text-primary);
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, var(--gradient-start) 0%, var(--gradient-mid) 50%, var(--gradient-end) 100%);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 4px 30px rgba(251, 191, 36, 0.3);
+        }
+
+        .header h1 {
+            font-size: 24px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: #0c0a14;
+        }
+
+        .header h1 .icon {
+            font-size: 28px;
+        }
+
+        .header .week-badge {
+            background: rgba(0,0,0,0.2);
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 500;
+            color: #0c0a14;
+        }
+
+        .progress-bar {
+            height: 4px;
+            background: rgba(255,255,255,0.1);
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent-gold), var(--accent-orange));
+            width: 0%;
+            transition: width 0.5s ease;
+        }
+
+        /* Main Layout */
+        .container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            height: calc(100vh - 80px);
+        }
+
+        @media (max-width: 1200px) {
+            .container {
+                grid-template-columns: 1fr;
+                height: auto;
+            }
+        }
+
+        /* Left Panel */
+        .lesson-panel {
+            padding: 0;
+            overflow-y: auto;
+            border-right: 1px solid var(--border);
+        }
+
+        /* Tabs */
+        .tabs {
+            display: flex;
+            background: var(--bg-card);
+            border-bottom: 1px solid var(--border);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            overflow-x: auto;
+        }
+
+        .tab {
+            padding: 14px 18px;
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            transition: all 0.2s;
+            white-space: nowrap;
+        }
+
+        .tab:hover {
+            color: var(--text-primary);
+            background: var(--bg-input);
+        }
+
+        .tab.active {
+            color: var(--accent-gold);
+            border-bottom-color: var(--accent-gold);
+        }
+
+        /* Tab Content */
+        .tab-content {
+            display: none;
+            padding: 30px;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Typography */
+        .tab-content h2 {
+            color: var(--accent-gold);
+            font-size: 24px;
+            margin-bottom: 16px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .tab-content h3 {
+            color: var(--accent-purple);
+            font-size: 18px;
+            margin-top: 28px;
+            margin-bottom: 12px;
+        }
+
+        .tab-content h4 {
+            color: var(--accent-cyan);
+            font-size: 16px;
+            margin-top: 20px;
+            margin-bottom: 10px;
+        }
+
+        .tab-content p {
+            color: var(--text-secondary);
+            margin-bottom: 16px;
+        }
+
+        /* Step Cards */
+        .step-card {
+            background: linear-gradient(135deg, rgba(251, 191, 36, 0.1) 0%, rgba(234, 88, 12, 0.1) 100%);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+
+        .step-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 15px;
+        }
+
+        .step-number {
+            background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
+            color: #0c0a14;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 16px;
+        }
+
+        .step-title {
+            font-weight: 600;
+            font-size: 18px;
+            color: var(--text-primary);
+        }
+
+        .step-time {
+            margin-left: auto;
+            background: var(--bg-input);
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        .step-description {
+            color: var(--text-secondary);
+            margin-bottom: 15px;
+        }
+
+        .load-step-btn {
+            background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
+            color: #0c0a14;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            font-family: 'Space Grotesk', sans-serif;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .load-step-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 20px rgba(251, 191, 36, 0.4);
+        }
+
+        /* Info Boxes */
+        .info-box {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 16px 20px;
+            margin: 16px 0;
+        }
+
+        .info-box.tip {
+            border-left: 4px solid var(--accent-green);
+            background: linear-gradient(90deg, rgba(74, 222, 128, 0.1), transparent);
+        }
+
+        .info-box.warning {
+            border-left: 4px solid var(--accent-orange);
+            background: linear-gradient(90deg, rgba(251, 146, 60, 0.1), transparent);
+        }
+
+        .info-box.checkpoint {
+            border-left: 4px solid var(--accent-gold);
+            background: linear-gradient(90deg, rgba(251, 191, 36, 0.1), transparent);
+        }
+
+        .info-box.concept {
+            border-left: 4px solid var(--accent-purple);
+            background: linear-gradient(90deg, rgba(167, 139, 250, 0.1), transparent);
+        }
+
+        .info-box-title {
+            font-weight: 600;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .info-box.tip .info-box-title { color: var(--accent-green); }
+        .info-box.warning .info-box-title { color: var(--accent-orange); }
+        .info-box.checkpoint .info-box-title { color: var(--accent-gold); }
+        .info-box.concept .info-box-title { color: var(--accent-purple); }
+
+        /* Code Blocks */
+        .code-block {
+            background: #0a0812;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 16px;
+            margin: 16px 0;
+            overflow-x: auto;
+            position: relative;
+        }
+
+        .code-block pre {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 13px;
+            line-height: 1.6;
+            color: var(--text-primary);
+            margin: 0;
+        }
+
+        .code-block .copy-btn {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            color: var(--text-secondary);
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 12px;
+            cursor: pointer;
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+
+        .code-block:hover .copy-btn {
+            opacity: 1;
+        }
+
+        .code-block .filename {
+            position: absolute;
+            top: -10px;
+            left: 16px;
+            background: var(--bg-card);
+            padding: 2px 10px;
+            border-radius: 4px;
+            font-size: 12px;
+            color: var(--accent-gold);
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        /* Syntax Highlighting */
+        .keyword { color: var(--accent-pink); }
+        .string { color: var(--accent-green); }
+        .number { color: var(--accent-orange); }
+        .comment { color: #6d6485; font-style: italic; }
+        .function { color: var(--accent-blue); }
+        .class-name { color: var(--accent-cyan); }
+        .builtin { color: var(--accent-purple); }
+        .decorator { color: var(--accent-gold); }
+
+        /* Project Structure */
+        .file-tree {
+            background: #0a0812;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 20px;
+            margin: 16px 0;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 14px;
+        }
+
+        .file-tree .folder { color: var(--accent-gold); }
+        .file-tree .file { color: var(--text-secondary); }
+        .file-tree .file.python { color: var(--accent-blue); }
+        .file-tree .file.html { color: var(--accent-orange); }
+        .file-tree .file.json { color: var(--accent-green); }
+        .file-tree .file.css { color: var(--accent-pink); }
+
+        /* Checklist */
+        .checklist {
+            list-style: none;
+            margin: 16px 0;
+        }
+
+        .checklist li {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px;
+            background: var(--bg-input);
+            border-radius: 6px;
+            margin: 8px 0;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .checklist li:hover {
+            background: var(--border);
+        }
+
+        .checklist li .checkbox {
+            width: 20px;
+            height: 20px;
+            border: 2px solid var(--accent-gold);
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+
+        .checklist li.completed .checkbox {
+            background: var(--accent-gold);
+            color: #0c0a14;
+        }
+
+        .checklist li.completed {
+            color: var(--accent-green);
+        }
+
+        /* Terminal */
+        .terminal {
+            background: #000;
+            border-radius: 8px;
+            overflow: hidden;
+            margin: 16px 0;
+        }
+
+        .terminal-header {
+            background: #333;
+            padding: 8px 12px;
+            display: flex;
+            gap: 6px;
+        }
+
+        .terminal-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+
+        .terminal-dot.red { background: #ff5f56; }
+        .terminal-dot.yellow { background: #ffbd2e; }
+        .terminal-dot.green { background: #27ca40; }
+
+        .terminal-body {
+            padding: 16px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 13px;
+            color: #00ff00;
+        }
+
+        .terminal-body .command::before {
+            content: "$ ";
+            color: var(--accent-cyan);
+        }
+
+        .terminal-body .output {
+            color: #ccc;
+        }
+
+        /* Endpoint Display */
+        .endpoint {
+            background: #0a0812;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 12px 16px;
+            margin: 8px 0;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .method-badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .method-badge.get { background: rgba(74, 222, 128, 0.2); color: var(--accent-green); }
+        .method-badge.post { background: rgba(96, 165, 250, 0.2); color: var(--accent-blue); }
+        .method-badge.put { background: rgba(251, 146, 60, 0.2); color: var(--accent-orange); }
+        .method-badge.delete { background: rgba(248, 113, 113, 0.2); color: var(--accent-red); }
+
+        .endpoint .path {
+            font-family: 'JetBrains Mono', monospace;
+            color: var(--text-primary);
+            font-size: 13px;
+        }
+
+        .endpoint .desc {
+            color: var(--text-muted);
+            font-size: 12px;
+            margin-left: auto;
+        }
+
+        /* Progress Steps */
+        .progress-steps {
+            display: flex;
+            justify-content: space-between;
+            margin: 30px 0;
+            position: relative;
+        }
+
+        .progress-steps::before {
+            content: '';
+            position: absolute;
+            top: 20px;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: var(--border);
+            z-index: 0;
+        }
+
+        .progress-step {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            z-index: 1;
+        }
+
+        .progress-step .circle {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--bg-card);
+            border: 2px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 14px;
+            color: var(--text-muted);
+            transition: all 0.3s;
+        }
+
+        .progress-step.active .circle {
+            border-color: var(--accent-gold);
+            color: var(--accent-gold);
+        }
+
+        .progress-step.completed .circle {
+            background: var(--accent-gold);
+            border-color: var(--accent-gold);
+            color: #0c0a14;
+        }
+
+        .progress-step .label {
+            font-size: 11px;
+            color: var(--text-muted);
+            text-align: center;
+        }
+
+        .progress-step.active .label,
+        .progress-step.completed .label {
+            color: var(--text-primary);
+        }
+
+        /* Right Panel - Code Editor */
+        .editor-panel {
+            display: flex;
+            flex-direction: column;
+            background: var(--bg-card);
+        }
+
+        .editor-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 16px;
+            background: var(--bg-input);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .editor-title {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 500;
+            font-size: 14px;
+        }
+
+        .editor-title .dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: var(--accent-gold);
+        }
+
+        .editor-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .editor-btn {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            color: var(--text-secondary);
+            padding: 6px 14px;
+            border-radius: 6px;
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .editor-btn:hover {
+            background: var(--border);
+            color: var(--text-primary);
+        }
+
+        .editor-btn.run {
+            background: linear-gradient(135deg, var(--accent-gold), var(--accent-orange));
+            border: none;
+            color: #0a0a0a;
+            font-weight: 600;
+        }
+
+        .editor-btn.run:hover {
+            opacity: 0.9;
+            transform: translateY(-1px);
+        }
+
+        /* Code Editor */
+        .code-editor-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            min-height: 0;
+        }
+
+        .code-editor-wrapper {
+            flex: 1;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .code-editor {
+            width: 100%;
+            height: 100%;
+            background: var(--bg-dark);
+            border: none;
+            color: var(--text-primary);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 14px;
+            line-height: 1.6;
+            padding: 16px;
+            resize: none;
+            outline: none;
+            tab-size: 4;
+        }
+
+        /* Output Panel */
+        .output-panel {
+            border-top: 1px solid var(--border);
+            background: var(--bg-dark);
+        }
+
+        .output-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 16px;
+            background: var(--bg-input);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .output-title {
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--text-secondary);
+        }
+
+        .output-status {
+            font-size: 12px;
+            padding: 2px 8px;
+            border-radius: 4px;
+        }
+
+        .output-status.success {
+            background: rgba(251, 191, 36, 0.2);
+            color: var(--accent-gold);
+        }
+
+        .output-status.error {
+            background: rgba(248, 113, 113, 0.2);
+            color: var(--accent-red);
+        }
+
+        .output-content {
+            padding: 16px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 13px;
+            line-height: 1.6;
+            min-height: 150px;
+            max-height: 250px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--bg-dark);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--border);
+            border-radius: 4px;
+        }
+
+        /* Inline code */
+        code {
+            background: var(--bg-input);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 13px;
+            color: var(--accent-cyan);
+        }
+
+        /* Celebration */
+        .celebration {
+            background: linear-gradient(135deg, rgba(251, 191, 36, 0.2) 0%, rgba(234, 88, 12, 0.2) 100%);
+            border: 2px solid var(--accent-gold);
+            border-radius: 16px;
+            padding: 30px;
+            text-align: center;
+            margin: 30px 0;
+        }
+
+        .celebration h2 {
+            color: var(--accent-gold);
+            border: none;
+            margin-bottom: 10px;
+        }
+
+        .celebration .emoji {
+            font-size: 48px;
+            margin-bottom: 15px;
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <h1>
+            <span class="icon">🏗️</span>
+            Mini-Project: Bookmarks API
+        </h1>
+        <span class="week-badge">Week 0 · Day 7</span>
+    </header>
+    <div class="progress-bar">
+        <div class="progress-fill" id="progressFill"></div>
+    </div>
+
+    <div class="container">
+        <!-- Left Panel -->
+        <div class="lesson-panel">
+            <div class="tabs">
+                <button class="tab active" onclick="showTab('overview')">📋 Overview</button>
+                <button class="tab" onclick="showTab('setup')">⚙️ Setup</button>
+                <button class="tab" onclick="showTab('models')">📦 Models</button>
+                <button class="tab" onclick="showTab('crud')">🔧 CRUD</button>
+                <button class="tab" onclick="showTab('search')">🔍 Search</button>
+                <button class="tab" onclick="showTab('frontend')">🖥️ Frontend</button>
+                <button class="tab" onclick="showTab('polish')">✨ Polish</button>
+                <button class="tab" onclick="showTab('complete')">🎉 Complete</button>
+            </div>
+
+            <!-- Overview Tab -->
+            <div id="overview" class="tab-content active">
+                <h2>Build a Complete Bookmarks API 🏗️</h2>
+                <p>Today we bring together everything from Week 0 to build a real, working application. This project combines Python fundamentals, file handling, classes, and Flask into a cohesive whole.</p>
+
+                <div class="progress-steps">
+                    <div class="progress-step completed" id="step1">
+                        <div class="circle">1</div>
+                        <div class="label">Setup</div>
+                    </div>
+                    <div class="progress-step" id="step2">
+                        <div class="circle">2</div>
+                        <div class="label">Models</div>
+                    </div>
+                    <div class="progress-step" id="step3">
+                        <div class="circle">3</div>
+                        <div class="label">CRUD</div>
+                    </div>
+                    <div class="progress-step" id="step4">
+                        <div class="circle">4</div>
+                        <div class="label">Search</div>
+                    </div>
+                    <div class="progress-step" id="step5">
+                        <div class="circle">5</div>
+                        <div class="label">Frontend</div>
+                    </div>
+                    <div class="progress-step" id="step6">
+                        <div class="circle">6</div>
+                        <div class="label">Polish</div>
+                    </div>
+                </div>
+
+                <h3>What We're Building</h3>
+                <p>A personal bookmarks manager with:</p>
+                <ul class="checklist" id="mainChecklist">
+                    <li onclick="toggleCheck(this)">
+                        <span class="checkbox">✓</span>
+                        RESTful JSON API for bookmark operations
+                    </li>
+                    <li onclick="toggleCheck(this)">
+                        <span class="checkbox">✓</span>
+                        Data persistence using JSON files
+                    </li>
+                    <li onclick="toggleCheck(this)">
+                        <span class="checkbox">✓</span>
+                        Search and filter functionality
+                    </li>
+                    <li onclick="toggleCheck(this)">
+                        <span class="checkbox">✓</span>
+                        Simple web interface to manage bookmarks
+                    </li>
+                    <li onclick="toggleCheck(this)">
+                        <span class="checkbox">✓</span>
+                        Export bookmarks as JSON
+                    </li>
+                </ul>
+
+                <h3>Final API Endpoints</h3>
+                <div class="endpoint">
+                    <span class="method-badge get">GET</span>
+                    <span class="path">/api/bookmarks</span>
+                    <span class="desc">List all</span>
+                </div>
+                <div class="endpoint">
+                    <span class="method-badge get">GET</span>
+                    <span class="path">/api/bookmarks?q=term</span>
+                    <span class="desc">Search</span>
+                </div>
+                <div class="endpoint">
+                    <span class="method-badge get">GET</span>
+                    <span class="path">/api/bookmarks/:id</span>
+                    <span class="desc">Get one</span>
+                </div>
+                <div class="endpoint">
+                    <span class="method-badge post">POST</span>
+                    <span class="path">/api/bookmarks</span>
+                    <span class="desc">Create</span>
+                </div>
+                <div class="endpoint">
+                    <span class="method-badge put">PUT</span>
+                    <span class="path">/api/bookmarks/:id</span>
+                    <span class="desc">Update</span>
+                </div>
+                <div class="endpoint">
+                    <span class="method-badge delete">DELETE</span>
+                    <span class="path">/api/bookmarks/:id</span>
+                    <span class="desc">Delete</span>
+                </div>
+                <div class="endpoint">
+                    <span class="method-badge get">GET</span>
+                    <span class="path">/api/export</span>
+                    <span class="desc">Export JSON</span>
+                </div>
+
+                <div class="info-box tip">
+                    <div class="info-box-title">💡 Learning Approach</div>
+                    <p>We'll build incrementally, testing each piece before moving on. Each step builds on the previous one, so make sure you understand each part before continuing!</p>
+                </div>
+            </div>
+
+            <!-- Setup Tab -->
+            <div id="setup" class="tab-content">
+                <h2>Step 1: Project Setup ⚙️</h2>
+                <p>Let's create our project structure and install dependencies.</p>
+
+                <div class="step-card">
+                    <div class="step-header">
+                        <span class="step-number">1.1</span>
+                        <span class="step-title">Create Project Structure</span>
+                        <span class="step-time">5 min</span>
+                    </div>
+                    <div class="step-description">
+                        Create the folder structure for our application.
+                    </div>
+
+                    <div class="file-tree">
+<span class="folder">📁 bookmarks_api/</span>
+├── <span class="file python">app.py</span>              <span class="comment"># Main Flask app</span>
+├── <span class="file python">models.py</span>           <span class="comment"># Bookmark dataclass</span>
+├── <span class="file python">store.py</span>            <span class="comment"># Data persistence</span>
+├── <span class="folder">📁 templates/</span>
+│   ├── <span class="file html">base.html</span>        <span class="comment"># Base template</span>
+│   └── <span class="file html">home.html</span>        <span class="comment"># Home page</span>
+├── <span class="folder">📁 data/</span>
+│   └── <span class="file json">bookmarks.json</span>  <span class="comment"># Data storage</span>
+└── <span class="file">requirements.txt</span>
+                    </div>
+
+                    <div class="terminal">
+                        <div class="terminal-header">
+                            <div class="terminal-dot red"></div>
+                            <div class="terminal-dot yellow"></div>
+                            <div class="terminal-dot green"></div>
+                        </div>
+                        <div class="terminal-body">
+                            <div class="command">mkdir bookmarks_api</div>
+                            <div class="command">cd bookmarks_api</div>
+                            <div class="command">mkdir templates data</div>
+                            <div class="command">python -m venv venv</div>
+                            <div class="command">source venv/bin/activate</div>
+                            <div class="command">pip install flask</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="step-card">
+                    <div class="step-header">
+                        <span class="step-number">1.2</span>
+                        <span class="step-title">Create Minimal Flask App</span>
+                        <span class="step-time">5 min</span>
+                    </div>
+                    <div class="step-description">
+                        Start with a simple app to verify everything works.
+                    </div>
+                    <button class="load-step-btn" onclick="loadStep('setup')">Load Code →</button>
+                </div>
+
+                <div class="info-box checkpoint">
+                    <div class="info-box-title">✅ Checkpoint</div>
+                    <p>Run <code>python app.py</code> and visit <code>http://127.0.0.1:5000</code>. You should see "Bookmarks API is running!"</p>
+                </div>
+            </div>
+
+            <!-- Models Tab -->
+            <div id="models" class="tab-content">
+                <h2>Step 2: Data Models 📦</h2>
+                <p>Define our Bookmark data structure using dataclasses.</p>
+
+                <div class="step-card">
+                    <div class="step-header">
+                        <span class="step-number">2.1</span>
+                        <span class="step-title">Create Bookmark Model</span>
+                        <span class="step-time">10 min</span>
+                    </div>
+                    <div class="step-description">
+                        Define the Bookmark dataclass with all fields we need.
+                    </div>
+
+                    <div class="code-block">
+                        <span class="filename">models.py</span>
+                        <pre><span class="keyword">from</span> dataclasses <span class="keyword">import</span> dataclass, field
+<span class="keyword">from</span> datetime <span class="keyword">import</span> datetime
+<span class="keyword">from</span> typing <span class="keyword">import</span> Optional
+<span class="keyword">from</span> uuid <span class="keyword">import</span> uuid4
+
+
+<span class="decorator">@dataclass</span>
+<span class="keyword">class</span> <span class="class-name">Bookmark</span>:
+    <span class="string">"""A saved bookmark."""</span>
+    
+    title: <span class="builtin">str</span>
+    url: <span class="builtin">str</span>
+    id: <span class="builtin">str</span> = field(default_factory=<span class="keyword">lambda</span>: <span class="builtin">str</span>(uuid4())[:8])
+    tags: <span class="builtin">list</span>[<span class="builtin">str</span>] = field(default_factory=<span class="builtin">list</span>)
+    description: <span class="builtin">str</span> = <span class="string">""</span>
+    created_at: <span class="builtin">str</span> = field(
+        default_factory=<span class="keyword">lambda</span>: datetime.now().isoformat()
+    )
+    
+    <span class="keyword">def</span> <span class="function">to_dict</span>(self) -> <span class="builtin">dict</span>:
+        <span class="string">"""Convert to dictionary for JSON serialization."""</span>
+        <span class="keyword">return</span> {
+            <span class="string">"id"</span>: self.id,
+            <span class="string">"title"</span>: self.title,
+            <span class="string">"url"</span>: self.url,
+            <span class="string">"tags"</span>: self.tags,
+            <span class="string">"description"</span>: self.description,
+            <span class="string">"created_at"</span>: self.created_at
+        }
+    
+    <span class="decorator">@classmethod</span>
+    <span class="keyword">def</span> <span class="function">from_dict</span>(cls, data: <span class="builtin">dict</span>) -> <span class="string">"Bookmark"</span>:
+        <span class="string">"""Create Bookmark from dictionary."""</span>
+        <span class="keyword">return</span> cls(
+            id=data.get(<span class="string">"id"</span>, <span class="builtin">str</span>(uuid4())[:8]),
+            title=data[<span class="string">"title"</span>],
+            url=data[<span class="string">"url"</span>],
+            tags=data.get(<span class="string">"tags"</span>, []),
+            description=data.get(<span class="string">"description"</span>, <span class="string">""</span>),
+            created_at=data.get(<span class="string">"created_at"</span>, datetime.now().isoformat())
+        )</pre>
+                    </div>
+                    
+                    <button class="load-step-btn" onclick="loadStep('models')">Load Code →</button>
+                </div>
+
+                <div class="info-box concept">
+                    <div class="info-box-title">🧠 Why Dataclasses?</div>
+                    <ul style="margin-left: 20px; margin-top: 10px; color: var(--text-secondary);">
+                        <li><strong>Clean syntax:</strong> Less boilerplate than regular classes</li>
+                        <li><strong>Type hints:</strong> Built-in documentation</li>
+                        <li><strong>Auto-generated:</strong> __init__, __repr__, __eq__ for free</li>
+                        <li><strong>Immutable option:</strong> Use frozen=True if needed</li>
+                    </ul>
+                </div>
+
+                <div class="info-box checkpoint">
+                    <div class="info-box-title">✅ Checkpoint</div>
+                    <p>Test in Python:</p>
+                    <div class="code-block">
+                        <pre>b = Bookmark(title=<span class="string">"Test"</span>, url=<span class="string">"https://test.com"</span>)
+<span class="builtin">print</span>(b.to_dict())</pre>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CRUD Tab -->
+            <div id="crud" class="tab-content">
+                <h2>Step 3: CRUD Operations 🔧</h2>
+                <p>Build the data layer for Create, Read, Update, Delete operations.</p>
+
+                <div class="step-card">
+                    <div class="step-header">
+                        <span class="step-number">3.1</span>
+                        <span class="step-title">Create BookmarkStore Class</span>
+                        <span class="step-time">15 min</span>
+                    </div>
+                    <div class="step-description">
+                        This class handles all data operations and persistence to JSON.
+                    </div>
+                    <button class="load-step-btn" onclick="loadStep('store')">Load Code →</button>
+                </div>
+
+                <div class="step-card">
+                    <div class="step-header">
+                        <span class="step-number">3.2</span>
+                        <span class="step-title">Add API Endpoints</span>
+                        <span class="step-time">20 min</span>
+                    </div>
+                    <div class="step-description">
+                        Connect Flask routes to the BookmarkStore.
+                    </div>
+                    <button class="load-step-btn" onclick="loadStep('crud_api')">Load Code →</button>
+                </div>
+
+                <h3>Testing the API</h3>
+                <div class="terminal">
+                    <div class="terminal-header">
+                        <div class="terminal-dot red"></div>
+                        <div class="terminal-dot yellow"></div>
+                        <div class="terminal-dot green"></div>
+                    </div>
+                    <div class="terminal-body">
+                        <div class="comment"># Create a bookmark</div>
+                        <div class="command">curl -X POST http://localhost:5000/api/bookmarks \</div>
+                        <div class="output">  -H "Content-Type: application/json" \</div>
+                        <div class="output">  -d '{"title": "Python", "url": "https://python.org"}'</div>
+                        <div class="output"></div>
+                        <div class="comment"># List all bookmarks</div>
+                        <div class="command">curl http://localhost:5000/api/bookmarks</div>
+                    </div>
+                </div>
+
+                <div class="info-box checkpoint">
+                    <div class="info-box-title">✅ Checkpoint</div>
+                    <p>Test all CRUD operations work:</p>
+                    <ul style="margin-left: 20px; margin-top: 10px; color: var(--text-secondary);">
+                        <li>Create a bookmark (POST)</li>
+                        <li>List all bookmarks (GET)</li>
+                        <li>Get single bookmark (GET /:id)</li>
+                        <li>Update bookmark (PUT /:id)</li>
+                        <li>Delete bookmark (DELETE /:id)</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Search Tab -->
+            <div id="search" class="tab-content">
+                <h2>Step 4: Search & Filter 🔍</h2>
+                <p>Add search functionality to find bookmarks quickly.</p>
+
+                <div class="step-card">
+                    <div class="step-header">
+                        <span class="step-number">4.1</span>
+                        <span class="step-title">Add Search to Store</span>
+                        <span class="step-time">10 min</span>
+                    </div>
+                    <div class="step-description">
+                        Implement search by title, URL, and tags.
+                    </div>
+                    <button class="load-step-btn" onclick="loadStep('search')">Load Code →</button>
+                </div>
+
+                <h3>Search Features</h3>
+                <div class="endpoint">
+                    <span class="method-badge get">GET</span>
+                    <span class="path">/api/bookmarks?q=python</span>
+                    <span class="desc">Search in title/URL</span>
+                </div>
+                <div class="endpoint">
+                    <span class="method-badge get">GET</span>
+                    <span class="path">/api/bookmarks?tag=tutorial</span>
+                    <span class="desc">Filter by tag</span>
+                </div>
+                <div class="endpoint">
+                    <span class="method-badge get">GET</span>
+                    <span class="path">/api/bookmarks?q=python&tag=docs</span>
+                    <span class="desc">Combined search</span>
+                </div>
+
+                <div class="code-block">
+                    <span class="filename">Search implementation in store.py</span>
+                    <pre><span class="keyword">def</span> <span class="function">search</span>(
+    self, 
+    query: <span class="builtin">str</span> = <span class="string">""</span>, 
+    tag: <span class="builtin">str</span> = <span class="string">""</span>
+) -> <span class="builtin">list</span>[Bookmark]:
+    <span class="string">"""Search bookmarks by query and/or tag."""</span>
+    results = <span class="builtin">list</span>(self.bookmarks.values())
+    
+    <span class="keyword">if</span> query:
+        query = query.lower()
+        results = [
+            b <span class="keyword">for</span> b <span class="keyword">in</span> results
+            <span class="keyword">if</span> query <span class="keyword">in</span> b.title.lower() 
+            <span class="keyword">or</span> query <span class="keyword">in</span> b.url.lower()
+            <span class="keyword">or</span> query <span class="keyword">in</span> b.description.lower()
+        ]
+    
+    <span class="keyword">if</span> tag:
+        tag = tag.lower()
+        results = [
+            b <span class="keyword">for</span> b <span class="keyword">in</span> results
+            <span class="keyword">if</span> tag <span class="keyword">in</span> [t.lower() <span class="keyword">for</span> t <span class="keyword">in</span> b.tags]
+        ]
+    
+    <span class="keyword">return</span> results</pre>
+                </div>
+
+                <div class="info-box checkpoint">
+                    <div class="info-box-title">✅ Checkpoint</div>
+                    <p>Test search functionality:</p>
+                    <div class="terminal">
+                        <div class="terminal-header">
+                            <div class="terminal-dot red"></div>
+                            <div class="terminal-dot yellow"></div>
+                            <div class="terminal-dot green"></div>
+                        </div>
+                        <div class="terminal-body">
+                            <div class="command">curl "http://localhost:5000/api/bookmarks?q=python"</div>
+                            <div class="command">curl "http://localhost:5000/api/bookmarks?tag=tutorial"</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Frontend Tab -->
+            <div id="frontend" class="tab-content">
+                <h2>Step 5: Web Interface 🖥️</h2>
+                <p>Create a simple HTML frontend to interact with our API.</p>
+
+                <div class="step-card">
+                    <div class="step-header">
+                        <span class="step-number">5.1</span>
+                        <span class="step-title">Create Base Template</span>
+                        <span class="step-time">10 min</span>
+                    </div>
+                    <div class="step-description">
+                        Set up the HTML structure with template inheritance.
+                    </div>
+                    <button class="load-step-btn" onclick="loadStep('templates')">Load Code →</button>
+                </div>
+
+                <div class="step-card">
+                    <div class="step-header">
+                        <span class="step-number">5.2</span>
+                        <span class="step-title">Create Home Page</span>
+                        <span class="step-time">15 min</span>
+                    </div>
+                    <div class="step-description">
+                        Build the main page with bookmark list and add form.
+                    </div>
+                    <button class="load-step-btn" onclick="loadStep('home')">Load Code →</button>
+                </div>
+
+                <div class="step-card">
+                    <div class="step-header">
+                        <span class="step-number">5.3</span>
+                        <span class="step-title">Add HTML Routes</span>
+                        <span class="step-time">10 min</span>
+                    </div>
+                    <div class="step-description">
+                        Connect the templates to Flask routes.
+                    </div>
+                    <button class="load-step-btn" onclick="loadStep('html_routes')">Load Code →</button>
+                </div>
+
+                <div class="info-box tip">
+                    <div class="info-box-title">💡 Separation of Concerns</div>
+                    <p>Notice how we have both:</p>
+                    <ul style="margin-left: 20px; margin-top: 10px; color: var(--text-secondary);">
+                        <li><strong>API routes</strong> (/api/*) for JSON data</li>
+                        <li><strong>HTML routes</strong> (/, /add) for the web interface</li>
+                    </ul>
+                    <p style="margin-top: 10px;">This is a common pattern! The API can be used by other apps while the HTML provides a human interface.</p>
+                </div>
+
+                <div class="info-box checkpoint">
+                    <div class="info-box-title">✅ Checkpoint</div>
+                    <p>Visit <code>http://localhost:5000</code> and verify you can:</p>
+                    <ul style="margin-left: 20px; margin-top: 10px; color: var(--text-secondary);">
+                        <li>See the list of bookmarks</li>
+                        <li>Add a new bookmark via the form</li>
+                        <li>Delete bookmarks</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Polish Tab -->
+            <div id="polish" class="tab-content">
+                <h2>Step 6: Polish & Extras ✨</h2>
+                <p>Add finishing touches to make the app production-ready.</p>
+
+                <div class="step-card">
+                    <div class="step-header">
+                        <span class="step-number">6.1</span>
+                        <span class="step-title">Add Export Feature</span>
+                        <span class="step-time">10 min</span>
+                    </div>
+                    <div class="step-description">
+                        Allow users to download all bookmarks as a JSON file.
+                    </div>
+                    <button class="load-step-btn" onclick="loadStep('export')">Load Code →</button>
+                </div>
+
+                <div class="step-card">
+                    <div class="step-header">
+                        <span class="step-number">6.2</span>
+                        <span class="step-title">Add Error Handling</span>
+                        <span class="step-time">10 min</span>
+                    </div>
+                    <div class="step-description">
+                        Handle errors gracefully with proper responses.
+                    </div>
+                    <button class="load-step-btn" onclick="loadStep('errors')">Load Code →</button>
+                </div>
+
+                <div class="step-card">
+                    <div class="step-header">
+                        <span class="step-number">6.3</span>
+                        <span class="step-title">Add Statistics Endpoint</span>
+                        <span class="step-time">5 min</span>
+                    </div>
+                    <div class="step-description">
+                        Create an endpoint that returns bookmark statistics.
+                    </div>
+                    <button class="load-step-btn" onclick="loadStep('stats')">Load Code →</button>
+                </div>
+
+                <h3>Final Endpoints</h3>
+                <div class="endpoint">
+                    <span class="method-badge get">GET</span>
+                    <span class="path">/api/export</span>
+                    <span class="desc">Download JSON file</span>
+                </div>
+                <div class="endpoint">
+                    <span class="method-badge get">GET</span>
+                    <span class="path">/api/stats</span>
+                    <span class="desc">Get statistics</span>
+                </div>
+
+                <div class="code-block">
+                    <span class="filename">Stats response example</span>
+                    <pre>{
+    <span class="string">"total_bookmarks"</span>: <span class="number">15</span>,
+    <span class="string">"tags"</span>: {
+        <span class="string">"python"</span>: <span class="number">5</span>,
+        <span class="string">"tutorial"</span>: <span class="number">3</span>,
+        <span class="string">"docs"</span>: <span class="number">4</span>
+    },
+    <span class="string">"most_recent"</span>: <span class="string">"Flask Documentation"</span>
+}</pre>
+                </div>
+
+                <div class="info-box checkpoint">
+                    <div class="info-box-title">✅ Final Checklist</div>
+                    <ul class="checklist" id="finalChecklist">
+                        <li onclick="toggleCheck(this)">
+                            <span class="checkbox">✓</span>
+                            All CRUD operations work
+                        </li>
+                        <li onclick="toggleCheck(this)">
+                            <span class="checkbox">✓</span>
+                            Search by query works
+                        </li>
+                        <li onclick="toggleCheck(this)">
+                            <span class="checkbox">✓</span>
+                            Filter by tag works
+                        </li>
+                        <li onclick="toggleCheck(this)">
+                            <span class="checkbox">✓</span>
+                            Web interface displays bookmarks
+                        </li>
+                        <li onclick="toggleCheck(this)">
+                            <span class="checkbox">✓</span>
+                            Can add bookmarks via form
+                        </li>
+                        <li onclick="toggleCheck(this)">
+                            <span class="checkbox">✓</span>
+                            Export works
+                        </li>
+                        <li onclick="toggleCheck(this)">
+                            <span class="checkbox">✓</span>
+                            Error handling in place
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Complete Tab -->
+            <div id="complete" class="tab-content">
+                <div class="celebration">
+                    <div class="emoji">🎉</div>
+                    <h2>Congratulations!</h2>
+                    <p>You've built a complete web application!</p>
+                </div>
+
+                <h3>What You've Accomplished</h3>
+                <p>In just one day, you built an application that demonstrates:</p>
+
+                <div class="info-box tip">
+                    <div class="info-box-title">📦 Data Layer</div>
+                    <ul style="margin-left: 20px; margin-top: 10px; color: var(--text-secondary);">
+                        <li>Dataclass for structured data</li>
+                        <li>JSON file persistence</li>
+                        <li>CRUD operations with proper error handling</li>
+                    </ul>
+                </div>
+
+                <div class="info-box tip">
+                    <div class="info-box-title">🔌 API Layer</div>
+                    <ul style="margin-left: 20px; margin-top: 10px; color: var(--text-secondary);">
+                        <li>RESTful endpoints</li>
+                        <li>Proper HTTP methods and status codes</li>
+                        <li>Search and filter functionality</li>
+                        <li>JSON responses</li>
+                    </ul>
+                </div>
+
+                <div class="info-box tip">
+                    <div class="info-box-title">🖥️ Web Interface</div>
+                    <ul style="margin-left: 20px; margin-top: 10px; color: var(--text-secondary);">
+                        <li>Template inheritance</li>
+                        <li>Form handling</li>
+                        <li>Dynamic content rendering</li>
+                    </ul>
+                </div>
+
+                <h3>Get the Complete Code</h3>
+                <button class="load-step-btn" onclick="loadStep('complete')" style="width: 100%; padding: 15px; font-size: 16px; margin: 20px 0;">
+                    📥 Load Complete Application Code
+                </button>
+
+                <h3>Ready for Week 1!</h3>
+                <p>You now have all the foundations needed to tackle:</p>
+                <ul style="margin-left: 20px; color: var(--text-secondary);">
+                    <li><strong>FastAPI:</strong> Same concepts, modern async framework</li>
+                    <li><strong>Document Analyzer:</strong> Similar API structure with file uploads</li>
+                    <li><strong>Content Aggregator:</strong> Data storage patterns you've mastered</li>
+                </ul>
+
+                <div class="info-box concept" style="margin-top: 30px;">
+                    <div class="info-box-title">🚀 Next Steps</div>
+                    <p>Some ideas to extend this project:</p>
+                    <ul style="margin-left: 20px; margin-top: 10px; color: var(--text-secondary);">
+                        <li>Add user authentication</li>
+                        <li>Use SQLite instead of JSON</li>
+                        <li>Add bookmark categories/folders</li>
+                        <li>Create a browser extension to add bookmarks</li>
+                        <li>Deploy to Railway or Render</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Panel - Code Editor -->
+        <div class="editor-panel">
+            <div class="editor-header">
+                <div class="editor-title">
+                    <div class="dot"></div>
+                    <span id="editorFilename">app.py</span>
+                </div>
+                <div class="editor-actions">
+                    <button class="editor-btn" onclick="resetEditor()">↺ Reset</button>
+                    <button class="editor-btn" onclick="copyEditorCode()">📋 Copy</button>
+                    <button class="editor-btn run" onclick="runCode()">▶ Run</button>
+                </div>
+            </div>
+            <div class="code-editor-container">
+                <div class="code-editor-wrapper">
+                    <textarea class="code-editor" id="codeEditor" spellcheck="false">
+# 🏗️ Bookmarks API - Mini Project
+# Welcome to Day 7! Let's build something real.
+
+# This code editor will guide you through building
+# a complete bookmarks API step by step.
+
+# Click the "Load Code" buttons in the left panel
+# to see each step of the implementation.
+
+# Start with the "Setup" tab to begin!
+
+print("Welcome to the Bookmarks API Mini-Project!")
+print()
+print("Today you'll build:")
+print("  ✓ RESTful API endpoints")
+print("  ✓ Data persistence with JSON")
+print("  ✓ Search functionality")
+print("  ✓ Web interface")
+print("  ✓ Export feature")
+print()
+print("Let's get started! 🚀")</textarea>
+                </div>
+            </div>
+            <div class="output-panel">
+                <div class="output-header">
+                    <div class="output-title">📤 Output</div>
+                    <span class="output-status success" id="outputStatus">Ready</span>
+                </div>
+                <div class="output-content" id="outputContent">
+                    <span style="color: var(--text-muted);">Click "Run" to execute your code...</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Tab Navigation
+        function showTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+
+            document.getElementById(tabId).classList.add('active');
+            event.target.classList.add('active');
+            updateProgress(tabId);
+            updateStepIndicators(tabId);
+        }
+
+        const tabOrder = ['overview', 'setup', 'models', 'crud', 'search', 'frontend', 'polish', 'complete'];
+        
+        function updateProgress(tabId) {
+            const index = tabOrder.indexOf(tabId);
+            const progress = ((index + 1) / tabOrder.length) * 100;
+            document.getElementById('progressFill').style.width = progress + '%';
+        }
+
+        function updateStepIndicators(tabId) {
+            const stepMap = {
+                'setup': 1, 'models': 2, 'crud': 3, 
+                'search': 4, 'frontend': 5, 'polish': 6
+            };
+            
+            for (let i = 1; i <= 6; i++) {
+                const step = document.getElementById('step' + i);
+                if (step) {
+                    step.classList.remove('active', 'completed');
+                    if (stepMap[tabId] && i < stepMap[tabId]) {
+                        step.classList.add('completed');
+                    } else if (stepMap[tabId] && i === stepMap[tabId]) {
+                        step.classList.add('active');
+                    }
+                }
+            }
+        }
+
+        function toggleCheck(li) {
+            li.classList.toggle('completed');
+        }
+
+        function runCode() {
+            const code = document.getElementById('codeEditor').value;
+            const outputContent = document.getElementById('outputContent');
+            const outputStatus = document.getElementById('outputStatus');
+
+            try {
+                const output = simulatePython(code);
+                outputContent.innerHTML = output;
+                outputStatus.textContent = 'Success';
+                outputStatus.className = 'output-status success';
+            } catch (e) {
+                outputContent.innerHTML = `<span style="color: var(--accent-red);">Error: ${e.message}</span>`;
+                outputStatus.textContent = 'Error';
+                outputStatus.className = 'output-status error';
+            }
+        }
+
+        function simulatePython(code) {
+            let output = [];
+            const lines = code.split('\n');
+
+            for (let line of lines) {
+                line = line.trim();
+                if (line.startsWith('#') || line === '') continue;
+
+                if (line.startsWith('print(')) {
+                    const match = line.match(/print\((.*)\)$/);
+                    if (match) {
+                        let content = match[1];
+                        if ((content.startsWith('"') && content.endsWith('"')) ||
+                            (content.startsWith("'") && content.endsWith("'"))) {
+                            output.push(content.slice(1, -1));
+                        } else if (content.startsWith('f"') || content.startsWith("f'")) {
+                            output.push(content.slice(2, -1).replace(/\{[^}]+\}/g, '<value>'));
+                        } else {
+                            output.push(content);
+                        }
+                    }
+                }
+            }
+
+            if (output.length === 0) {
+                return '<span style="color: var(--text-muted);">No output. Copy this code to run locally with Flask!</span>';
+            }
+
+            return output.map(line => `<div>${escapeHtml(line)}</div>`).join('');
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        function resetEditor() {
+            document.getElementById('codeEditor').value = `# 🏗️ Bookmarks API - Mini Project
+# Welcome to Day 7! Let's build something real.
+
+print("Welcome to the Bookmarks API Mini-Project!")
+print()
+print("Today you'll build:")
+print("  ✓ RESTful API endpoints")
+print("  ✓ Data persistence with JSON")
+print("  ✓ Search functionality")
+print("  ✓ Web interface")
+print("  ✓ Export feature")
+print()
+print("Let's get started! 🚀")`;
+            document.getElementById('editorFilename').textContent = 'app.py';
+            document.getElementById('outputContent').innerHTML = 
+                '<span style="color: var(--text-muted);">Click "Run" to execute...</span>';
+        }
+
+        function copyEditorCode() {
+            const code = document.getElementById('codeEditor').value;
+            navigator.clipboard.writeText(code).then(() => {
+                const btn = event.target;
+                btn.innerHTML = '✓ Copied!';
+                setTimeout(() => btn.innerHTML = '📋 Copy', 2000);
+            });
+        }
+
+        function copyCode(btn) {
+            const pre = btn.parentElement.querySelector('pre');
+            navigator.clipboard.writeText(pre.textContent).then(() => {
+                btn.textContent = 'Copied!';
+                setTimeout(() => btn.textContent = 'Copy', 2000);
+            });
+        }
+
+        // Step code templates
+        const steps = {
+            setup: {
+                filename: 'app.py',
+                code: `# Step 1: Basic Flask Setup
+# ============================
+
+from flask import Flask, jsonify
+
+app = Flask(__name__)
+
+@app.route("/")
+def home():
+    return "Bookmarks API is running!"
+
+@app.route("/api/status")
+def status():
+    return jsonify({
+        "status": "ok",
+        "message": "Bookmarks API v1.0"
+    })
+
+if __name__ == "__main__":
+    app.run(debug=True)
+
+# ============================
+# Test it:
+# 1. Save this as app.py
+# 2. Run: python app.py
+# 3. Visit: http://127.0.0.1:5000
+
+print("Basic Flask app ready!")
+print("Run with: python app.py")`
+            },
+
+            models: {
+                filename: 'models.py',
+                code: `# Step 2: Bookmark Model
+# ============================
+
+from dataclasses import dataclass, field
+from datetime import datetime
+from uuid import uuid4
+
+
+@dataclass
+class Bookmark:
+    """A saved bookmark."""
+    
+    title: str
+    url: str
+    id: str = field(default_factory=lambda: str(uuid4())[:8])
+    tags: list[str] = field(default_factory=list)
+    description: str = ""
+    created_at: str = field(
+        default_factory=lambda: datetime.now().isoformat()
+    )
+    
+    def to_dict(self) -> dict:
+        """Convert to dictionary for JSON serialization."""
+        return {
+            "id": self.id,
+            "title": self.title,
+            "url": self.url,
+            "tags": self.tags,
+            "description": self.description,
+            "created_at": self.created_at
+        }
+    
+    @classmethod
+    def from_dict(cls, data: dict) -> "Bookmark":
+        """Create Bookmark from dictionary."""
+        return cls(
+            id=data.get("id", str(uuid4())[:8]),
+            title=data["title"],
+            url=data["url"],
+            tags=data.get("tags", []),
+            description=data.get("description", ""),
+            created_at=data.get("created_at", datetime.now().isoformat())
+        )
+
+
+# Test the model
+if __name__ == "__main__":
+    # Create a bookmark
+    b = Bookmark(
+        title="Python Documentation",
+        url="https://docs.python.org",
+        tags=["python", "docs"]
+    )
+    
+    print("Created bookmark:")
+    print(f"  ID: {b.id}")
+    print(f"  Title: {b.title}")
+    print(f"  URL: {b.url}")
+    print(f"  Tags: {b.tags}")
+    print()
+    print("As dict:", b.to_dict())`
+            },
+
+            store: {
+                filename: 'store.py',
+                code: `# Step 3.1: BookmarkStore Class
+# ============================
+
+import json
+from pathlib import Path
+from typing import Optional
+from models import Bookmark
+
+
+class BookmarkStore:
+    """Handles bookmark storage and operations."""
+    
+    def __init__(self, filepath: str = "data/bookmarks.json"):
+        self.filepath = Path(filepath)
+        self.filepath.parent.mkdir(exist_ok=True)
+        self.bookmarks: dict[str, Bookmark] = {}
+        self._load()
+    
+    def _load(self) -> None:
+        """Load bookmarks from JSON file."""
+        if self.filepath.exists():
+            try:
+                data = json.loads(self.filepath.read_text())
+                self.bookmarks = {
+                    b["id"]: Bookmark.from_dict(b) 
+                    for b in data
+                }
+            except (json.JSONDecodeError, KeyError):
+                self.bookmarks = {}
+    
+    def _save(self) -> None:
+        """Save bookmarks to JSON file."""
+        data = [b.to_dict() for b in self.bookmarks.values()]
+        self.filepath.write_text(json.dumps(data, indent=2))
+    
+    def get_all(self) -> list[Bookmark]:
+        """Get all bookmarks."""
+        return list(self.bookmarks.values())
+    
+    def get(self, bookmark_id: str) -> Optional[Bookmark]:
+        """Get a bookmark by ID."""
+        return self.bookmarks.get(bookmark_id)
+    
+    def create(self, title: str, url: str, 
+               tags: list[str] = None, 
+               description: str = "") -> Bookmark:
+        """Create a new bookmark."""
+        bookmark = Bookmark(
+            title=title,
+            url=url,
+            tags=tags or [],
+            description=description
+        )
+        self.bookmarks[bookmark.id] = bookmark
+        self._save()
+        return bookmark
+    
+    def update(self, bookmark_id: str, **kwargs) -> Optional[Bookmark]:
+        """Update a bookmark."""
+        bookmark = self.bookmarks.get(bookmark_id)
+        if not bookmark:
+            return None
+        
+        for key, value in kwargs.items():
+            if hasattr(bookmark, key) and value is not None:
+                setattr(bookmark, key, value)
+        
+        self._save()
+        return bookmark
+    
+    def delete(self, bookmark_id: str) -> bool:
+        """Delete a bookmark."""
+        if bookmark_id in self.bookmarks:
+            del self.bookmarks[bookmark_id]
+            self._save()
+            return True
+        return False
+
+
+# Test the store
+if __name__ == "__main__":
+    store = BookmarkStore()
+    
+    # Create
+    b = store.create(
+        title="Flask Docs",
+        url="https://flask.palletsprojects.com",
+        tags=["python", "web"]
+    )
+    print(f"Created: {b.title} (ID: {b.id})")
+    
+    # Read
+    print(f"Total bookmarks: {len(store.get_all())}")`
+            },
+
+            crud_api: {
+                filename: 'app.py',
+                code: `# Step 3.2: CRUD API Endpoints
+# ============================
+
+from flask import Flask, jsonify, request
+from store import BookmarkStore
+
+app = Flask(__name__)
+store = BookmarkStore()
+
+
+# === API ENDPOINTS ===
+
+@app.route("/api/bookmarks")
+def get_bookmarks():
+    """List all bookmarks."""
+    bookmarks = store.get_all()
+    return jsonify([b.to_dict() for b in bookmarks])
+
+
+@app.route("/api/bookmarks/<bookmark_id>")
+def get_bookmark(bookmark_id):
+    """Get a single bookmark."""
+    bookmark = store.get(bookmark_id)
+    if not bookmark:
+        return jsonify({"error": "Bookmark not found"}), 404
+    return jsonify(bookmark.to_dict())
+
+
+@app.route("/api/bookmarks", methods=["POST"])
+def create_bookmark():
+    """Create a new bookmark."""
+    data = request.get_json()
+    
+    if not data or "url" not in data:
+        return jsonify({"error": "URL is required"}), 400
+    
+    bookmark = store.create(
+        title=data.get("title", "Untitled"),
+        url=data["url"],
+        tags=data.get("tags", []),
+        description=data.get("description", "")
+    )
+    
+    return jsonify(bookmark.to_dict()), 201
+
+
+@app.route("/api/bookmarks/<bookmark_id>", methods=["PUT"])
+def update_bookmark(bookmark_id):
+    """Update a bookmark."""
+    data = request.get_json()
+    
+    bookmark = store.update(
+        bookmark_id,
+        title=data.get("title"),
+        url=data.get("url"),
+        tags=data.get("tags"),
+        description=data.get("description")
+    )
+    
+    if not bookmark:
+        return jsonify({"error": "Bookmark not found"}), 404
+    
+    return jsonify(bookmark.to_dict())
+
+
+@app.route("/api/bookmarks/<bookmark_id>", methods=["DELETE"])
+def delete_bookmark(bookmark_id):
+    """Delete a bookmark."""
+    if store.delete(bookmark_id):
+        return jsonify({"message": "Deleted successfully"})
+    return jsonify({"error": "Bookmark not found"}), 404
+
+
+if __name__ == "__main__":
+    app.run(debug=True)
+
+print("CRUD API ready!")
+print("Endpoints:")
+print("  GET    /api/bookmarks")
+print("  GET    /api/bookmarks/:id")
+print("  POST   /api/bookmarks")
+print("  PUT    /api/bookmarks/:id")
+print("  DELETE /api/bookmarks/:id")`
+            },
+
+            search: {
+                filename: 'store.py (add search method)',
+                code: `# Step 4: Add Search to BookmarkStore
+# ============================
+# Add this method to your BookmarkStore class:
+
+def search(
+    self, 
+    query: str = "", 
+    tag: str = ""
+) -> list[Bookmark]:
+    """
+    Search bookmarks by query and/or tag.
+    
+    Args:
+        query: Search in title, URL, description
+        tag: Filter by specific tag
+        
+    Returns:
+        List of matching bookmarks
+    """
+    results = list(self.bookmarks.values())
+    
+    # Filter by search query
+    if query:
+        query = query.lower()
+        results = [
+            b for b in results
+            if query in b.title.lower() 
+            or query in b.url.lower()
+            or query in b.description.lower()
+        ]
+    
+    # Filter by tag
+    if tag:
+        tag = tag.lower()
+        results = [
+            b for b in results
+            if tag in [t.lower() for t in b.tags]
+        ]
+    
+    return results
+
+
+# Update the API endpoint in app.py:
+
+@app.route("/api/bookmarks")
+def get_bookmarks():
+    """List all bookmarks with optional search."""
+    query = request.args.get("q", "")
+    tag = request.args.get("tag", "")
+    
+    if query or tag:
+        bookmarks = store.search(query=query, tag=tag)
+    else:
+        bookmarks = store.get_all()
+    
+    return jsonify([b.to_dict() for b in bookmarks])
+
+
+print("Search feature added!")
+print("Usage:")
+print("  /api/bookmarks?q=python")
+print("  /api/bookmarks?tag=tutorial")
+print("  /api/bookmarks?q=python&tag=docs")`
+            },
+
+            templates: {
+                filename: 'templates/base.html',
+                code: `<!-- Step 5.1: Base Template -->
+<!-- templates/base.html -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Bookmarks{% endblock %}</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f5f5f5;
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+        }
+        
+        header h1 {
+            font-size: 24px;
+        }
+        
+        nav {
+            margin-top: 10px;
+        }
+        
+        nav a {
+            color: white;
+            text-decoration: none;
+            margin-right: 20px;
+            opacity: 0.9;
+        }
+        
+        nav a:hover {
+            opacity: 1;
+            text-decoration: underline;
+        }
+        
+        .card {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .btn {
+            display: inline-block;
+            padding: 10px 20px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            text-decoration: none;
+        }
+        
+        .btn:hover {
+            background: #5a6fd6;
+        }
+        
+        .btn-danger {
+            background: #dc3545;
+        }
+        
+        input, textarea {
+            width: 100%;
+            padding: 10px;
+            margin: 5px 0 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        
+        .tag {
+            display: inline-block;
+            background: #e0e0e0;
+            padding: 2px 10px;
+            border-radius: 12px;
+            font-size: 12px;
+            margin-right: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>📚 My Bookmarks</h1>
+            <nav>
+                <a href="/">Home</a>
+                <a href="/add">Add Bookmark</a>
+                <a href="/api/export">Export</a>
+            </nav>
+        </header>
+        
+        <main>
+            {% block content %}{% endblock %}
+        </main>
+    </div>
+</body>
+</html>
+
+<!-- Save this as templates/base.html -->`
+            },
+
+            home: {
+                filename: 'templates/home.html',
+                code: `<!-- Step 5.2: Home Page Template -->
+<!-- templates/home.html -->
+
+{% extends "base.html" %}
+
+{% block title %}My Bookmarks{% endblock %}
+
+{% block content %}
+    <!-- Search Form -->
+    <div class="card">
+        <form action="/" method="GET" style="display: flex; gap: 10px;">
+            <input type="text" name="q" placeholder="Search bookmarks..." 
+                   value="{{ query }}" style="flex: 1;">
+            <button type="submit" class="btn">Search</button>
+        </form>
+    </div>
+    
+    <!-- Bookmarks List -->
+    {% if bookmarks %}
+        {% for bookmark in bookmarks %}
+        <div class="card">
+            <div style="display: flex; justify-content: space-between; align-items: start;">
+                <div>
+                    <h3>
+                        <a href="{{ bookmark.url }}" target="_blank" 
+                           style="color: #667eea; text-decoration: none;">
+                            {{ bookmark.title }}
+                        </a>
+                    </h3>
+                    <p style="color: #666; font-size: 14px; margin: 5px 0;">
+                        {{ bookmark.url }}
+                    </p>
+                    {% if bookmark.description %}
+                    <p style="margin: 10px 0;">{{ bookmark.description }}</p>
+                    {% endif %}
+                    <div style="margin-top: 10px;">
+                        {% for tag in bookmark.tags %}
+                        <span class="tag">{{ tag }}</span>
+                        {% endfor %}
+                    </div>
+                </div>
+                <form action="/delete/{{ bookmark.id }}" method="POST" 
+                      style="margin-left: 20px;">
+                    <button type="submit" class="btn btn-danger" 
+                            onclick="return confirm('Delete this bookmark?')">
+                        Delete
+                    </button>
+                </form>
+            </div>
+        </div>
+        {% endfor %}
+    {% else %}
+        <div class="card">
+            <p>No bookmarks found. <a href="/add">Add your first bookmark!</a></p>
+        </div>
+    {% endif %}
+{% endblock %}
+
+<!-- Save this as templates/home.html -->`
+            },
+
+            html_routes: {
+                filename: 'app.py (add HTML routes)',
+                code: `# Step 5.3: HTML Routes
+# ============================
+# Add these routes to app.py:
+
+from flask import render_template, redirect, url_for
+
+# === HTML ROUTES ===
+
+@app.route("/")
+def home():
+    """Home page with bookmark list."""
+    query = request.args.get("q", "")
+    
+    if query:
+        bookmarks = store.search(query=query)
+    else:
+        bookmarks = store.get_all()
+    
+    # Sort by created_at (newest first)
+    bookmarks.sort(key=lambda x: x.created_at, reverse=True)
+    
+    return render_template(
+        "home.html", 
+        bookmarks=[b.to_dict() for b in bookmarks],
+        query=query
+    )
+
+
+@app.route("/add", methods=["GET", "POST"])
+def add_bookmark():
+    """Add bookmark page."""
+    if request.method == "POST":
+        # Get form data
+        title = request.form.get("title", "").strip()
+        url = request.form.get("url", "").strip()
+        description = request.form.get("description", "").strip()
+        tags_str = request.form.get("tags", "").strip()
+        
+        # Parse tags (comma-separated)
+        tags = [t.strip() for t in tags_str.split(",") if t.strip()]
+        
+        if url:
+            store.create(
+                title=title or "Untitled",
+                url=url,
+                description=description,
+                tags=tags
+            )
+        
+        return redirect(url_for("home"))
+    
+    return render_template("add.html")
+
+
+@app.route("/delete/<bookmark_id>", methods=["POST"])
+def delete_bookmark_web(bookmark_id):
+    """Delete bookmark (web interface)."""
+    store.delete(bookmark_id)
+    return redirect(url_for("home"))
+
+
+print("HTML routes added!")
+print("Pages:")
+print("  GET  / - Home page")
+print("  GET  /add - Add form")
+print("  POST /add - Create bookmark")
+print("  POST /delete/:id - Delete bookmark")`
+            },
+
+            export: {
+                filename: 'app.py (add export)',
+                code: `# Step 6.1: Export Feature
+# ============================
+# Add this to app.py:
+
+from flask import Response
+import json
+
+@app.route("/api/export")
+def export_bookmarks():
+    """Export all bookmarks as downloadable JSON."""
+    bookmarks = store.get_all()
+    data = [b.to_dict() for b in bookmarks]
+    
+    # Create JSON response with download headers
+    json_str = json.dumps(data, indent=2)
+    
+    return Response(
+        json_str,
+        mimetype="application/json",
+        headers={
+            "Content-Disposition": "attachment;filename=bookmarks.json"
+        }
+    )
+
+
+# Alternative: Import bookmarks
+@app.route("/api/import", methods=["POST"])
+def import_bookmarks():
+    """Import bookmarks from JSON."""
+    data = request.get_json()
+    
+    if not isinstance(data, list):
+        return jsonify({"error": "Expected a list of bookmarks"}), 400
+    
+    imported = 0
+    for item in data:
+        if "url" in item:
+            store.create(
+                title=item.get("title", "Untitled"),
+                url=item["url"],
+                tags=item.get("tags", []),
+                description=item.get("description", "")
+            )
+            imported += 1
+    
+    return jsonify({
+        "message": f"Imported {imported} bookmarks",
+        "total": len(store.get_all())
+    }), 201
+
+
+print("Export/Import features added!")
+print("  GET  /api/export - Download JSON")
+print("  POST /api/import - Upload JSON")`
+            },
+
+            errors: {
+                filename: 'app.py (add error handling)',
+                code: `# Step 6.2: Error Handling
+# ============================
+# Add these error handlers to app.py:
+
+# Custom exception
+class BookmarkError(Exception):
+    """Base exception for bookmark operations."""
+    pass
+
+class BookmarkNotFoundError(BookmarkError):
+    """Bookmark not found."""
+    pass
+
+
+# Error handlers
+@app.errorhandler(404)
+def not_found(error):
+    """Handle 404 errors."""
+    if request.path.startswith("/api/"):
+        return jsonify({"error": "Resource not found"}), 404
+    return render_template("error.html", 
+                          code=404, 
+                          message="Page not found"), 404
+
+
+@app.errorhandler(500)
+def server_error(error):
+    """Handle 500 errors."""
+    if request.path.startswith("/api/"):
+        return jsonify({"error": "Internal server error"}), 500
+    return render_template("error.html",
+                          code=500,
+                          message="Something went wrong"), 500
+
+
+@app.errorhandler(BookmarkNotFoundError)
+def handle_not_found(error):
+    """Handle custom not found error."""
+    return jsonify({"error": str(error)}), 404
+
+
+# Input validation helper
+def validate_url(url: str) -> bool:
+    """Check if URL is valid."""
+    return url.startswith(("http://", "https://"))
+
+
+# Updated create endpoint with validation
+@app.route("/api/bookmarks", methods=["POST"])
+def create_bookmark():
+    data = request.get_json()
+    
+    if not data:
+        return jsonify({"error": "No data provided"}), 400
+    
+    url = data.get("url", "").strip()
+    if not url:
+        return jsonify({"error": "URL is required"}), 400
+    
+    if not validate_url(url):
+        return jsonify({"error": "URL must start with http:// or https://"}), 400
+    
+    bookmark = store.create(
+        title=data.get("title", "Untitled").strip(),
+        url=url,
+        tags=data.get("tags", []),
+        description=data.get("description", "").strip()
+    )
+    
+    return jsonify(bookmark.to_dict()), 201
+
+
+print("Error handling added!")`
+            },
+
+            stats: {
+                filename: 'app.py (add stats)',
+                code: `# Step 6.3: Statistics Endpoint
+# ============================
+# Add this to app.py:
+
+from collections import Counter
+
+@app.route("/api/stats")
+def get_stats():
+    """Get bookmark statistics."""
+    bookmarks = store.get_all()
+    
+    # Count tags
+    all_tags = []
+    for b in bookmarks:
+        all_tags.extend(b.tags)
+    tag_counts = dict(Counter(all_tags))
+    
+    # Find most recent
+    most_recent = None
+    if bookmarks:
+        sorted_bookmarks = sorted(
+            bookmarks, 
+            key=lambda x: x.created_at, 
+            reverse=True
+        )
+        most_recent = sorted_bookmarks[0].title
+    
+    return jsonify({
+        "total_bookmarks": len(bookmarks),
+        "tags": tag_counts,
+        "unique_tags": len(tag_counts),
+        "most_recent": most_recent
+    })
+
+
+print("Statistics endpoint added!")
+print("  GET /api/stats")`
+            },
+
+            complete: {
+                filename: 'app.py (COMPLETE)',
+                code: `# 🏗️ COMPLETE BOOKMARKS API
+# ============================
+# Full application code
+
+from flask import (
+    Flask, jsonify, request, render_template, 
+    redirect, url_for, Response
+)
+from dataclasses import dataclass, field
+from datetime import datetime
+from uuid import uuid4
+from pathlib import Path
+from collections import Counter
+import json
+
+
+# ==================== MODELS ====================
+
+@dataclass
+class Bookmark:
+    """A saved bookmark."""
+    title: str
+    url: str
+    id: str = field(default_factory=lambda: str(uuid4())[:8])
+    tags: list[str] = field(default_factory=list)
+    description: str = ""
+    created_at: str = field(default_factory=lambda: datetime.now().isoformat())
+    
+    def to_dict(self) -> dict:
+        return {
+            "id": self.id, "title": self.title, "url": self.url,
+            "tags": self.tags, "description": self.description,
+            "created_at": self.created_at
+        }
+    
+    @classmethod
+    def from_dict(cls, data: dict) -> "Bookmark":
+        return cls(
+            id=data.get("id", str(uuid4())[:8]),
+            title=data["title"], url=data["url"],
+            tags=data.get("tags", []),
+            description=data.get("description", ""),
+            created_at=data.get("created_at", datetime.now().isoformat())
+        )
+
+
+# ==================== STORE ====================
+
+class BookmarkStore:
+    def __init__(self, filepath: str = "data/bookmarks.json"):
+        self.filepath = Path(filepath)
+        self.filepath.parent.mkdir(exist_ok=True)
+        self.bookmarks: dict[str, Bookmark] = {}
+        self._load()
+    
+    def _load(self):
+        if self.filepath.exists():
+            try:
+                data = json.loads(self.filepath.read_text())
+                self.bookmarks = {b["id"]: Bookmark.from_dict(b) for b in data}
+            except: self.bookmarks = {}
+    
+    def _save(self):
+        data = [b.to_dict() for b in self.bookmarks.values()]
+        self.filepath.write_text(json.dumps(data, indent=2))
+    
+    def get_all(self): return list(self.bookmarks.values())
+    def get(self, id): return self.bookmarks.get(id)
+    
+    def create(self, title, url, tags=None, description=""):
+        b = Bookmark(title=title, url=url, tags=tags or [], description=description)
+        self.bookmarks[b.id] = b
+        self._save()
+        return b
+    
+    def update(self, id, **kwargs):
+        b = self.bookmarks.get(id)
+        if not b: return None
+        for k, v in kwargs.items():
+            if hasattr(b, k) and v is not None: setattr(b, k, v)
+        self._save()
+        return b
+    
+    def delete(self, id):
+        if id in self.bookmarks:
+            del self.bookmarks[id]
+            self._save()
+            return True
+        return False
+    
+    def search(self, query="", tag=""):
+        results = list(self.bookmarks.values())
+        if query:
+            q = query.lower()
+            results = [b for b in results if q in b.title.lower() or q in b.url.lower()]
+        if tag:
+            t = tag.lower()
+            results = [b for b in results if t in [x.lower() for x in b.tags]]
+        return results
+
+
+# ==================== APP ====================
+
+app = Flask(__name__)
+store = BookmarkStore()
+
+
+# === API ENDPOINTS ===
+
+@app.route("/api/bookmarks")
+def api_list():
+    q, tag = request.args.get("q", ""), request.args.get("tag", "")
+    bookmarks = store.search(q, tag) if q or tag else store.get_all()
+    return jsonify([b.to_dict() for b in bookmarks])
+
+@app.route("/api/bookmarks/<id>")
+def api_get(id):
+    b = store.get(id)
+    return jsonify(b.to_dict()) if b else (jsonify({"error": "Not found"}), 404)
+
+@app.route("/api/bookmarks", methods=["POST"])
+def api_create():
+    data = request.get_json()
+    if not data or "url" not in data:
+        return jsonify({"error": "URL required"}), 400
+    b = store.create(data.get("title", "Untitled"), data["url"],
+                     data.get("tags", []), data.get("description", ""))
+    return jsonify(b.to_dict()), 201
+
+@app.route("/api/bookmarks/<id>", methods=["PUT"])
+def api_update(id):
+    data = request.get_json()
+    b = store.update(id, **{k: data.get(k) for k in ["title", "url", "tags", "description"]})
+    return jsonify(b.to_dict()) if b else (jsonify({"error": "Not found"}), 404)
+
+@app.route("/api/bookmarks/<id>", methods=["DELETE"])
+def api_delete(id):
+    return jsonify({"message": "Deleted"}) if store.delete(id) else (jsonify({"error": "Not found"}), 404)
+
+@app.route("/api/stats")
+def api_stats():
+    bookmarks = store.get_all()
+    tags = Counter(t for b in bookmarks for t in b.tags)
+    return jsonify({"total": len(bookmarks), "tags": dict(tags)})
+
+@app.route("/api/export")
+def api_export():
+    data = json.dumps([b.to_dict() for b in store.get_all()], indent=2)
+    return Response(data, mimetype="application/json",
+                   headers={"Content-Disposition": "attachment;filename=bookmarks.json"})
+
+
+# === HTML ROUTES ===
+
+@app.route("/")
+def home():
+    q = request.args.get("q", "")
+    bookmarks = store.search(q) if q else store.get_all()
+    bookmarks.sort(key=lambda x: x.created_at, reverse=True)
+    return render_template("home.html", bookmarks=[b.to_dict() for b in bookmarks], query=q)
+
+@app.route("/add", methods=["GET", "POST"])
+def add():
+    if request.method == "POST":
+        store.create(
+            request.form.get("title", "Untitled"),
+            request.form["url"],
+            [t.strip() for t in request.form.get("tags", "").split(",") if t.strip()],
+            request.form.get("description", "")
+        )
+        return redirect(url_for("home"))
+    return render_template("add.html")
+
+@app.route("/delete/<id>", methods=["POST"])
+def delete(id):
+    store.delete(id)
+    return redirect(url_for("home"))
+
+
+if __name__ == "__main__":
+    print("🚀 Bookmarks API Ready!")
+    print("   API:  http://localhost:5000/api/bookmarks")
+    print("   Web:  http://localhost:5000")
+    app.run(debug=True)`
+            }
+        };
+
+        function loadStep(stepName) {
+            const step = steps[stepName];
+            if (step) {
+                document.getElementById('codeEditor').value = step.code;
+                document.getElementById('editorFilename').textContent = step.filename;
+                document.getElementById('outputContent').innerHTML = 
+                    '<span style="color: var(--text-muted);">Code loaded! Copy to your project or click Run to test.</span>';
+            }
+        }
+
+        // Handle tab key
+        document.getElementById('codeEditor').addEventListener('keydown', function(e) {
+            if (e.key === 'Tab') {
+                e.preventDefault();
+                const start = this.selectionStart;
+                this.value = this.value.substring(0, start) + '    ' + this.value.substring(this.selectionEnd);
+                this.selectionStart = this.selectionEnd = start + 4;
+            }
+            if (e.ctrlKey && e.key === 'Enter') runCode();
+        });
+
+        updateProgress('overview');
+    </script>
+</body>
+</html>
