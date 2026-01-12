@@ -209,12 +209,6 @@
             border-radius: 10px;
         }
 
-        .empty-state {
-            text-align: center;
-            padding: 50px;
-            color: #999;
-        }
-
         .reset-btn {
             display: block;
             margin: 20px auto;
@@ -321,6 +315,14 @@
             </div>
 
             <div class="track-content" id="python-content">
+                <div class="lesson-item" data-lesson="python/week0-day1-2-python-foundations.html">
+                    <div class="lesson-checkbox"></div>
+                    <div class="lesson-info">
+                        <div class="lesson-title">Week 0 (Day 1-2): Python Foundations</div>
+                        <a href="python/week0-day1-2-python-foundations.html" class="lesson-link" onclick="event.stopPropagation();">View Lesson →</a>
+                    </div>
+                </div>
+
                 <div class="lesson-item" data-lesson="python/week0-day3-4-files-and-classes.html">
                     <div class="lesson-checkbox"></div>
                     <div class="lesson-info">
@@ -335,18 +337,15 @@
     </div>
 
     <script>
-        // Track switcher functionality
         const trackButtons = document.querySelectorAll('.track-btn');
         const trackContents = document.querySelectorAll('.track-content');
         let currentTrack = 'webdev';
 
         trackButtons.forEach(button => {
             button.addEventListener('click', () => {
-                // Update active button
                 trackButtons.forEach(btn => btn.classList.remove('active'));
                 button.classList.add('active');
 
-                // Show corresponding content
                 const track = button.dataset.track;
                 currentTrack = track;
                 trackContents.forEach(content => {
@@ -356,15 +355,12 @@
                     }
                 });
 
-                // Update progress for current track
                 updateProgress();
             });
         });
 
-        // Lesson completion functionality
         const lessonItems = document.querySelectorAll('.lesson-item');
 
-        // Load saved progress from localStorage
         function loadProgress() {
             lessonItems.forEach(item => {
                 const lessonPath = item.dataset.lesson;
@@ -376,13 +372,11 @@
             updateProgress();
         }
 
-        // Toggle lesson completion on double-click
         lessonItems.forEach(item => {
             item.addEventListener('dblclick', () => {
                 const lessonPath = item.dataset.lesson;
                 item.classList.toggle('completed');
                 
-                // Save to localStorage
                 if (item.classList.contains('completed')) {
                     localStorage.setItem(`lesson-${lessonPath}`, 'completed');
                 } else {
@@ -393,7 +387,6 @@
             });
         });
 
-        // Update progress bar and text
         function updateProgress() {
             const activeContent = document.querySelector('.track-content.active');
             const activeLessons = activeContent.querySelectorAll('.lesson-item');
@@ -409,7 +402,6 @@
             document.getElementById('progressFill').textContent = `${percentage}%`;
         }
 
-        // Reset all progress
         function resetProgress() {
             if (confirm('Are you sure you want to reset all progress? This cannot be undone.')) {
                 lessonItems.forEach(item => {
@@ -421,7 +413,6 @@
             }
         }
 
-        // Initialize on page load
         loadProgress();
     </script>
 </body>
