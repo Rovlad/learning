@@ -1,0 +1,977 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Week 2: Layouts & Responsive Design!</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            height: calc(100vh - 40px);
+        }
+
+        .panel {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            overflow-y: auto;
+        }
+
+        .lesson-panel {
+            display: flex;
+            flex-direction: column;
+        }
+
+        h1 {
+            color: #f5576c;
+            margin-bottom: 10px;
+            font-size: 28px;
+        }
+
+        h2 {
+            color: #f093fb;
+            margin-top: 25px;
+            margin-bottom: 15px;
+            font-size: 22px;
+        }
+
+        h3 {
+            color: #f5576c;
+            margin-top: 20px;
+            margin-bottom: 10px;
+            font-size: 18px;
+        }
+
+        .step {
+            background: #fff5f7;
+            border-left: 4px solid #f5576c;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 4px;
+        }
+
+        .step-number {
+            display: inline-block;
+            background: #f5576c;
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 30px;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+
+        code {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+        }
+
+        .code-block {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 15px;
+            border-radius: 6px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            overflow-x: auto;
+            margin: 10px 0;
+            line-height: 1.5;
+        }
+
+        .tag {
+            color: #ff79c6;
+        }
+
+        .attribute {
+            color: #50fa7b;
+        }
+
+        .value {
+            color: #f1fa8c;
+        }
+
+        .comment {
+            color: #6272a4;
+        }
+
+        textarea {
+            width: 100%;
+            min-height: 300px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            padding: 15px;
+            border: 2px solid #f5576c;
+            border-radius: 6px;
+            resize: vertical;
+        }
+
+        button {
+            background: #f5576c;
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 15px;
+            transition: all 0.3s;
+        }
+
+        button:hover {
+            background: #f093fb;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .preview-frame {
+            width: 100%;
+            height: 500px;
+            border: 2px solid #f5576c;
+            border-radius: 6px;
+            background: white;
+            margin-top: 15px;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #e0e0e0;
+        }
+
+        .tab {
+            padding: 10px 20px;
+            background: none;
+            border: none;
+            color: #666;
+            font-weight: 600;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s;
+            margin: 0;
+        }
+
+        .tab.active {
+            color: #f5576c;
+            border-bottom-color: #f5576c;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .tip {
+            background: #fff9e6;
+            border-left: 4px solid #ffd700;
+            padding: 12px;
+            margin: 15px 0;
+            border-radius: 4px;
+        }
+
+        .tip strong {
+            color: #cc8800;
+        }
+
+        .checklist {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .checklist li {
+            padding: 8px 0;
+            padding-left: 30px;
+            position: relative;
+        }
+
+        .checklist li:before {
+            content: "☐";
+            position: absolute;
+            left: 0;
+            font-size: 20px;
+            color: #f5576c;
+        }
+
+        .example {
+            background: #e8f5e9;
+            border-left: 4px solid #4caf50;
+            padding: 12px;
+            margin: 15px 0;
+            border-radius: 4px;
+        }
+
+        .demo-box {
+            background: #f0f0f0;
+            border: 2px dashed #f5576c;
+            padding: 20px;
+            margin: 15px 0;
+            border-radius: 6px;
+            text-align: center;
+        }
+
+        .flex-demo {
+            display: flex;
+            gap: 10px;
+            margin: 10px 0;
+        }
+
+        .flex-item {
+            background: #f093fb;
+            color: white;
+            padding: 20px;
+            border-radius: 4px;
+            flex: 1;
+        }
+
+        .grid-demo {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin: 10px 0;
+        }
+
+        .grid-item {
+            background: #f5576c;
+            color: white;
+            padding: 20px;
+            border-radius: 4px;
+        }
+
+        @media (max-width: 1200px) {
+            .container {
+                grid-template-columns: 1fr;
+                height: auto;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Left Panel: Lessons -->
+        <div class="panel lesson-panel">
+            <h1>📱 Week 2: Layouts & Responsive Design!</h1>
+            <p style="color: #666; margin-bottom: 20px;">This week you'll learn how to create beautiful layouts that work on ANY device - phones, tablets, and computers!</p>
+
+            <div class="tabs">
+                <button class="tab active" onclick="showTab('learn')">📚 Learn</button>
+                <button class="tab" onclick="showTab('flexbox')">🔀 Flexbox</button>
+                <button class="tab" onclick="showTab('grid')">📊 Grid</button>
+                <button class="tab" onclick="showTab('responsive')">📱 Responsive</button>
+                <button class="tab" onclick="showTab('build')">🔨 Build</button>
+                <button class="tab" onclick="showTab('challenge')">🚀 Challenge</button>
+            </div>
+
+            <!-- Learn Tab -->
+            <div id="learn" class="tab-content active">
+                <h2>Understanding Layouts</h2>
+                <p>Last week you built a simple page with content flowing from top to bottom. This week, you'll learn to arrange elements side-by-side, create complex layouts, and make them work on any screen size!</p>
+
+                <h3>Why Layouts Matter</h3>
+                <div class="example">
+                    <strong>Think about your favorite websites:</strong><br>
+                    • Instagram has photos in a grid<br>
+                    • YouTube has a sidebar and main content area<br>
+                    • News sites have columns of articles<br><br>
+                    All of these use CSS layout techniques to arrange content!
+                </div>
+
+                <h3>The Problem We're Solving</h3>
+                <p>By default, HTML elements stack vertically (top to bottom). But we often want elements side-by-side, in grids, or in specific positions. That's where CSS layout comes in!</p>
+
+                <div class="demo-box">
+                    <div style="background: #f093fb; color: white; padding: 10px; margin: 5px 0; border-radius: 4px;">Element 1</div>
+                    <div style="background: #f5576c; color: white; padding: 10px; margin: 5px 0; border-radius: 4px;">Element 2</div>
+                    <div style="background: #f093fb; color: white; padding: 10px; margin: 5px 0; border-radius: 4px;">Element 3</div>
+                    <p style="margin-top: 10px; color: #666; font-size: 14px;">☝️ Default: Elements stack vertically</p>
+                </div>
+
+                <h2>The Three Modern Layout Tools</h2>
+                
+                <h3>1. Flexbox - For Rows and Columns</h3>
+                <p>Flexbox is perfect when you want to arrange items in a single row or column. Think navigation bars, button groups, or card layouts.</p>
+                <div class="flex-demo">
+                    <div class="flex-item">Item 1</div>
+                    <div class="flex-item">Item 2</div>
+                    <div class="flex-item">Item 3</div>
+                </div>
+                <p style="font-size: 14px; color: #666;">☝️ Flexbox: Items arranged in a row</p>
+
+                <h3>2. Grid - For Complex Layouts</h3>
+                <p>Grid is perfect for creating 2D layouts with rows AND columns. Think photo galleries, dashboards, or magazine-style layouts.</p>
+                <div class="grid-demo">
+                    <div class="grid-item">1</div>
+                    <div class="grid-item">2</div>
+                    <div class="grid-item">3</div>
+                    <div class="grid-item">4</div>
+                    <div class="grid-item">5</div>
+                    <div class="grid-item">6</div>
+                </div>
+                <p style="font-size: 14px; color: #666;">☝️ Grid: Items in rows and columns</p>
+
+                <h3>3. Media Queries - For Responsive Design</h3>
+                <p>Media queries let your design adapt to different screen sizes. The same page can look perfect on a phone, tablet, and desktop!</p>
+
+                <div class="example">
+                    <strong>Responsive Design Example:</strong><br>
+                    • On a phone: 1 column, menu collapses<br>
+                    • On a tablet: 2 columns, larger images<br>
+                    • On desktop: 3 columns, full navigation<br><br>
+                    Same HTML, different CSS for each device!
+                </div>
+
+                <h2>Why This Matters</h2>
+                <p>More than 60% of web traffic comes from mobile devices! If your website doesn't work on phones, you're missing most of your audience. Responsive design isn't optional anymore - it's essential.</p>
+
+                <div class="tip">
+                    <strong>💡 Fun Fact:</strong> The first iPhone came out in 2007. Before that, websites only had to work on desktop computers. Now, developers design for phones FIRST, then scale up to larger screens. This is called "mobile-first" design!
+                </div>
+            </div>
+
+            <!-- Flexbox Tab -->
+            <div id="flexbox" class="tab-content">
+                <h2>Flexbox: The Flexible Layout</h2>
+                <p>Flexbox is your go-to tool for arranging items in a row or column with flexible spacing.</p>
+
+                <h3>How Flexbox Works</h3>
+                <p>You create a <strong>flex container</strong> (parent), and the items inside automatically become <strong>flex items</strong> (children).</p>
+
+                <div class="code-block"><span class="comment">/* Make a container use flexbox */</span>
+<span class="tag">.container</span> {
+  <span class="attribute">display</span>: <span class="value">flex</span>;
+}</div>
+
+                <h3>Essential Flexbox Properties</h3>
+
+                <div class="step">
+                    <span class="step-number">1</span>
+                    <strong>flex-direction</strong> - Which way items flow
+                    <div class="code-block" style="margin-top: 10px;"><span class="tag">.container</span> {
+  <span class="attribute">display</span>: <span class="value">flex</span>;
+  <span class="attribute">flex-direction</span>: <span class="value">row</span>;  <span class="comment">/* horizontal → */</span>
+  <span class="comment">/* or: column (vertical ↓) */</span>
+}</div>
+                </div>
+
+                <div class="step">
+                    <span class="step-number">2</span>
+                    <strong>justify-content</strong> - Spacing along main axis
+                    <div class="code-block" style="margin-top: 10px;"><span class="tag">.container</span> {
+  <span class="attribute">display</span>: <span class="value">flex</span>;
+  <span class="attribute">justify-content</span>: <span class="value">space-between</span>;
+  <span class="comment">/* Options: flex-start, flex-end, center, 
+     space-between, space-around, space-evenly */</span>
+}</div>
+                </div>
+
+                <div class="step">
+                    <span class="step-number">3</span>
+                    <strong>align-items</strong> - Alignment perpendicular to main axis
+                    <div class="code-block" style="margin-top: 10px;"><span class="tag">.container</span> {
+  <span class="attribute">display</span>: <span class="value">flex</span>;
+  <span class="attribute">align-items</span>: <span class="value">center</span>;
+  <span class="comment">/* Options: flex-start, flex-end, center, stretch */</span>
+}</div>
+                </div>
+
+                <div class="step">
+                    <span class="step-number">4</span>
+                    <strong>gap</strong> - Space between items
+                    <div class="code-block" style="margin-top: 10px;"><span class="tag">.container</span> {
+  <span class="attribute">display</span>: <span class="value">flex</span>;
+  <span class="attribute">gap</span>: <span class="value">20px</span>;  <span class="comment">/* 20 pixels between items */</span>
+}</div>
+                </div>
+
+                <div class="step">
+                    <span class="step-number">5</span>
+                    <strong>flex-wrap</strong> - Allow items to wrap to next line
+                    <div class="code-block" style="margin-top: 10px;"><span class="tag">.container</span> {
+  <span class="attribute">display</span>: <span class="value">flex</span>;
+  <span class="attribute">flex-wrap</span>: <span class="value">wrap</span>;
+  <span class="comment">/* Items will move to next row if they don't fit */</span>
+}</div>
+                </div>
+
+                <h3>Real Example: Navigation Bar</h3>
+                <div class="code-block"><span class="tag">&lt;nav</span> <span class="attribute">class</span>=<span class="value">"navbar"</span><span class="tag">&gt;</span>
+  <span class="tag">&lt;div&gt;</span>Logo<span class="tag">&lt;/div&gt;</span>
+  <span class="tag">&lt;div&gt;</span>Home<span class="tag">&lt;/div&gt;</span>
+  <span class="tag">&lt;div&gt;</span>About<span class="tag">&lt;/div&gt;</span>
+  <span class="tag">&lt;div&gt;</span>Contact<span class="tag">&lt;/div&gt;</span>
+<span class="tag">&lt;/nav&gt;</span>
+
+<span class="tag">.navbar</span> {
+  <span class="attribute">display</span>: <span class="value">flex</span>;
+  <span class="attribute">justify-content</span>: <span class="value">space-between</span>;
+  <span class="attribute">align-items</span>: <span class="value">center</span>;
+  <span class="attribute">padding</span>: <span class="value">20px</span>;
+  <span class="attribute">background</span>: <span class="value">#333</span>;
+  <span class="attribute">color</span>: <span class="value">white</span>;
+}</div>
+
+                <div class="tip">
+                    <strong>💡 Remember:</strong> Flexbox is 1-dimensional (either a row OR a column). For 2D layouts (rows AND columns), use Grid!
+                </div>
+
+                <h3>Common Flexbox Patterns</h3>
+                <ul style="padding-left: 20px; margin: 15px 0; line-height: 1.8;">
+                    <li><strong>Center anything:</strong> <code>justify-content: center; align-items: center;</code></li>
+                    <li><strong>Space items evenly:</strong> <code>justify-content: space-evenly;</code></li>
+                    <li><strong>Push last item to end:</strong> Last item gets <code>margin-left: auto;</code></li>
+                    <li><strong>Stack on small screens:</strong> <code>flex-direction: column;</code></li>
+                </ul>
+            </div>
+
+            <!-- Grid Tab -->
+            <div id="grid" class="tab-content">
+                <h2>Grid: The Ultimate Layout System</h2>
+                <p>CSS Grid is incredibly powerful for creating complex, 2-dimensional layouts.</p>
+
+                <h3>How Grid Works</h3>
+                <p>Grid divides your container into rows and columns, then places items into the cells you create.</p>
+
+                <div class="code-block"><span class="comment">/* Make a container use grid */</span>
+<span class="tag">.container</span> {
+  <span class="attribute">display</span>: <span class="value">grid</span>;
+}</div>
+
+                <h3>Essential Grid Properties</h3>
+
+                <div class="step">
+                    <span class="step-number">1</span>
+                    <strong>grid-template-columns</strong> - Define columns
+                    <div class="code-block" style="margin-top: 10px;"><span class="tag">.container</span> {
+  <span class="attribute">display</span>: <span class="value">grid</span>;
+  <span class="attribute">grid-template-columns</span>: <span class="value">200px 200px 200px</span>;
+  <span class="comment">/* Three columns, each 200px wide */</span>
+}</div>
+                </div>
+
+                <div class="step">
+                    <span class="step-number">2</span>
+                    <strong>Using fr (fraction) units</strong>
+                    <div class="code-block" style="margin-top: 10px;"><span class="tag">.container</span> {
+  <span class="attribute">display</span>: <span class="value">grid</span>;
+  <span class="attribute">grid-template-columns</span>: <span class="value">1fr 1fr 1fr</span>;
+  <span class="comment">/* Three equal columns that fill the space */</span>
+}</div>
+                    <p style="margin-top: 10px; font-size: 14px; color: #666;"><code>1fr</code> means "1 fraction of available space" - much better than fixed pixels!</p>
+                </div>
+
+                <div class="step">
+                    <span class="step-number">3</span>
+                    <strong>repeat() function</strong> - Shortcut for repeated values
+                    <div class="code-block" style="margin-top: 10px;"><span class="tag">.container</span> {
+  <span class="attribute">display</span>: <span class="value">grid</span>;
+  <span class="attribute">grid-template-columns</span>: <span class="value">repeat(3, 1fr)</span>;
+  <span class="comment">/* Same as: 1fr 1fr 1fr */</span>
+}</div>
+                </div>
+
+                <div class="step">
+                    <span class="step-number">4</span>
+                    <strong>gap</strong> - Space between cells
+                    <div class="code-block" style="margin-top: 10px;"><span class="tag">.container</span> {
+  <span class="attribute">display</span>: <span class="value">grid</span>;
+  <span class="attribute">grid-template-columns</span>: <span class="value">repeat(3, 1fr)</span>;
+  <span class="attribute">gap</span>: <span class="value">20px</span>;  <span class="comment">/* 20px between all cells */</span>
+}</div>
+                </div>
+
+                <div class="step">
+                    <span class="step-number">5</span>
+                    <strong>grid-template-rows</strong> - Define rows
+                    <div class="code-block" style="margin-top: 10px;"><span class="tag">.container</span> {
+  <span class="attribute">display</span>: <span class="value">grid</span>;
+  <span class="attribute">grid-template-columns</span>: <span class="value">repeat(3, 1fr)</span>;
+  <span class="attribute">grid-template-rows</span>: <span class="value">100px 200px</span>;
+  <span class="comment">/* First row: 100px, second row: 200px */</span>
+}</div>
+                </div>
+
+                <h3>Real Example: Photo Gallery</h3>
+                <div class="code-block"><span class="tag">&lt;div</span> <span class="attribute">class</span>=<span class="value">"gallery"</span><span class="tag">&gt;</span>
+  <span class="tag">&lt;img</span> <span class="attribute">src</span>=<span class="value">"photo1.jpg"</span><span class="tag">&gt;</span>
+  <span class="tag">&lt;img</span> <span class="attribute">src</span>=<span class="value">"photo2.jpg"</span><span class="tag">&gt;</span>
+  <span class="tag">&lt;img</span> <span class="attribute">src</span>=<span class="value">"photo3.jpg"</span><span class="tag">&gt;</span>
+  <span class="tag">&lt;img</span> <span class="attribute">src</span>=<span class="value">"photo4.jpg"</span><span class="tag">&gt;</span>
+<span class="tag">&lt;/div&gt;</span>
+
+<span class="tag">.gallery</span> {
+  <span class="attribute">display</span>: <span class="value">grid</span>;
+  <span class="attribute">grid-template-columns</span>: <span class="value">repeat(3, 1fr)</span>;
+  <span class="attribute">gap</span>: <span class="value">15px</span>;
+}
+
+<span class="tag">.gallery img</span> {
+  <span class="attribute">width</span>: <span class="value">100%</span>;
+  <span class="attribute">height</span>: <span class="value">200px</span>;
+  <span class="attribute">object-fit</span>: <span class="value">cover</span>;  <span class="comment">/* Crop images nicely */</span>
+}</div>
+
+                <h3>Auto-fit Magic</h3>
+                <p>Make columns automatically adjust to screen size:</p>
+                <div class="code-block"><span class="tag">.gallery</span> {
+  <span class="attribute">display</span>: <span class="value">grid</span>;
+  <span class="attribute">grid-template-columns</span>: <span class="value">repeat(auto-fit, minmax(200px, 1fr))</span>;
+  <span class="attribute">gap</span>: <span class="value">15px</span>;
+}
+<span class="comment">/* Columns automatically fit, each at least 200px */</span></div>
+
+                <div class="example">
+                    <strong>This is POWERFUL!</strong> With one line of CSS, your gallery automatically shows:<br>
+                    • 1 column on phones<br>
+                    • 2-3 columns on tablets<br>
+                    • 4+ columns on desktops<br>
+                    No media queries needed!
+                </div>
+
+                <div class="tip">
+                    <strong>💡 Grid vs Flexbox:</strong> Use Grid when you need precise control over rows AND columns. Use Flexbox when you just need a simple row or column.
+                </div>
+            </div>
+
+            <!-- Responsive Tab -->
+            <div id="responsive" class="tab-content">
+                <h2>Responsive Design: One Site, All Devices</h2>
+                <p>Responsive design means your website automatically adapts to different screen sizes.</p>
+
+                <h3>The Viewport Meta Tag</h3>
+                <p>ALWAYS include this in your <code>&lt;head&gt;</code> section:</p>
+                <div class="code-block"><span class="tag">&lt;meta</span> <span class="attribute">name</span>=<span class="value">"viewport"</span> 
+      <span class="attribute">content</span>=<span class="value">"width=device-width, initial-scale=1.0"</span><span class="tag">&gt;</span></div>
+                <p style="margin-top: 10px; font-size: 14px; color: #666;">This tells mobile browsers to use the device width, not pretend to be a desktop.</p>
+
+                <h3>Media Queries</h3>
+                <p>Media queries let you apply different CSS rules based on screen size.</p>
+
+                <div class="step">
+                    <span class="step-number">1</span>
+                    <strong>Basic Media Query Structure</strong>
+                    <div class="code-block" style="margin-top: 10px;"><span class="comment">/* Normal styles for all devices */</span>
+<span class="tag">.container</span> {
+  <span class="attribute">padding</span>: <span class="value">20px</span>;
+}
+
+<span class="comment">/* Styles ONLY for screens 768px or smaller */</span>
+<span class="tag">@media</span> (<span class="attribute">max-width</span>: <span class="value">768px</span>) {
+  <span class="tag">.container</span> {
+    <span class="attribute">padding</span>: <span class="value">10px</span>;
+  }
+}</div>
+                </div>
+
+                <h3>Common Breakpoints</h3>
+                <p>These are typical screen widths where layouts change:</p>
+                <ul style="padding-left: 20px; margin: 15px 0; line-height: 1.8;">
+                    <li><strong>320px-480px:</strong> Mobile phones (portrait)</li>
+                    <li><strong>481px-768px:</strong> Tablets (portrait)</li>
+                    <li><strong>769px-1024px:</strong> Tablets (landscape) & small laptops</li>
+                    <li><strong>1025px+:</strong> Desktops & large screens</li>
+                </ul>
+
+                <div class="step">
+                    <span class="step-number">2</span>
+                    <strong>Mobile-First Approach (Recommended!)</strong>
+                    <div class="code-block" style="margin-top: 10px;"><span class="comment">/* Mobile styles first (default) */</span>
+<span class="tag">.grid</span> {
+  <span class="attribute">display</span>: <span class="value">grid</span>;
+  <span class="attribute">grid-template-columns</span>: <span class="value">1fr</span>;  <span class="comment">/* 1 column */</span>
+}
+
+<span class="comment">/* Tablet and up */</span>
+<span class="tag">@media</span> (<span class="attribute">min-width</span>: <span class="value">768px</span>) {
+  <span class="tag">.grid</span> {
+    <span class="attribute">grid-template-columns</span>: <span class="value">repeat(2, 1fr)</span>;  <span class="comment">/* 2 columns */</span>
+  }
+}
+
+<span class="comment">/* Desktop and up */</span>
+<span class="tag">@media</span> (<span class="attribute">min-width</span>: <span class="value">1024px</span>) {
+  <span class="tag">.grid</span> {
+    <span class="attribute">grid-template-columns</span>: <span class="value">repeat(3, 1fr)</span>;  <span class="comment">/* 3 columns */</span>
+  }
+}</div>
+                </div>
+
+                <div class="example">
+                    <strong>Why mobile-first?</strong><br>
+                    • Most users are on mobile<br>
+                    • Forces you to prioritize content<br>
+                    • Easier to add features as screens get bigger<br>
+                    • Better performance on mobile devices
+                </div>
+
+                <h3>Complete Responsive Example</h3>
+                <div class="code-block"><span class="comment">/* Mobile: Stack everything vertically */</span>
+<span class="tag">.navbar</span> {
+  <span class="attribute">display</span>: <span class="value">flex</span>;
+  <span class="attribute">flex-direction</span>: <span class="value">column</span>;
+  <span class="attribute">gap</span>: <span class="value">10px</span>;
+}
+
+<span class="comment">/* Tablet: Horizontal navbar */</span>
+<span class="tag">@media</span> (<span class="attribute">min-width</span>: <span class="value">768px</span>) {
+  <span class="tag">.navbar</span> {
+    <span class="attribute">flex-direction</span>: <span class="value">row</span>;
+    <span class="attribute">justify-content</span>: <span class="value">space-between</span>;
+  }
+}
+
+<span class="comment">/* Desktop: Add padding and max-width */</span>
+<span class="tag">@media</span> (<span class="attribute">min-width</span>: <span class="value">1024px</span>) {
+  <span class="tag">.navbar</span> {
+    <span class="attribute">padding</span>: <span class="value">0 40px</span>;
+    <span class="attribute">max-width</span>: <span class="value">1200px</span>;
+    <span class="attribute">margin</span>: <span class="value">0 auto</span>;
+  }
+}</div>
+
+                <h3>Responsive Images</h3>
+                <p>Make images scale with their container:</p>
+                <div class="code-block"><span class="tag">img</span> {
+  <span class="attribute">max-width</span>: <span class="value">100%</span>;  <span class="comment">/* Never bigger than container */</span>
+  <span class="attribute">height</span>: <span class="value">auto</span>;     <span class="comment">/* Maintain aspect ratio */</span>
+}</div>
+
+                <h3>Responsive Typography</h3>
+                <p>Adjust text size for different screens:</p>
+                <div class="code-block"><span class="comment">/* Mobile */</span>
+<span class="tag">h1</span> {
+  <span class="attribute">font-size</span>: <span class="value">24px</span>;
+}
+
+<span class="comment">/* Tablet and up */</span>
+<span class="tag">@media</span> (<span class="attribute">min-width</span>: <span class="value">768px</span>) {
+  <span class="tag">h1</span> {
+    <span class="attribute">font-size</span>: <span class="value">32px</span>;
+  }
+}
+
+<span class="comment">/* Desktop */</span>
+<span class="tag">@media</span> (<span class="attribute">min-width</span>: <span class="value">1024px</span>) {
+  <span class="tag">h1</span> {
+    <span class="attribute">font-size</span>: <span class="value">48px</span>;
+  }
+}</div>
+
+                <div class="tip">
+                    <strong>💡 Testing Tip:</strong> In Chrome, press F12 to open DevTools, then click the device icon (or press Ctrl+Shift+M) to test different screen sizes!
+                </div>
+            </div>
+
+            <!-- Build Tab -->
+            <div id="build" class="tab-content">
+                <h2>Let's Build a Portfolio Page!</h2>
+                <p>Time to put it all together! You'll create a responsive portfolio page with a header, project cards, and a footer.</p>
+
+                <div class="step">
+                    <span class="step-number">1</span>
+                    <strong>Start with the HTML Structure</strong>
+                    <div class="code-block" style="margin-top: 10px;"><span class="tag">&lt;!DOCTYPE html&gt;</span>
+<span class="tag">&lt;html&gt;</span>
+<span class="tag">&lt;head&gt;</span>
+  <span class="tag">&lt;meta</span> <span class="attribute">name</span>=<span class="value">"viewport"</span> 
+        <span class="attribute">content</span>=<span class="value">"width=device-width, initial-scale=1.0"</span><span class="tag">&gt;</span>
+  <span class="tag">&lt;title&gt;</span>My Portfolio<span class="tag">&lt;/title&gt;</span>
+  <span class="tag">&lt;style&gt;</span>
+    <span class="comment">/* Your CSS will go here */</span>
+  <span class="tag">&lt;/style&gt;</span>
+<span class="tag">&lt;/head&gt;</span>
+<span class="tag">&lt;body&gt;</span>
+
+<span class="tag">&lt;/body&gt;</span>
+<span class="tag">&lt;/html&gt;</span></div>
+                </div>
+
+                <div class="step">
+                    <span class="step-number">2</span>
+                    <strong>Add a Header with Flexbox</strong>
+                    <div class="code-block" style="margin-top: 10px;"><span class="tag">&lt;header</span> <span class="attribute">class</span>=<span class="value">"header"</span><span class="tag">&gt;</span>
+  <span class="tag">&lt;div</span> <span class="attribute">class</span>=<span class="value">"logo"</span><span class="tag">&gt;</span>Your Name<span class="tag">&lt;/div&gt;</span>
+  <span class="tag">&lt;nav</span> <span class="attribute">class</span>=<span class="value">"nav"</span><span class="tag">&gt;</span>
+    <span class="tag">&lt;a</span> <span class="attribute">href</span>=<span class="value">"#"</span><span class="tag">&gt;</span>Home<span class="tag">&lt;/a&gt;</span>
+    <span class="tag">&lt;a</span> <span class="attribute">href</span>=<span class="value">"#"</span><span class="tag">&gt;</span>Projects<span class="tag">&lt;/a&gt;</span>
+    <span class="tag">&lt;a</span> <span class="attribute">href</span>=<span class="value">"#"</span><span class="tag">&gt;</span>Contact<span class="tag">&lt;/a&gt;</span>
+  <span class="tag">&lt;/nav&gt;</span>
+<span class="tag">&lt;/header&gt;</span>
+
+<span class="comment">/* CSS */</span>
+<span class="tag">.header</span> {
+  <span class="attribute">display</span>: <span class="value">flex</span>;
+  <span class="attribute">justify-content</span>: <span class="value">space-between</span>;
+  <span class="attribute">align-items</span>: <span class="value">center</span>;
+  <span class="attribute">padding</span>: <span class="value">20px</span>;
+  <span class="attribute">background</span>: <span class="value">#333</span>;
+  <span class="attribute">color</span>: <span class="value">white</span>;
+}
+
+<span class="tag">.nav</span> {
+  <span class="attribute">display</span>: <span class="value">flex</span>;
+  <span class="attribute">gap</span>: <span class="value">20px</span>;
+}</div>
+                </div>
+
+                <div class="step">
+                    <span class="step-number">3</span>
+                    <strong>Create a Hero Section</strong>
+                    <div class="code-block" style="margin-top: 10px;"><span class="tag">&lt;section</span> <span class="attribute">class</span>=<span class="value">"hero"</span><span class="tag">&gt;</span>
+  <span class="tag">&lt;h1&gt;</span>Welcome to My Portfolio<span class="tag">&lt;/h1&gt;</span>
+  <span class="tag">&lt;p&gt;</span>I'm a web developer learning to build amazing things<span class="tag">&lt;/p&gt;</span>
+<span class="tag">&lt;/section&gt;</span>
+
+<span class="tag">.hero</span> {
+  <span class="attribute">text-align</span>: <span class="value">center</span>;
+  <span class="attribute">padding</span>: <span class="value">60px 20px</span>;
+  <span class="attribute">background</span>: <span class="value">linear-gradient(135deg, #f093fb, #f5576c)</span>;
+  <span class="attribute">color</span>: <span class="value">white</span>;
+}</div>
+                </div>
+
+                <div class="step">
+                    <span class="step-number">4</span>
+                    <strong>Add Project Cards with Grid</strong>
+                    <div class="code-block" style="margin-top: 10px;"><span class="tag">&lt;section</span> <span class="attribute">class</span>=<span class="value">"projects"</span><span class="tag">&gt;</span>
+  <span class="tag">&lt;h2&gt;</span>My Projects<span class="tag">&lt;/h2&gt;</span>
+  <span class="tag">&lt;div</span> <span class="attribute">class</span>=<span class="value">"project-grid"</span><span class="tag">&gt;</span>
+    <span class="tag">&lt;div</span> <span class="attribute">class</span>=<span class="value">"card"</span><span class="tag">&gt;</span>
+      <span class="tag">&lt;h3&gt;</span>Project 1<span class="tag">&lt;/h3&gt;</span>
+      <span class="tag">&lt;p&gt;</span>Description of project<span class="tag">&lt;/p&gt;</span>
+    <span class="tag">&lt;/div&gt;</span>
+    <span class="tag">&lt;div</span> <span class="attribute">class</span>=<span class="value">"card"</span><span class="tag">&gt;</span>
+      <span class="tag">&lt;h3&gt;</span>Project 2<span class="tag">&lt;/h3&gt;</span>
+      <span class="tag">&lt;p&gt;</span>Description of project<span class="tag">&lt;/p&gt;</span>
+    <span class="tag">&lt;/div&gt;</span>
+    <span class="tag">&lt;div</span> <span class="attribute">class</span>=<span class="value">"card"</span><span class="tag">&gt;</span>
+      <span class="tag">&lt;h3&gt;</span>Project 3<span class="tag">&lt;/h3&gt;</span>
+      <span class="tag">&lt;p&gt;</span>Description of project<span class="tag">&lt;/p&gt;</span>
+    <span class="tag">&lt;/div&gt;</span>
+  <span class="tag">&lt;/div&gt;</span>
+<span class="tag">&lt;/section&gt;</span>
+
+<span class="tag">.projects</span> {
+  <span class="attribute">padding</span>: <span class="value">40px 20px</span>;
+  <span class="attribute">max-width</span>: <span class="value">1200px</span>;
+  <span class="attribute">margin</span>: <span class="value">0 auto</span>;
+}
+
+<span class="tag">.project-grid</span> {
+  <span class="attribute">display</span>: <span class="value">grid</span>;
+  <span class="attribute">grid-template-columns</span>: <span class="value">repeat(3, 1fr)</span>;
+  <span class="attribute">gap</span>: <span class="value">20px</span>;
+  <span class="attribute">margin-top</span>: <span class="value">30px</span>;
+}
+
+<span class="tag">.card</span> {
+  <span class="attribute">background</span>: <span class="value">white</span>;
+  <span class="attribute">padding</span>: <span class="value">30px</span>;
+  <span class="attribute">border-radius</span>: <span class="value">10px</span>;
+  <span class="attribute">box-shadow</span>: <span class="value">0 2px 10px rgba(0,0,0,0.1)</span>;
+}</div>
+                </div>
+
+                <div class="step">
+                    <span class="step-number">5</span>
+                    <strong>Make It Responsive!</strong>
+                    <div class="code-block" style="margin-top: 10px;"><span class="comment">/* Mobile: Stack navigation vertically */</span>
+<span class="tag">@media</span> (<span class="attribute">max-width</span>: <span class="value">768px</span>) {
+  <span class="tag">.header</span> {
+    <span class="attribute">flex-direction</span>: <span class="value">column</span>;
+    <span class="attribute">gap</span>: <span class="value">15px</span>;
+  }
+  
+  <span class="comment">/* Mobile: One column for projects */</span>
+  <span class="tag">.project-grid</span> {
+    <span class="attribute">grid-template-columns</span>: <span class="value">1fr</span>;
+  }
+}
+
+<span class="comment">/* Tablet: Two columns */</span>
+<span class="tag">@media</span> (<span class="attribute">min-width</span>: <span class="value">769px</span>) <span class="tag">and</span> (<span class="attribute">max-width</span>: <span class="value">1024px</span>) {
+  <span class="tag">.project-grid</span> {
+    <span class="attribute">grid-template-columns</span>: <span class="value">repeat(2, 1fr)</span>;
+  }
+}</div>
+                </div>
+
+                <div class="tip">
+                    <strong>💡 Test It:</strong> After building, resize your browser window to see how the layout adapts. Use Chrome DevTools (F12) to test specific device sizes!
+                </div>
+            </div>
+
+            <!-- Challenge Tab -->
+            <div id="challenge" class="tab-content">
+                <h2>🚀 Week 2 Challenges!</h2>
+                <p>You've learned powerful layout techniques! Now put them to the test:</p>
+
+                <h3>Challenge Checklist</h3>
+                <ul class="checklist">
+                    <li>Add a footer with social media links using Flexbox</li>
+                    <li>Create a 2-column layout for an "About Me" section</li>
+                    <li>Make all images responsive with <code>max-width: 100%</code></li>
+                    <li>Add hover effects to your project cards</li>
+                    <li>Create a mobile hamburger menu (hide/show navigation)</li>
+                    <li>Build a 4-column photo gallery that goes to 2 on tablet and 1 on mobile</li>
+                </ul>
+
+                <h3>Bonus Challenge: Card Hover Effect</h3>
+                <div class="code-block"><span class="tag">.card</span> {
+  <span class="attribute">transition</span>: <span class="value">transform 0.3s, box-shadow 0.3s</span>;
+}
+
+<span class="tag">.card:hover</span> {
+  <span class="attribute">transform</span>: <span class="value">translateY(-5px)</span>;
+  <span class="attribute">box-shadow</span>: <span class="value">0 5px 20px rgba(0,0,0,0.2)</span>;
+}</div>
+
+                <h3>Super Bonus: Complex Grid Layout</h3>
+                <p>Create a magazine-style layout where one card spans 2 columns:</p>
+                <div class="code-block"><span class="tag">.project-grid</span> {
+  <span class="attribute">display</span>: <span class="value">grid</span>;
+  <span class="attribute">grid-template-columns</span>: <span class="value">repeat(4, 1fr)</span>;
+  <span class="attribute">gap</span>: <span class="value">20px</span>;
+}
+
+<span class="tag">.card:first-child</span> {
+  <span class="attribute">grid-column</span>: <span class="value">span 2</span>;  <span class="comment">/* Takes 2 columns */</span>
+  <span class="attribute">grid-row</span>: <span class="value">span 2</span>;     <span class="comment">/* Takes 2 rows */</span>
+}</div>
+
+                <h3>Real-World Challenge</h3>
+                <div class="example">
+                    <strong>Build a complete landing page with:</strong><br>
+                    • Navigation bar (Flexbox)<br>
+                    • Hero section with centered text<br>
+                    • Features section (3-column grid)<br>
+                    • Testimonials (2-column grid)<br>
+                    • Footer (Flexbox)<br>
+                    • ALL responsive for mobile, tablet, and desktop!
+                </div>
+
+                <h3>What You've Accomplished! 🎉</h3>
+                <ul style="padding-left: 20px; margin: 15px 0; line-height: 1.8;">
+                    <li>✅ Mastered Flexbox for 1D layouts</li>
+                    <li>✅ Learned CSS Grid for 2D layouts</li>
+                    <li>✅ Created responsive designs with media queries</li>
+                    <li>✅ Built a complete portfolio page</li>
+                    <li>✅ Understand mobile-first design principles</li>
+                    <li>✅ Can make websites work on ANY device!</li>
+                </ul>
+
+                <p style="margin-top: 20px; padding: 15px; background: #e8f5e9; border-radius: 6px;">
+                    <strong>Next Steps:</strong> Update your GitHub Pages site with your new portfolio! Next week, you'll learn JavaScript to make your pages interactive with buttons, forms, and dynamic content!
+                </p>
+
+                <div class="tip">
+                    <strong>💡 Keep Learning:</strong> Check out <a href="https://flexboxfroggy.com" target="_blank" style="color: #f5576c;">Flexbox Froggy</a> and <a href="https://cssgridgarden.com" target="_blank" style="color: #f5576c;">Grid Garden</a> - fun games to practice these skills!
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Panel: Code Editor and Preview -->
+        <div class="panel">
+            <h2>✏️ Your Code Editor</h2>
+            <textarea id="codeEditor" placeholder="Type your HTML code here..."><!DOCTYPE html>
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Portfolio</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: Arial, sans-serif;
+    }
+    
+    /* Add your CSS here */
+    
+  </style>
+</head>
+<body>
+  <h1>Start building your portfolio!</h1>
+  <p>Follow the steps on the left to create a responsive layout.</p>
+</body>
+</html></textarea>
+            
+            <button onclick="updatePreview()">🔄 Update Preview</button>
+            
+            <h2 style="margin-top: 30px;">👀 Live Preview</h2>
+            <iframe id="preview" class="preview-frame"></iframe>
+
+            <div style="margin-top: 20px; padding: 15px; background: #fff9e6; border-radius: 6px; border-left: 4px solid #ffd700;">
+                <strong>💡 Testing Responsive Design:</strong><br>
+                After updating your preview, try resizing your browser window to see how the layout changes! Or right-click the preview and select "Inspect" to test different device sizes.
+            </div>
+        </div>
+    </div>
+
+    <div style="position: fixed; bottom: 0; left: 0; right: 0; background: rgba(245, 87, 108, 0.95); color: white; padding: 10px 20px; text-align: center; font-size: 14px; backdrop-filter: blur(10px);">
+        <strong>Week 2: Layouts & Responsive Design</strong> | Made with ❤️ for learning web development | <a href="https://github.com" target="_blank" style="color: #fff; text-decoration: underline;">Update your GitHub Pages</a>
+    </div>
+
+    <script>
+        function showTab(tabName) {
+            // Hide all tab contents
+            const contents = document.querySelectorAll('.tab-content');
+            contents.forEach(content => content.classList.remove('active'));
+            
+            // Remove active class from all tabs
+            const tabs = document.querySelectorAll('.tab');
+            tabs.forEach(tab => tab.classList.remove('active'));
+            
+            // Show selected tab content
+            document.getElementById(tabName).classList.add('active');
+            
+            // Add active class to clicked tab
+            event.target.classList.add('active');
+        }
+
+        function updatePreview() {
+            const code = document.getElementById('codeEditor').value;
+            const preview = document.getElementById('preview');
+            const previewDoc = preview.contentDocument || preview.contentWindow.document;
+            
+            previewDoc.open();
+            previewDoc.write(code);
+            previewDoc.close();
+        }
+
+        // Initial preview update
+        window.onload = function() {
+            updatePreview();
+        }
+    </script>
+</body>
+</html>

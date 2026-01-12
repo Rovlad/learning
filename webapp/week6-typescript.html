@@ -1,0 +1,1307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Week 6: TypeScript Introduction!</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            height: calc(100vh - 40px);
+        }
+
+        .panel {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            overflow-y: auto;
+        }
+
+        .lesson-panel {
+            display: flex;
+            flex-direction: column;
+        }
+
+        h1 {
+            color: #667eea;
+            margin-bottom: 10px;
+            font-size: 28px;
+        }
+
+        h2 {
+            color: #5568d3;
+            margin-top: 25px;
+            margin-bottom: 15px;
+            font-size: 22px;
+        }
+
+        h3 {
+            color: #667eea;
+            margin-top: 20px;
+            margin-bottom: 10px;
+            font-size: 18px;
+        }
+
+        .step {
+            background: #f5f6ff;
+            border-left: 4px solid #667eea;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 4px;
+        }
+
+        .step-number {
+            display: inline-block;
+            background: #667eea;
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 30px;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+
+        code {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+        }
+
+        .code-block {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 15px;
+            border-radius: 6px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            overflow-x: auto;
+            margin: 10px 0;
+            line-height: 1.5;
+        }
+
+        .keyword {
+            color: #ff79c6;
+        }
+
+        .function {
+            color: #50fa7b;
+        }
+
+        .string {
+            color: #f1fa8c;
+        }
+
+        .number {
+            color: #bd93f9;
+        }
+
+        .comment {
+            color: #6272a4;
+        }
+
+        .type {
+            color: #8be9fd;
+        }
+
+        textarea {
+            width: 100%;
+            min-height: 300px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            padding: 15px;
+            border: 2px solid #667eea;
+            border-radius: 6px;
+            resize: vertical;
+        }
+
+        button {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 15px;
+            transition: all 0.3s;
+        }
+
+        button:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #e0e0e0;
+            flex-wrap: wrap;
+        }
+
+        .tab {
+            padding: 10px 20px;
+            background: none;
+            border: none;
+            color: #666;
+            font-weight: 600;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s;
+            margin: 0;
+        }
+
+        .tab.active {
+            color: #667eea;
+            border-bottom-color: #667eea;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .tip {
+            background: #fff9e6;
+            border-left: 4px solid #ffd700;
+            padding: 12px;
+            margin: 15px 0;
+            border-radius: 4px;
+        }
+
+        .tip strong {
+            color: #cc8800;
+        }
+
+        .checklist {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .checklist li {
+            padding: 8px 0;
+            padding-left: 30px;
+            position: relative;
+        }
+
+        .checklist li:before {
+            content: "☐";
+            position: absolute;
+            left: 0;
+            font-size: 20px;
+            color: #667eea;
+        }
+
+        .example {
+            background: #e8f5e9;
+            border-left: 4px solid #4caf50;
+            padding: 12px;
+            margin: 15px 0;
+            border-radius: 4px;
+        }
+
+        .demo-box {
+            background: #f0f0f0;
+            border: 2px dashed #667eea;
+            padding: 20px;
+            margin: 15px 0;
+            border-radius: 6px;
+        }
+
+        .error-box {
+            background: #ffebee;
+            border-left: 4px solid #f44336;
+            padding: 12px;
+            margin: 15px 0;
+            border-radius: 4px;
+            color: #c62828;
+        }
+
+        .comparison {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin: 15px 0;
+        }
+
+        .comparison .side {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 6px;
+        }
+
+        .comparison .side h4 {
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+
+        @media (max-width: 1200px) {
+            .container {
+                grid-template-columns: 1fr;
+                height: auto;
+            }
+            .comparison {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Left Panel: Lessons -->
+        <div class="panel lesson-panel">
+            <h1>🔷 Week 6: TypeScript Introduction!</h1>
+            <p style="color: #666; margin-bottom: 20px;">This week you'll learn TypeScript - JavaScript with superpowers! It catches errors before you run your code and makes large projects much easier to manage.</p>
+
+            <div class="tabs">
+                <button class="tab active" onclick="showTab('learn')">📚 Learn</button>
+                <button class="tab" onclick="showTab('why')">❓ Why Types</button>
+                <button class="tab" onclick="showTab('basics')">🔤 Basic Types</button>
+                <button class="tab" onclick="showTab('interfaces')">📋 Interfaces</button>
+                <button class="tab" onclick="showTab('conversion')">🔄 Converting JS</button>
+                <button class="tab" onclick="showTab('build')">🔨 Build</button>
+                <button class="tab" onclick="showTab('challenge')">🚀 Challenge</button>
+            </div>
+
+            <!-- Learn Tab -->
+            <div id="learn" class="tab-content active">
+                <h2>What is TypeScript?</h2>
+                <p>TypeScript is <strong>JavaScript with types</strong>. It's a programming language created by Microsoft that adds optional type checking to JavaScript.</p>
+
+                <div class="example">
+                    <strong>Think of it like this:</strong><br>
+                    • JavaScript lets you put any value in any variable<br>
+                    • TypeScript lets you say "this variable can ONLY be a number"<br>
+                    • If you try to put text in that variable, TypeScript catches the error BEFORE you run the code!<br><br>
+                    It's like having a helpful assistant checking your work.
+                </div>
+
+                <h3>JavaScript vs TypeScript</h3>
+                <div class="comparison">
+                    <div class="side">
+                        <h4>❌ JavaScript (No Types)</h4>
+                        <div class="code-block" style="margin-top: 10px;"><span class="keyword">let</span> age = <span class="number">25</span>;
+age = <span class="string">"twenty-five"</span>;  <span class="comment">// Allowed!</span>
+age = <span class="keyword">true</span>;          <span class="comment">// Also allowed!</span>
+age = [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>];     <span class="comment">// Still allowed!</span>
+
+<span class="comment">// Bug found at runtime 💥</span></div>
+                    </div>
+                    <div class="side">
+                        <h4>✅ TypeScript (With Types)</h4>
+                        <div class="code-block" style="margin-top: 10px;"><span class="keyword">let</span> age<span class="type">: number</span> = <span class="number">25</span>;
+age = <span class="string">"twenty-five"</span>;  <span class="comment">// Error! ❌</span>
+age = <span class="keyword">true</span>;          <span class="comment">// Error! ❌</span>
+age = [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>];     <span class="comment">// Error! ❌</span>
+
+<span class="comment">// Bug found immediately! ✅</span></div>
+                    </div>
+                </div>
+
+                <h3>How TypeScript Works</h3>
+                <div class="demo-box">
+                    <ol style="padding-left: 20px; line-height: 1.8;">
+                        <li>You write TypeScript code (.ts files)</li>
+                        <li>TypeScript checks your code for type errors</li>
+                        <li>If no errors, it compiles to regular JavaScript (.js files)</li>
+                        <li>The JavaScript runs in the browser</li>
+                    </ol>
+                    <p style="margin-top: 10px; font-weight: bold;">TypeScript → JavaScript → Browser</p>
+                </div>
+
+                <h3>Key Benefits</h3>
+                <div class="step">
+                    <span class="step-number">1</span>
+                    <strong>Catch Errors Early</strong>
+                    <p style="margin-top: 5px;">Find bugs while writing code, not when users use your app</p>
+                </div>
+
+                <div class="step">
+                    <span class="step-number">2</span>
+                    <strong>Better Auto-Complete</strong>
+                    <p style="margin-top: 5px;">Your editor knows what properties and methods are available</p>
+                </div>
+
+                <div class="step">
+                    <span class="step-number">3</span>
+                    <strong>Self-Documenting Code</strong>
+                    <p style="margin-top: 5px;">Types show what data your functions expect and return</p>
+                </div>
+
+                <div class="step">
+                    <span class="step-number">4</span>
+                    <strong>Easier Refactoring</strong>
+                    <p style="margin-top: 5px;">Change code with confidence - TypeScript catches breaking changes</p>
+                </div>
+
+                <div class="step">
+                    <span class="step-number">5</span>
+                    <strong>Team Collaboration</strong>
+                    <p style="margin-top: 5px;">Clear contracts about what data types are expected</p>
+                </div>
+
+                <h3>Who Uses TypeScript?</h3>
+                <p>TypeScript is used by major companies and popular projects:</p>
+                <ul style="padding-left: 20px; margin: 15px 0; line-height: 1.8;">
+                    <li><strong>Microsoft:</strong> Created TypeScript, uses it everywhere</li>
+                    <li><strong>Google:</strong> Angular framework is built with TypeScript</li>
+                    <li><strong>Facebook:</strong> Parts of React are moving to TypeScript</li>
+                    <li><strong>Slack, Airbnb, Spotify:</strong> All use TypeScript</li>
+                    <li><strong>VS Code:</strong> Built entirely in TypeScript!</li>
+                </ul>
+
+                <div class="tip">
+                    <strong>💡 Good News:</strong> TypeScript is a superset of JavaScript. That means ALL valid JavaScript is also valid TypeScript! You can gradually add types to existing JavaScript code.
+                </div>
+
+                <h3>Setting Up TypeScript</h3>
+                <p>For this week, we'll focus on learning the concepts. In a real project, you'd install TypeScript:</p>
+                <div class="code-block"><span class="comment"># Install TypeScript globally</span>
+npm install -g typescript
+
+<span class="comment"># Check version</span>
+tsc --version
+
+<span class="comment"># Compile a TypeScript file</span>
+tsc myfile.ts</div>
+
+                <p style="margin-top: 10px;">But for learning, we'll work with the concepts and syntax!</p>
+            </div>
+
+            <!-- Why Tab -->
+            <div id="why" class="tab-content">
+                <h2>Why Types Matter</h2>
+                <p>Let's see real examples of bugs that TypeScript prevents!</p>
+
+                <h3>Example 1: Typos in Property Names</h3>
+                <div class="comparison">
+                    <div class="side">
+                        <h4>JavaScript (Bug Hidden)</h4>
+                        <div class="code-block" style="margin-top: 10px;"><span class="keyword">let</span> user = {
+  name: <span class="string">"Sarah"</span>,
+  age: <span class="number">15</span>
+};
+
+<span class="comment">// Typo! Returns undefined</span>
+<span class="function">console.log</span>(user.agee);
+<span class="comment">// No error, prints: undefined</span></div>
+                    </div>
+                    <div class="side">
+                        <h4>TypeScript (Catches Bug)</h4>
+                        <div class="code-block" style="margin-top: 10px;"><span class="keyword">let</span> user = {
+  name: <span class="string">"Sarah"</span>,
+  age: <span class="number">15</span>
+};
+
+<span class="comment">// Typo caught!</span>
+<span class="function">console.log</span>(user.agee);
+<span class="comment">// Error: Property 'agee' does not 
+// exist on type. Did you mean 'age'?</span></div>
+                    </div>
+                </div>
+
+                <h3>Example 2: Wrong Function Arguments</h3>
+                <div class="comparison">
+                    <div class="side">
+                        <h4>JavaScript (Runtime Error)</h4>
+                        <div class="code-block" style="margin-top: 10px;"><span class="keyword">function</span> <span class="function">greet</span>(name) {
+  <span class="keyword">return</span> <span class="string">"Hello, "</span> + name.<span class="function">toUpperCase</span>();
+}
+
+<span class="comment">// Passes a number instead!</span>
+<span class="function">greet</span>(<span class="number">123</span>);
+<span class="comment">// Crashes: name.toUpperCase 
+// is not a function</span></div>
+                    </div>
+                    <div class="side">
+                        <h4>TypeScript (Compile Error)</h4>
+                        <div class="code-block" style="margin-top: 10px;"><span class="keyword">function</span> <span class="function">greet</span>(name<span class="type">: string</span>) {
+  <span class="keyword">return</span> <span class="string">"Hello, "</span> + name.<span class="function">toUpperCase</span>();
+}
+
+<span class="comment">// Error caught before running!</span>
+<span class="function">greet</span>(<span class="number">123</span>);
+<span class="comment">// Error: Argument of type 'number' 
+// is not assignable to parameter 
+// of type 'string'</span></div>
+                    </div>
+                </div>
+
+                <h3>Example 3: Null/Undefined Bugs</h3>
+                <div class="comparison">
+                    <div class="side">
+                        <h4>JavaScript</h4>
+                        <div class="code-block" style="margin-top: 10px;"><span class="keyword">function</span> <span class="function">getLength</span>(str) {
+  <span class="keyword">return</span> str.length;
+}
+
+<span class="comment">// Crashes if null!</span>
+<span class="function">getLength</span>(<span class="keyword">null</span>);
+<span class="comment">// Cannot read property 
+// 'length' of null</span></div>
+                    </div>
+                    <div class="side">
+                        <h4>TypeScript</h4>
+                        <div class="code-block" style="margin-top: 10px;"><span class="keyword">function</span> <span class="function">getLength</span>(str<span class="type">: string</span>) {
+  <span class="keyword">return</span> str.length;
+}
+
+<span class="comment">// Error caught!</span>
+<span class="function">getLength</span>(<span class="keyword">null</span>);
+<span class="comment">// Error: Argument of type 'null' 
+// is not assignable to parameter 
+// of type 'string'</span></div>
+                    </div>
+                </div>
+
+                <h3>Example 4: Wrong Return Type</h3>
+                <div class="comparison">
+                    <div class="side">
+                        <h4>JavaScript</h4>
+                        <div class="code-block" style="margin-top: 10px;"><span class="keyword">function</span> <span class="function">add</span>(a, b) {
+  <span class="comment">// Forgot to return!</span>
+  a + b;
+}
+
+<span class="keyword">let</span> result = <span class="function">add</span>(<span class="number">5</span>, <span class="number">3</span>);
+<span class="function">console.log</span>(result);
+<span class="comment">// undefined (bug hidden!)</span></div>
+                    </div>
+                    <div class="side">
+                        <h4>TypeScript</h4>
+                        <div class="code-block" style="margin-top: 10px;"><span class="keyword">function</span> <span class="function">add</span>(a<span class="type">: number</span>, b<span class="type">: number</span>)<span class="type">: number</span> {
+  <span class="comment">// Forgot to return!</span>
+  a + b;
+}
+<span class="comment">// Error: Function lacks ending 
+// return statement and return type 
+// does not include 'undefined'</span></div>
+                    </div>
+                </div>
+
+                <h3>The Cost of Runtime Errors</h3>
+                <div class="error-box">
+                    <strong>Without TypeScript:</strong><br>
+                    • Bugs found by users (embarrassing!)<br>
+                    • Crashes in production (costly!)<br>
+                    • More time debugging (frustrating!)<br>
+                    • Fear of changing code (risky!)<br><br>
+                    <strong>With TypeScript:</strong><br>
+                    • Bugs found immediately while coding<br>
+                    • No runtime type errors<br>
+                    • Confidence when refactoring<br>
+                    • Better developer experience
+                </div>
+
+                <div class="tip">
+                    <strong>💡 Real Story:</strong> Airbnb found that 38% of bugs could have been prevented with TypeScript! That's a huge reduction in bugs just by using types.
+                </div>
+            </div>
+
+            <!-- Basics Tab -->
+            <div id="basics" class="tab-content">
+                <h2>Basic Types in TypeScript</h2>
+                <p>TypeScript has several built-in types for common JavaScript values:</p>
+
+                <h3>1. Primitive Types</h3>
+
+                <div class="step">
+                    <span class="step-number">1</span>
+                    <strong>string</strong> - Text values
+                    <div class="code-block" style="margin-top: 10px;"><span class="keyword">let</span> name<span class="type">: string</span> = <span class="string">"Sarah"</span>;
+<span class="keyword">let</span> message<span class="type">: string</span> = <span class="string">'Hello'</span>;
+<span class="keyword">let</span> template<span class="type">: string</span> = <span class="string">`Hi, </span>${name}<span class="string">`</span>;</div>
+                </div>
+
+                <div class="step">
+                    <span class="step-number">2</span>
+                    <strong>number</strong> - All numbers (integers and decimals)
+                    <div class="code-block" style="margin-top: 10px;"><span class="keyword">let</span> age<span class="type">: number</span> = <span class="number">15</span>;
+<span class="keyword">let</span> price<span class="type">: number</span> = <span class="number">19.99</span>;
+<span class="keyword">let</span> hex<span class="type">: number</span> = <span class="number">0xFF</span>;     <span class="comment">// Also a number</span></div>
+                </div>
+
+                <div class="step">
+                    <span class="step-number">3</span>
+                    <strong>boolean</strong> - True or false
+                    <div class="code-block" style="margin-top: 10px;"><span class="keyword">let</span> isStudent<span class="type">: boolean</span> = <span class="keyword">true</span>;
+<span class="keyword">let</span> isComplete<span class="type">: boolean</span> = <span class="keyword">false</span>;</div>
+                </div>
+
+                <h3>2. Array Types</h3>
+                <div class="code-block"><span class="comment">// Array of strings</span>
+<span class="keyword">let</span> names<span class="type">: string[]</span> = [<span class="string">"Alice"</span>, <span class="string">"Bob"</span>, <span class="string">"Charlie"</span>];
+
+<span class="comment">// Array of numbers</span>
+<span class="keyword">let</span> scores<span class="type">: number[]</span> = [<span class="number">85</span>, <span class="number">90</span>, <span class="number">78</span>];
+
+<span class="comment">// Alternative syntax (same thing)</span>
+<span class="keyword">let</span> names<span class="type">: Array&lt;string&gt;</span> = [<span class="string">"Alice"</span>, <span class="string">"Bob"</span>];
+
+<span class="comment">// Mixed array (any type)</span>
+<span class="keyword">let</span> mixed<span class="type">: any[]</span> = [<span class="string">"hello"</span>, <span class="number">42</span>, <span class="keyword">true</span>];</div>
+
+                <h3>3. Object Types</h3>
+                <div class="code-block"><span class="comment">// Inline object type</span>
+<span class="keyword">let</span> user<span class="type">: { name: string; age: number }</span> = {
+  name: <span class="string">"Sarah"</span>,
+  age: <span class="number">15</span>
+};
+
+<span class="comment">// With optional properties (use ?)</span>
+<span class="keyword">let</span> person<span class="type">: { name: string; age?: number }</span> = {
+  name: <span class="string">"John"</span>
+  <span class="comment">// age is optional, so this is valid</span>
+};</div>
+
+                <h3>4. Function Types</h3>
+                <div class="code-block"><span class="comment">// Function with typed parameters and return</span>
+<span class="keyword">function</span> <span class="function">add</span>(a<span class="type">: number</span>, b<span class="type">: number</span>)<span class="type">: number</span> {
+  <span class="keyword">return</span> a + b;
+}
+
+<span class="comment">// Function that returns nothing (void)</span>
+<span class="keyword">function</span> <span class="function">log</span>(message<span class="type">: string</span>)<span class="type">: void</span> {
+  <span class="function">console.log</span>(message);
+}
+
+<span class="comment">// Arrow function with types</span>
+<span class="keyword">const</span> <span class="function">multiply</span> = (x<span class="type">: number</span>, y<span class="type">: number</span>)<span class="type">: number</span> => x * y;</div>
+
+                <h3>5. Special Types</h3>
+
+                <div class="step">
+                    <span class="step-number">1</span>
+                    <strong>any</strong> - Disables type checking (avoid if possible!)
+                    <div class="code-block" style="margin-top: 10px;"><span class="keyword">let</span> anything<span class="type">: any</span> = <span class="string">"hello"</span>;
+anything = <span class="number">42</span>;        <span class="comment">// OK</span>
+anything = <span class="keyword">true</span>;      <span class="comment">// OK</span>
+<span class="comment">// Use sparingly - defeats purpose of TypeScript!</span></div>
+                </div>
+
+                <div class="step">
+                    <span class="step-number">2</span>
+                    <strong>unknown</strong> - Safer than any (must check type first)
+                    <div class="code-block" style="margin-top: 10px;"><span class="keyword">let</span> value<span class="type">: unknown</span> = <span class="string">"hello"</span>;
+
+<span class="comment">// Must check type before using</span>
+<span class="keyword">if</span> (<span class="keyword">typeof</span> value === <span class="string">"string"</span>) {
+  <span class="function">console.log</span>(value.<span class="function">toUpperCase</span>());  <span class="comment">// OK now</span>
+}</div>
+                </div>
+
+                <div class="step">
+                    <span class="step-number">3</span>
+                    <strong>null and undefined</strong>
+                    <div class="code-block" style="margin-top: 10px;"><span class="keyword">let</span> nothing<span class="type">: null</span> = <span class="keyword">null</span>;
+<span class="keyword">let</span> notSet<span class="type">: undefined</span> = <span class="keyword">undefined</span>;
+
+<span class="comment">// Often used with union types (see below)</span></div>
+                </div>
+
+                <h3>6. Union Types (Multiple Possible Types)</h3>
+                <div class="code-block"><span class="comment">// Variable can be string OR number</span>
+<span class="keyword">let</span> id<span class="type">: string | number</span>;
+id = <span class="string">"ABC123"</span>;  <span class="comment">// OK</span>
+id = <span class="number">12345</span>;     <span class="comment">// OK</span>
+id = <span class="keyword">true</span>;       <span class="comment">// Error!</span>
+
+<span class="comment">// Function parameter with union type</span>
+<span class="keyword">function</span> <span class="function">print</span>(value<span class="type">: string | number</span>) {
+  <span class="function">console.log</span>(value);
+}</div>
+
+                <h3>7. Literal Types (Exact Values)</h3>
+                <div class="code-block"><span class="comment">// Can only be these exact strings</span>
+<span class="keyword">let</span> direction<span class="type">: "up" | "down" | "left" | "right"</span>;
+direction = <span class="string">"up"</span>;     <span class="comment">// OK</span>
+direction = <span class="string">"north"</span>;  <span class="comment">// Error!</span>
+
+<span class="comment">// Useful for options</span>
+<span class="keyword">type</span> <span class="type">Status</span> = <span class="string">"pending"</span> | <span class="string">"approved"</span> | <span class="string">"rejected"</span>;
+<span class="keyword">let</span> status<span class="type">: Status</span> = <span class="string">"pending"</span>;</div>
+
+                <h3>8. Type Inference (TypeScript Guesses!)</h3>
+                <div class="code-block"><span class="comment">// TypeScript infers the type automatically</span>
+<span class="keyword">let</span> name = <span class="string">"Sarah"</span>;     <span class="comment">// TypeScript knows it's a string</span>
+<span class="keyword">let</span> age = <span class="number">15</span>;          <span class="comment">// TypeScript knows it's a number</span>
+
+<span class="comment">// No need to write types here!</span>
+<span class="keyword">function</span> <span class="function">add</span>(a<span class="type">: number</span>, b<span class="type">: number</span>) {
+  <span class="keyword">return</span> a + b;  <span class="comment">// TypeScript infers return is number</span>
+}</div>
+
+                <div class="tip">
+                    <strong>💡 Best Practice:</strong> Let TypeScript infer types when obvious. Only add explicit types when needed for clarity or when TypeScript can't infer correctly.
+                </div>
+            </div>
+
+            <!-- Interfaces Tab -->
+            <div id="interfaces" class="tab-content">
+                <h2>Interfaces - Defining Object Shapes</h2>
+                <p>Interfaces let you define the structure of objects. Think of them as contracts that say "this object must have these properties."</p>
+
+                <h3>Basic Interface</h3>
+                <div class="code-block"><span class="comment">// Define the shape of a User</span>
+<span class="keyword">interface</span> <span class="type">User</span> {
+  name: <span class="type">string</span>;
+  age: <span class="type">number</span>;
+  email: <span class="type">string</span>;
+}
+
+<span class="comment">// Use the interface</span>
+<span class="keyword">let</span> user<span class="type">: User</span> = {
+  name: <span class="string">"Sarah"</span>,
+  age: <span class="number">15</span>,
+  email: <span class="string">"sarah@example.com"</span>
+};
+
+<span class="comment">// Error: missing 'email' property</span>
+<span class="keyword">let</span> incomplete<span class="type">: User</span> = {
+  name: <span class="string">"John"</span>,
+  age: <span class="number">20</span>
+};</div>
+
+                <h3>Optional Properties</h3>
+                <div class="code-block"><span class="keyword">interface</span> <span class="type">Person</span> {
+  name: <span class="type">string</span>;
+  age: <span class="type">number</span>;
+  phone?: <span class="type">string</span>;     <span class="comment">// Optional (notice the ?)</span>
+}
+
+<span class="comment">// Valid - phone is optional</span>
+<span class="keyword">let</span> person1<span class="type">: Person</span> = {
+  name: <span class="string">"Alice"</span>,
+  age: <span class="number">25</span>
+};
+
+<span class="comment">// Also valid - can include phone</span>
+<span class="keyword">let</span> person2<span class="type">: Person</span> = {
+  name: <span class="string">"Bob"</span>,
+  age: <span class="number">30</span>,
+  phone: <span class="string">"555-1234"</span>
+};</div>
+
+                <h3>Readonly Properties</h3>
+                <div class="code-block"><span class="keyword">interface</span> <span class="type">Book</span> {
+  <span class="keyword">readonly</span> isbn: <span class="type">string</span>;  <span class="comment">// Can't be changed after creation</span>
+  title: <span class="type">string</span>;
+  author: <span class="type">string</span>;
+}
+
+<span class="keyword">let</span> book<span class="type">: Book</span> = {
+  isbn: <span class="string">"978-0-123456-78-9"</span>,
+  title: <span class="string">"TypeScript Basics"</span>,
+  author: <span class="string">"Jane Doe"</span>
+};
+
+book.title = <span class="string">"New Title"</span>;  <span class="comment">// OK</span>
+book.isbn = <span class="string">"new-isbn"</span>;   <span class="comment">// Error! readonly property</span></div>
+
+                <h3>Interface for Functions</h3>
+                <div class="code-block"><span class="keyword">interface</span> <span class="type">MathOperation</span> {
+  (a: <span class="type">number</span>, b: <span class="type">number</span>): <span class="type">number</span>;
+}
+
+<span class="comment">// Functions that match the interface</span>
+<span class="keyword">const</span> <span class="function">add</span><span class="type">: MathOperation</span> = (x, y) => x + y;
+<span class="keyword">const</span> <span class="function">subtract</span><span class="type">: MathOperation</span> = (x, y) => x - y;
+<span class="keyword">const</span> <span class="function">multiply</span><span class="type">: MathOperation</span> = (x, y) => x * y;</div>
+
+                <h3>Interface for Arrays</h3>
+                <div class="code-block"><span class="keyword">interface</span> <span class="type">Task</span> {
+  id: <span class="type">number</span>;
+  text: <span class="type">string</span>;
+  completed: <span class="type">boolean</span>;
+}
+
+<span class="comment">// Array of Task objects</span>
+<span class="keyword">let</span> tasks<span class="type">: Task[]</span> = [
+  { id: <span class="number">1</span>, text: <span class="string">"Learn TypeScript"</span>, completed: <span class="keyword">false</span> },
+  { id: <span class="number">2</span>, text: <span class="string">"Build a project"</span>, completed: <span class="keyword">false</span> }
+];</div>
+
+                <h3>Extending Interfaces</h3>
+                <div class="code-block"><span class="comment">// Base interface</span>
+<span class="keyword">interface</span> <span class="type">Animal</span> {
+  name: <span class="type">string</span>;
+  age: <span class="type">number</span>;
+}
+
+<span class="comment">// Extend with more properties</span>
+<span class="keyword">interface</span> <span class="type">Dog</span> <span class="keyword">extends</span> <span class="type">Animal</span> {
+  breed: <span class="type">string</span>;
+  bark(): <span class="type">void</span>;
+}
+
+<span class="keyword">let</span> myDog<span class="type">: Dog</span> = {
+  name: <span class="string">"Max"</span>,
+  age: <span class="number">3</span>,
+  breed: <span class="string">"Golden Retriever"</span>,
+  bark() {
+    <span class="function">console.log</span>(<span class="string">"Woof!"</span>);
+  }
+};</div>
+
+                <h3>Real Example: To-Do App</h3>
+                <div class="example">
+                    <div class="code-block" style="margin-top: 10px;"><span class="comment">// Define Task interface</span>
+<span class="keyword">interface</span> <span class="type">Task</span> {
+  id: <span class="type">number</span>;
+  text: <span class="type">string</span>;
+  completed: <span class="type">boolean</span>;
+  createdAt: <span class="type">Date</span>;
+  priority?: <span class="type">"low" | "medium" | "high"</span>;
+}
+
+<span class="comment">// Function to add task</span>
+<span class="keyword">function</span> <span class="function">addTask</span>(text<span class="type">: string</span>, tasks<span class="type">: Task[]</span>)<span class="type">: Task</span> {
+  <span class="keyword">const</span> newTask<span class="type">: Task</span> = {
+    id: Date.<span class="function">now</span>(),
+    text: text,
+    completed: <span class="keyword">false</span>,
+    createdAt: <span class="keyword">new</span> Date()
+  };
+  tasks.<span class="function">push</span>(newTask);
+  <span class="keyword">return</span> newTask;
+}
+
+<span class="comment">// Function to toggle task</span>
+<span class="keyword">function</span> <span class="function">toggleTask</span>(task<span class="type">: Task</span>)<span class="type">: void</span> {
+  task.completed = !task.completed;
+}
+
+<span class="comment">// TypeScript ensures we use tasks correctly!</span>
+<span class="keyword">let</span> myTasks<span class="type">: Task[]</span> = [];
+<span class="function">addTask</span>(<span class="string">"Learn TypeScript"</span>, myTasks);</div>
+                </div>
+
+                <div class="tip">
+                    <strong>💡 Type vs Interface:</strong> TypeScript also has <code>type</code> aliases which are similar to interfaces. For object shapes, either works, but <code>interface</code> is more common and can be extended more easily.
+                </div>
+            </div>
+
+            <!-- Conversion Tab -->
+            <div id="conversion" class="tab-content">
+                <h2>Converting JavaScript to TypeScript</h2>
+                <p>Let's take a JavaScript to-do app and convert it to TypeScript step by step!</p>
+
+                <h3>Step 1: Original JavaScript Code</h3>
+                <div class="code-block"><span class="comment">// JavaScript - No types</span>
+<span class="keyword">let</span> tasks = [];
+
+<span class="keyword">function</span> <span class="function">addTask</span>(text) {
+  <span class="keyword">const</span> task = {
+    id: Date.<span class="function">now</span>(),
+    text: text,
+    completed: <span class="keyword">false</span>
+  };
+  tasks.<span class="function">push</span>(task);
+  <span class="function">renderTasks</span>();
+}
+
+<span class="keyword">function</span> <span class="function">toggleTask</span>(id) {
+  <span class="keyword">const</span> task = tasks.<span class="function">find</span>(t => t.id === id);
+  <span class="keyword">if</span> (task) {
+    task.completed = !task.completed;
+    <span class="function">renderTasks</span>();
+  }
+}
+
+<span class="keyword">function</span> <span class="function">deleteTask</span>(id) {
+  tasks = tasks.<span class="function">filter</span>(t => t.id !== id);
+  <span class="function">renderTasks</span>();
+}
+
+<span class="keyword">function</span> <span class="function">renderTasks</span>() {
+  <span class="comment">// Render code...</span>
+}</div>
+
+                <h3>Step 2: Add Task Interface</h3>
+                <div class="code-block"><span class="comment">// TypeScript - Define what a Task looks like</span>
+<span class="keyword">interface</span> <span class="type">Task</span> {
+  id: <span class="type">number</span>;
+  text: <span class="type">string</span>;
+  completed: <span class="type">boolean</span>;
+}
+
+<span class="keyword">let</span> tasks<span class="type">: Task[]</span> = [];  <span class="comment">// Array of Tasks</span></div>
+
+                <h3>Step 3: Add Function Types</h3>
+                <div class="code-block"><span class="keyword">function</span> <span class="function">addTask</span>(text<span class="type">: string</span>)<span class="type">: void</span> {
+  <span class="keyword">const</span> task<span class="type">: Task</span> = {
+    id: Date.<span class="function">now</span>(),
+    text: text,
+    completed: <span class="keyword">false</span>
+  };
+  tasks.<span class="function">push</span>(task);
+  <span class="function">renderTasks</span>();
+}
+
+<span class="keyword">function</span> <span class="function">toggleTask</span>(id<span class="type">: number</span>)<span class="type">: void</span> {
+  <span class="keyword">const</span> task = tasks.<span class="function">find</span>(t => t.id === id);
+  <span class="keyword">if</span> (task) {
+    task.completed = !task.completed;
+    <span class="function">renderTasks</span>();
+  }
+}
+
+<span class="keyword">function</span> <span class="function">deleteTask</span>(id<span class="type">: number</span>)<span class="type">: void</span> {
+  tasks = tasks.<span class="function">filter</span>(t => t.id !== id);
+  <span class="function">renderTasks</span>();
+}
+
+<span class="keyword">function</span> <span class="function">renderTasks</span>()<span class="type">: void</span> {
+  <span class="comment">// Render code...</span>
+}</div>
+
+                <h3>Step 4: Add DOM Types</h3>
+                <div class="code-block"><span class="keyword">function</span> <span class="function">init</span>()<span class="type">: void</span> {
+  <span class="keyword">const</span> addBtn = document.<span class="function">querySelector</span>(<span class="string">'#addBtn'</span>) <span class="keyword">as</span> <span class="type">HTMLButtonElement</span>;
+  <span class="keyword">const</span> input = document.<span class="function">querySelector</span>(<span class="string">'#taskInput'</span>) <span class="keyword">as</span> <span class="type">HTMLInputElement</span>;
+  
+  addBtn.<span class="function">addEventListener</span>(<span class="string">'click'</span>, () => {
+    <span class="keyword">if</span> (input.value.<span class="function">trim</span>()) {
+      <span class="function">addTask</span>(input.value);
+      input.value = <span class="string">''</span>;
+    }
+  });
+}</div>
+
+                <h3>Benefits We Get</h3>
+                <div class="example">
+                    <strong>✅ Auto-complete:</strong> Editor suggests <code>task.id</code>, <code>task.text</code>, <code>task.completed</code><br><br>
+                    <strong>✅ Error catching:</strong> If we typo <code>task.compteled</code>, TypeScript catches it<br><br>
+                    <strong>✅ Refactoring:</strong> Change Task interface, TypeScript shows all places to update<br><br>
+                    <strong>✅ Documentation:</strong> Function signatures show exactly what they expect
+                </div>
+
+                <h3>Common Conversion Patterns</h3>
+
+                <div class="step">
+                    <span class="step-number">1</span>
+                    <strong>localStorage with Types</strong>
+                    <div class="code-block" style="margin-top: 10px;"><span class="keyword">function</span> <span class="function">loadTasks</span>()<span class="type">: Task[]</span> {
+  <span class="keyword">const</span> data = localStorage.<span class="function">getItem</span>(<span class="string">'tasks'</span>);
+  <span class="keyword">if</span> (data) {
+    <span class="keyword">return</span> JSON.<span class="function">parse</span>(data) <span class="keyword">as</span> <span class="type">Task[]</span>;
+  }
+  <span class="keyword">return</span> [];
+}
+
+<span class="keyword">function</span> <span class="function">saveTasks</span>(tasks<span class="type">: Task[]</span>)<span class="type">: void</span> {
+  localStorage.<span class="function">setItem</span>(<span class="string">'tasks'</span>, JSON.<span class="function">stringify</span>(tasks));
+}</div>
+                </div>
+
+                <div class="step">
+                    <span class="step-number">2</span>
+                    <strong>Event Handlers with Types</strong>
+                    <div class="code-block" style="margin-top: 10px;"><span class="keyword">function</span> <span class="function">handleSubmit</span>(event<span class="type">: Event</span>)<span class="type">: void</span> {
+  event.<span class="function">preventDefault</span>();
+  <span class="keyword">const</span> form = event.target <span class="keyword">as</span> <span class="type">HTMLFormElement</span>;
+  <span class="keyword">const</span> input = form.<span class="function">querySelector</span>(<span class="string">'input'</span>) <span class="keyword">as</span> <span class="type">HTMLInputElement</span>;
+  <span class="function">addTask</span>(input.value);
+}</div>
+                </div>
+
+                <div class="tip">
+                    <strong>💡 Migration Strategy:</strong><br>
+                    1. Rename .js files to .ts<br>
+                    2. Fix any immediate errors<br>
+                    3. Add interfaces for your main data structures<br>
+                    4. Add types to function parameters and returns<br>
+                    5. Gradually add more specific types over time
+                </div>
+            </div>
+
+            <!-- Build Tab -->
+            <div id="build" class="tab-content">
+                <h2>Build: TypeScript To-Do List</h2>
+                <p>Let's build a complete typed to-do list application!</p>
+
+                <div class="step">
+                    <span class="step-number">1</span>
+                    <strong>Define Types and Interfaces</strong>
+                    <div class="code-block" style="margin-top: 10px;"><span class="comment">// types.ts - Type definitions</span>
+
+<span class="keyword">interface</span> <span class="type">Task</span> {
+  id: <span class="type">number</span>;
+  text: <span class="type">string</span>;
+  completed: <span class="type">boolean</span>;
+  createdAt: <span class="type">Date</span>;
+  priority?: <span class="type">"low" | "medium" | "high"</span>;
+}
+
+<span class="keyword">type</span> <span class="type">TaskFilter</span> = <span class="string">"all"</span> | <span class="string">"active"</span> | <span class="string">"completed"</span>;</div>
+                </div>
+
+                <div class="step">
+                    <span class="step-number">2</span>
+                    <strong>Storage Functions with Types</strong>
+                    <div class="code-block" style="margin-top: 10px;"><span class="comment">// storage.ts - Typed storage operations</span>
+
+<span class="keyword">function</span> <span class="function">loadTasks</span>()<span class="type">: Task[]</span> {
+  <span class="keyword">const</span> data = localStorage.<span class="function">getItem</span>(<span class="string">'tasks'</span>);
+  <span class="keyword">if</span> (!data) <span class="keyword">return</span> [];
+  
+  <span class="keyword">const</span> tasks = JSON.<span class="function">parse</span>(data) <span class="keyword">as</span> <span class="type">Task[]</span>;
+  <span class="comment">// Convert date strings back to Date objects</span>
+  <span class="keyword">return</span> tasks.<span class="function">map</span>(task => ({
+    ...task,
+    createdAt: <span class="keyword">new</span> Date(task.createdAt)
+  }));
+}
+
+<span class="keyword">function</span> <span class="function">saveTasks</span>(tasks<span class="type">: Task[]</span>)<span class="type">: void</span> {
+  localStorage.<span class="function">setItem</span>(<span class="string">'tasks'</span>, JSON.<span class="function">stringify</span>(tasks));
+}</div>
+                </div>
+
+                <div class="step">
+                    <span class="step-number">3</span>
+                    <strong>Task Management Functions</strong>
+                    <div class="code-block" style="margin-top: 10px;"><span class="comment">// taskManager.ts - Core logic with types</span>
+
+<span class="keyword">let</span> tasks<span class="type">: Task[]</span> = <span class="function">loadTasks</span>();
+<span class="keyword">let</span> currentFilter<span class="type">: TaskFilter</span> = <span class="string">"all"</span>;
+
+<span class="keyword">function</span> <span class="function">addTask</span>(text<span class="type">: string</span>, priority?: <span class="type">"low" | "medium" | "high"</span>)<span class="type">: Task</span> {
+  <span class="keyword">const</span> newTask<span class="type">: Task</span> = {
+    id: Date.<span class="function">now</span>(),
+    text: text.<span class="function">trim</span>(),
+    completed: <span class="keyword">false</span>,
+    createdAt: <span class="keyword">new</span> Date(),
+    priority: priority
+  };
+  
+  tasks.<span class="function">push</span>(newTask);
+  <span class="function">saveTasks</span>(tasks);
+  <span class="keyword">return</span> newTask;
+}
+
+<span class="keyword">function</span> <span class="function">toggleTask</span>(id<span class="type">: number</span>)<span class="type">: void</span> {
+  <span class="keyword">const</span> task = tasks.<span class="function">find</span>(t => t.id === id);
+  <span class="keyword">if</span> (task) {
+    task.completed = !task.completed;
+    <span class="function">saveTasks</span>(tasks);
+  }
+}
+
+<span class="keyword">function</span> <span class="function">deleteTask</span>(id<span class="type">: number</span>)<span class="type">: void</span> {
+  tasks = tasks.<span class="function">filter</span>(t => t.id !== id);
+  <span class="function">saveTasks</span>(tasks);
+}
+
+<span class="keyword">function</span> <span class="function">getFilteredTasks</span>()<span class="type">: Task[]</span> {
+  <span class="keyword">switch</span> (currentFilter) {
+    <span class="keyword">case</span> <span class="string">"active"</span>:
+      <span class="keyword">return</span> tasks.<span class="function">filter</span>(t => !t.completed);
+    <span class="keyword">case</span> <span class="string">"completed"</span>:
+      <span class="keyword">return</span> tasks.<span class="function">filter</span>(t => t.completed);
+    <span class="keyword">default</span>:
+      <span class="keyword">return</span> tasks;
+  }
+}
+
+<span class="keyword">function</span> <span class="function">setFilter</span>(filter<span class="type">: TaskFilter</span>)<span class="type">: void</span> {
+  currentFilter = filter;
+}</div>
+                </div>
+
+                <div class="step">
+                    <span class="step-number">4</span>
+                    <strong>DOM Functions with Types</strong>
+                    <div class="code-block" style="margin-top: 10px;"><span class="comment">// ui.ts - UI functions with DOM types</span>
+
+<span class="keyword">function</span> <span class="function">renderTasks</span>()<span class="type">: void</span> {
+  <span class="keyword">const</span> taskList = document.<span class="function">querySelector</span>(<span class="string">'#taskList'</span>) <span class="keyword">as</span> <span class="type">HTMLUListElement</span>;
+  <span class="keyword">const</span> filteredTasks = <span class="function">getFilteredTasks</span>();
+  
+  taskList.innerHTML = <span class="string">''</span>;
+  
+  filteredTasks.<span class="function">forEach</span>((task: <span class="type">Task</span>) => {
+    <span class="keyword">const</span> li = document.<span class="function">createElement</span>(<span class="string">'li'</span>);
+    li.className = <span class="string">'task-item'</span>;
+    <span class="keyword">if</span> (task.completed) {
+      li.classList.<span class="function">add</span>(<span class="string">'completed'</span>);
+    }
+    
+    <span class="keyword">const</span> span = document.<span class="function">createElement</span>(<span class="string">'span'</span>);
+    span.textContent = task.text;
+    span.<span class="function">addEventListener</span>(<span class="string">'click'</span>, () => {
+      <span class="function">toggleTask</span>(task.id);
+      <span class="function">renderTasks</span>();
+    });
+    
+    <span class="keyword">const</span> deleteBtn = document.<span class="function">createElement</span>(<span class="string">'button'</span>);
+    deleteBtn.textContent = <span class="string">'Delete'</span>;
+    deleteBtn.<span class="function">addEventListener</span>(<span class="string">'click'</span>, () => {
+      <span class="function">deleteTask</span>(task.id);
+      <span class="function">renderTasks</span>();
+    });
+    
+    li.<span class="function">appendChild</span>(span);
+    li.<span class="function">appendChild</span>(deleteBtn);
+    taskList.<span class="function">appendChild</span>(li);
+  });
+  
+  <span class="function">updateStats</span>();
+}
+
+<span class="keyword">function</span> <span class="function">updateStats</span>()<span class="type">: void</span> {
+  <span class="keyword">const</span> total = tasks.length;
+  <span class="keyword">const</span> completed = tasks.<span class="function">filter</span>(t => t.completed).length;
+  <span class="keyword">const</span> statsEl = document.<span class="function">querySelector</span>(<span class="string">'#stats'</span>) <span class="keyword">as</span> <span class="type">HTMLElement</span>;
+  statsEl.textContent = <span class="string">`</span>${total}<span class="string"> tasks (</span>${completed}<span class="string"> completed)`</span>;
+}</div>
+                </div>
+
+                <div class="step">
+                    <span class="step-number">5</span>
+                    <strong>Initialize App</strong>
+                    <div class="code-block" style="margin-top: 10px;"><span class="comment">// main.ts - App initialization</span>
+
+<span class="keyword">function</span> <span class="function">init</span>()<span class="type">: void</span> {
+  <span class="keyword">const</span> addBtn = document.<span class="function">querySelector</span>(<span class="string">'#addBtn'</span>) <span class="keyword">as</span> <span class="type">HTMLButtonElement</span>;
+  <span class="keyword">const</span> input = document.<span class="function">querySelector</span>(<span class="string">'#taskInput'</span>) <span class="keyword">as</span> <span class="type">HTMLInputElement</span>;
+  
+  addBtn.<span class="function">addEventListener</span>(<span class="string">'click'</span>, () => {
+    <span class="keyword">if</span> (input.value.<span class="function">trim</span>()) {
+      <span class="function">addTask</span>(input.value);
+      input.value = <span class="string">''</span>;
+      <span class="function">renderTasks</span>();
+    }
+  });
+  
+  input.<span class="function">addEventListener</span>(<span class="string">'keypress'</span>, (e: <span class="type">KeyboardEvent</span>) => {
+    <span class="keyword">if</span> (e.key === <span class="string">'Enter'</span>) {
+      addBtn.<span class="function">click</span>();
+    }
+  });
+  
+  <span class="function">renderTasks</span>();
+}
+
+<span class="comment">// Start app when DOM is ready</span>
+document.<span class="function">addEventListener</span>(<span class="string">'DOMContentLoaded'</span>, init);</div>
+                </div>
+
+                <div class="tip">
+                    <strong>💡 Benefits of This Typed Version:</strong><br>
+                    • TypeScript catches typos in property names<br>
+                    • Editor provides auto-complete for Task properties<br>
+                    • Can't accidentally pass wrong types to functions<br>
+                    • Refactoring is safer - TypeScript shows all affected code<br>
+                    • Self-documenting - types show what functions expect
+                </div>
+            </div>
+
+            <!-- Challenge Tab -->
+            <div id="challenge" class="tab-content">
+                <h2>🚀 Week 6 Challenges!</h2>
+                <p>You've learned TypeScript basics! Now practice by adding types to your projects:</p>
+
+                <h3>To-Do List Enhancements with Types</h3>
+                <ul class="checklist">
+                    <li>Add a Category interface with name and color properties</li>
+                    <li>Create a type for task priority levels</li>
+                    <li>Add a Settings interface for user preferences</li>
+                    <li>Type the localStorage helper functions</li>
+                    <li>Add types for all event handlers</li>
+                    <li>Create a type for filter options</li>
+                </ul>
+
+                <h3>Convert Your Projects</h3>
+                <div class="demo-box">
+                    <strong>Take your previous projects and add TypeScript:</strong><br>
+                    1. <strong>Calculator:</strong> Add types for operations, numbers, display state<br>
+                    2. <strong>Form validation:</strong> Add interface for form data, validation rules<br>
+                    3. <strong>Quiz app:</strong> Add Question interface, answer types, score tracking<br>
+                    4. <strong>Notes app:</strong> Add Note interface, category types, sort options
+                </div>
+
+                <h3>Advanced Type Challenges</h3>
+
+                <div class="example">
+                    <strong>1. Generic Functions</strong>
+                    <div class="code-block" style="margin-top: 10px;"><span class="comment">// Function that works with any type</span>
+<span class="keyword">function</span> <span class="function">getFirstItem</span>&lt;<span class="type">T</span>&gt;(array<span class="type">: T[]</span>)<span class="type">: T | undefined</span> {
+  <span class="keyword">return</span> array[<span class="number">0</span>];
+}
+
+<span class="keyword">let</span> firstNumber = <span class="function">getFirstItem</span>([<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>]);     <span class="comment">// number | undefined</span>
+<span class="keyword">let</span> firstName = <span class="function">getFirstItem</span>([<span class="string">"a"</span>, <span class="string">"b"</span>]);  <span class="comment">// string | undefined</span></div>
+                </div>
+
+                <div class="example">
+                    <strong>2. Utility Types</strong>
+                    <div class="code-block" style="margin-top: 10px;"><span class="keyword">interface</span> <span class="type">User</span> {
+  id: <span class="type">number</span>;
+  name: <span class="type">string</span>;
+  email: <span class="type">string</span>;
+  password: <span class="type">string</span>;
+}
+
+<span class="comment">// Partial - all properties optional</span>
+<span class="keyword">type</span> <span class="type">UserUpdate</span> = Partial&lt;<span class="type">User</span>&gt;;
+
+<span class="comment">// Pick - select specific properties</span>
+<span class="keyword">type</span> <span class="type">UserPublic</span> = Pick&lt;<span class="type">User</span>, <span class="string">"id"</span> | <span class="string">"name"</span>&gt;;
+
+<span class="comment">// Omit - exclude specific properties</span>
+<span class="keyword">type</span> <span class="type">UserWithoutPassword</span> = Omit&lt;<span class="type">User</span>, <span class="string">"password"</span>&gt;;</div>
+                </div>
+
+                <h3>Real-World Practice</h3>
+                <div class="demo-box">
+                    <strong>Build a Shopping Cart with TypeScript:</strong><br><br>
+                    Create interfaces for:<br>
+                    • Product (id, name, price, image, stock)<br>
+                    • CartItem (product, quantity)<br>
+                    • Cart (items, total, tax)<br>
+                    • Order (cart, user info, status)<br><br>
+                    Then build:<br>
+                    • Add/remove items functions with types<br>
+                    • Calculate total with types<br>
+                    • Filter/sort products with types<br>
+                    • Save to localStorage with types
+                </div>
+
+                <h3>What You've Accomplished! 🎉</h3>
+                <ul style="padding-left: 20px; margin: 15px 0; line-height: 1.8;">
+                    <li>✅ Understand why types catch errors early</li>
+                    <li>✅ Know all basic TypeScript types</li>
+                    <li>✅ Create interfaces for object shapes</li>
+                    <li>✅ Type functions with parameters and returns</li>
+                    <li>✅ Convert JavaScript code to TypeScript</li>
+                    <li>✅ Build a typed to-do application</li>
+                </ul>
+
+                <p style="margin-top: 20px; padding: 15px; background: #e8f5e9; border-radius: 6px;">
+                    <strong>Next Steps:</strong> You now understand type safety! TypeScript helps you write better, more maintainable code. From here, you can learn about advanced TypeScript features, or move on to learning about APIs and fetching data. But first, practice by adding types to all your existing projects!
+                </p>
+
+                <div class="tip">
+                    <strong>💡 Career Tip:</strong> TypeScript is highly valued by employers! Adding "TypeScript" to your resume and converting your portfolio projects to TypeScript will make you more attractive to hiring managers. Many companies require TypeScript knowledge!
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Panel: Example -->
+        <div class="panel">
+            <h2>📝 TypeScript Example Comparison</h2>
+            
+            <h3 style="color: #667eea; margin-top: 20px;">Without Types (JavaScript)</h3>
+            <div class="code-block"><span class="keyword">function</span> <span class="function">calculateTotal</span>(items) {
+  <span class="keyword">let</span> total = <span class="number">0</span>;
+  <span class="keyword">for</span> (<span class="keyword">let</span> item <span class="keyword">of</span> items) {
+    total += item.price * item.quantity;
+  }
+  <span class="keyword">return</span> total;
+}
+
+<span class="comment">// What if someone passes wrong data?</span>
+<span class="function">calculateTotal</span>(<span class="string">"not an array"</span>);  <span class="comment">// Crashes!</span>
+<span class="function">calculateTotal</span>([{ pric: <span class="number">10</span> }]);   <span class="comment">// Typo! Returns NaN</span></div>
+
+            <h3 style="color: #667eea; margin-top: 30px;">With Types (TypeScript)</h3>
+            <div class="code-block"><span class="keyword">interface</span> <span class="type">CartItem</span> {
+  name: <span class="type">string</span>;
+  price: <span class="type">number</span>;
+  quantity: <span class="type">number</span>;
+}
+
+<span class="keyword">function</span> <span class="function">calculateTotal</span>(items<span class="type">: CartItem[]</span>)<span class="type">: number</span> {
+  <span class="keyword">let</span> total = <span class="number">0</span>;
+  <span class="keyword">for</span> (<span class="keyword">let</span> item <span class="keyword">of</span> items) {
+    total += item.price * item.quantity;
+  }
+  <span class="keyword">return</span> total;
+}
+
+<span class="comment">// TypeScript catches these errors immediately!</span>
+<span class="function">calculateTotal</span>(<span class="string">"not an array"</span>);  <span class="comment">// Error: Type 'string' is not...</span>
+<span class="function">calculateTotal</span>([{ pric: <span class="number">10</span> }]);   <span class="comment">// Error: Property 'price' is missing</span>
+
+<span class="comment">// Only correct usage compiles</span>
+<span class="function">calculateTotal</span>([
+  { name: <span class="string">"Book"</span>, price: <span class="number">20</span>, quantity: <span class="number">2</span> }
+]);  <span class="comment">// ✅ Works!</span></div>
+
+            <div style="margin-top: 30px; padding: 20px; background: #f5f6ff; border-radius: 8px; border-left: 4px solid #667eea;">
+                <h3 style="color: #667eea;">🎯 The Benefits Are Clear!</h3>
+                <ul style="padding-left: 20px; margin-top: 10px; line-height: 1.8;">
+                    <li><strong>Errors found instantly</strong> - while you type, not when users click</li>
+                    <li><strong>Auto-complete</strong> - your editor knows what properties exist</li>
+                    <li><strong>Confidence</strong> - refactor without fear of breaking things</li>
+                    <li><strong>Documentation</strong> - types show exactly what functions need</li>
+                    <li><strong>Team work</strong> - clear contracts between developers</li>
+                </ul>
+            </div>
+
+            <div style="margin-top: 30px; padding: 20px; background: #fff9e6; border-radius: 8px; border-left: 4px solid #ffd700;">
+                <h3 style="color: #cc8800;">💼 Industry Standard</h3>
+                <p style="margin-top: 10px; line-height: 1.8;">
+                    TypeScript is used by Google, Microsoft, Facebook, Airbnb, Slack, and thousands of other companies. Learning TypeScript makes you more employable and helps you write better code!
+                </p>
+            </div>
+
+            <div style="margin-top: 30px; padding: 20px; background: #e8f5e9; border-radius: 8px; border-left: 4px solid #4caf50;">
+                <h3 style="color: #2e7d32;">✅ Remember</h3>
+                <p style="margin-top: 10px; line-height: 1.8; margin-bottom: 10px;">
+                    TypeScript is <strong>JavaScript with types</strong>. Everything you learned in previous weeks still applies - you're just adding a safety layer that catches bugs before they happen!
+                </p>
+                <p style="line-height: 1.8;">
+                    Start by adding simple types to your existing projects. As you get comfortable, use more advanced features like interfaces, generics, and utility types.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <div style="position: fixed; bottom: 0; left: 0; right: 0; background: rgba(102, 126, 234, 0.95); color: white; padding: 10px 20px; text-align: center; font-size: 14px; backdrop-filter: blur(10px);">
+        <strong>Week 6: TypeScript Introduction</strong> | Made with ❤️ for learning web development | <strong>JavaScript with superpowers!</strong>
+    </div>
+
+    <script>
+        function showTab(tabName) {
+            const contents = document.querySelectorAll('.tab-content');
+            contents.forEach(content => content.classList.remove('active'));
+            
+            const tabs = document.querySelectorAll('.tab');
+            tabs.forEach(tab => tab.classList.remove('active'));
+            
+            document.getElementById(tabName).classList.add('active');
+            event.target.classList.add('active');
+        }
+    </script>
+</body>
+</html>

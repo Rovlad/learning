@@ -1,0 +1,1256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Week 6: Local Storage & Data Persistence!</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            height: calc(100vh - 40px);
+        }
+
+        .panel {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            overflow-y: auto;
+        }
+
+        .lesson-panel {
+            display: flex;
+            flex-direction: column;
+        }
+
+        h1 {
+            color: #fa709a;
+            margin-bottom: 10px;
+            font-size: 28px;
+        }
+
+        h2 {
+            color: #f75c8c;
+            margin-top: 25px;
+            margin-bottom: 15px;
+            font-size: 22px;
+        }
+
+        h3 {
+            color: #fa709a;
+            margin-top: 20px;
+            margin-bottom: 10px;
+            font-size: 18px;
+        }
+
+        .step {
+            background: #fff5f8;
+            border-left: 4px solid #fa709a;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 4px;
+        }
+
+        .step-number {
+            display: inline-block;
+            background: #fa709a;
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 30px;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+
+        code {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+        }
+
+        .code-block {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 15px;
+            border-radius: 6px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            overflow-x: auto;
+            margin: 10px 0;
+            line-height: 1.5;
+        }
+
+        .keyword {
+            color: #ff79c6;
+        }
+
+        .function {
+            color: #50fa7b;
+        }
+
+        .string {
+            color: #f1fa8c;
+        }
+
+        .number {
+            color: #bd93f9;
+        }
+
+        .comment {
+            color: #6272a4;
+        }
+
+        textarea {
+            width: 100%;
+            min-height: 300px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            padding: 15px;
+            border: 2px solid #fa709a;
+            border-radius: 6px;
+            resize: vertical;
+        }
+
+        button {
+            background: #fa709a;
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 15px;
+            transition: all 0.3s;
+        }
+
+        button:hover {
+            background: #f75c8c;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .preview-frame {
+            width: 100%;
+            height: 500px;
+            border: 2px solid #fa709a;
+            border-radius: 6px;
+            background: white;
+            margin-top: 15px;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #e0e0e0;
+            flex-wrap: wrap;
+        }
+
+        .tab {
+            padding: 10px 20px;
+            background: none;
+            border: none;
+            color: #666;
+            font-weight: 600;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s;
+            margin: 0;
+        }
+
+        .tab.active {
+            color: #fa709a;
+            border-bottom-color: #fa709a;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .tip {
+            background: #fff9e6;
+            border-left: 4px solid #ffd700;
+            padding: 12px;
+            margin: 15px 0;
+            border-radius: 4px;
+        }
+
+        .tip strong {
+            color: #cc8800;
+        }
+
+        .checklist {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .checklist li {
+            padding: 8px 0;
+            padding-left: 30px;
+            position: relative;
+        }
+
+        .checklist li:before {
+            content: "☐";
+            position: absolute;
+            left: 0;
+            font-size: 20px;
+            color: #fa709a;
+        }
+
+        .example {
+            background: #e8f5e9;
+            border-left: 4px solid #4caf50;
+            padding: 12px;
+            margin: 15px 0;
+            border-radius: 4px;
+        }
+
+        .demo-box {
+            background: #f0f0f0;
+            border: 2px dashed #fa709a;
+            padding: 20px;
+            margin: 15px 0;
+            border-radius: 6px;
+        }
+
+        .interactive-demo {
+            background: white;
+            border: 2px solid #fa709a;
+            padding: 20px;
+            margin: 15px 0;
+            border-radius: 6px;
+        }
+
+        .interactive-demo button {
+            margin: 5px;
+        }
+
+        .error-box {
+            background: #ffebee;
+            border-left: 4px solid #f44336;
+            padding: 12px;
+            margin: 15px 0;
+            border-radius: 4px;
+            color: #c62828;
+        }
+
+        @media (max-width: 1200px) {
+            .container {
+                grid-template-columns: 1fr;
+                height: auto;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Left Panel: Lessons -->
+        <div class="panel lesson-panel">
+            <h1>💾 Week 6: Local Storage & Data Persistence!</h1>
+            <p style="color: #666; margin-bottom: 20px;">This week you'll learn to save data in the browser so it persists even after the page refreshes - making your apps remember user data!</p>
+
+            <div class="tabs">
+                <button class="tab active" onclick="showTab('learn')">📚 Learn</button>
+                <button class="tab" onclick="showTab('basics')">💾 Basics</button>
+                <button class="tab" onclick="showTab('json')">📋 JSON</button>
+                <button class="tab" onclick="showTab('storage')">🗄️ Storage API</button>
+                <button class="tab" onclick="showTab('build')">🔨 Build</button>
+                <button class="tab" onclick="showTab('challenge')">🚀 Challenge</button>
+            </div>
+
+            <!-- Learn Tab -->
+            <div id="learn" class="tab-content active">
+                <h2>What is Local Storage?</h2>
+                <p>Local Storage is like a mini-database built into your browser. It lets you save data that persists even after the user closes the browser or refreshes the page!</p>
+
+                <div class="example">
+                    <strong>Think about these situations:</strong><br>
+                    • Your to-do list disappears when you refresh the page 😢<br>
+                    • Your game progress is lost when you close the browser 😢<br>
+                    • Shopping cart items vanish when you reload 😢<br><br>
+                    <strong>Local Storage solves this!</strong> It saves data in the browser so it stays there until you explicitly delete it. 🎉
+                </div>
+
+                <h3>How Does It Work?</h3>
+                <p>Local Storage stores data as key-value pairs, like a JavaScript object:</p>
+
+                <div class="code-block"><span class="comment">// Save data</span>
+localStorage.<span class="function">setItem</span>(<span class="string">'username'</span>, <span class="string">'Sarah'</span>);
+
+<span class="comment">// Get data back</span>
+<span class="keyword">let</span> name = localStorage.<span class="function">getItem</span>(<span class="string">'username'</span>);
+<span class="function">console.log</span>(name);  <span class="comment">// "Sarah"</span></div>
+
+                <h3>Where Does It Live?</h3>
+                <div class="demo-box">
+                    <strong>Each website gets its own storage space:</strong><br>
+                    • facebook.com has its own localStorage<br>
+                    • youtube.com has its own localStorage<br>
+                    • yourwebsite.com has its own localStorage<br><br>
+                    They can't access each other's data (security!)<br>
+                    Data stays on your computer, not on a server
+                </div>
+
+                <h3>Local Storage vs Session Storage vs Cookies</h3>
+                <div class="demo-box">
+                    <table style="width: 100%; border-collapse: collapse;">
+                        <tr style="background: #fff5f8;">
+                            <th style="padding: 10px; border: 1px solid #ddd; text-align: left;">Feature</th>
+                            <th style="padding: 10px; border: 1px solid #ddd; text-align: left;">Local Storage</th>
+                            <th style="padding: 10px; border: 1px solid #ddd; text-align: left;">Session Storage</th>
+                            <th style="padding: 10px; border: 1px solid #ddd; text-align: left;">Cookies</th>
+                        </tr>
+                        <tr>
+                            <td style="padding: 10px; border: 1px solid #ddd;"><strong>Persists after close?</strong></td>
+                            <td style="padding: 10px; border: 1px solid #ddd;">✅ Yes</td>
+                            <td style="padding: 10px; border: 1px solid #ddd;">❌ No</td>
+                            <td style="padding: 10px; border: 1px solid #ddd;">✅ Yes (with expiry)</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 10px; border: 1px solid #ddd;"><strong>Storage limit</strong></td>
+                            <td style="padding: 10px; border: 1px solid #ddd;">5-10 MB</td>
+                            <td style="padding: 10px; border: 1px solid #ddd;">5-10 MB</td>
+                            <td style="padding: 10px; border: 1px solid #ddd;">4 KB</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 10px; border: 1px solid #ddd;"><strong>Sent to server?</strong></td>
+                            <td style="padding: 10px; border: 1px solid #ddd;">❌ No</td>
+                            <td style="padding: 10px; border: 1px solid #ddd;">❌ No</td>
+                            <td style="padding: 10px; border: 1px solid #ddd;">✅ Yes (every request)</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 10px; border: 1px solid #ddd;"><strong>Best for</strong></td>
+                            <td style="padding: 10px; border: 1px solid #ddd;">User preferences, app data</td>
+                            <td style="padding: 10px; border: 1px solid #ddd;">Temporary data during session</td>
+                            <td style="padding: 10px; border: 1px solid #ddd;">Authentication tokens</td>
+                        </tr>
+                    </table>
+                </div>
+
+                <div class="tip">
+                    <strong>💡 When to Use Local Storage:</strong><br>
+                    • Saving user preferences (dark mode, language)<br>
+                    • Storing form data temporarily<br>
+                    • Saving game progress<br>
+                    • Keeping shopping cart items<br>
+                    • Remembering user's to-do list<br>
+                    • Any data you want to persist locally
+                </div>
+
+                <h3>Important Limitations</h3>
+                <div class="error-box">
+                    <strong>⚠️ Things to Know:</strong><br>
+                    • Only stores strings (we'll learn to work around this!)<br>
+                    • About 5-10 MB limit per domain<br>
+                    • Data is NOT encrypted (don't store passwords!)<br>
+                    • User can clear it anytime<br>
+                    • Only works in browser (not on the server)
+                </div>
+
+                <h3>Try It Right Now!</h3>
+                <div class="interactive-demo">
+                    <input type="text" id="demoInput" placeholder="Type something..." style="padding: 10px; width: 300px; border: 2px solid #ddd; border-radius: 5px;">
+                    <br>
+                    <button onclick="localStorage.setItem('demo', document.getElementById('demoInput').value); alert('Saved!')">Save to Local Storage</button>
+                    <button onclick="alert('Saved value: ' + localStorage.getItem('demo'))">Load from Local Storage</button>
+                    <button onclick="localStorage.removeItem('demo'); alert('Cleared!')">Clear Storage</button>
+                </div>
+                <p style="margin-top: 10px; font-size: 14px; color: #666;">☝️ Try it! Type something, save it, refresh this page, then load it back!</p>
+            </div>
+
+            <!-- Basics Tab -->
+            <div id="basics" class="tab-content">
+                <h2>Local Storage Basics</h2>
+                <p>There are four main operations you can do with Local Storage:</p>
+
+                <h3>1. Saving Data (setItem)</h3>
+                <div class="code-block"><span class="comment">// Syntax: localStorage.setItem(key, value)</span>
+localStorage.<span class="function">setItem</span>(<span class="string">'username'</span>, <span class="string">'Sarah'</span>);
+localStorage.<span class="function">setItem</span>(<span class="string">'theme'</span>, <span class="string">'dark'</span>);
+localStorage.<span class="function">setItem</span>(<span class="string">'score'</span>, <span class="string">'100'</span>);
+
+<span class="comment">// Alternative syntax (same thing)</span>
+localStorage.username = <span class="string">'Sarah'</span>;
+localStorage[<span class="string">'theme'</span>] = <span class="string">'dark'</span>;</div>
+
+                <div class="tip">
+                    <strong>💡 Best Practice:</strong> Use <code>setItem()</code> instead of dot notation - it's more explicit and handles edge cases better.
+                </div>
+
+                <h3>2. Getting Data (getItem)</h3>
+                <div class="code-block"><span class="comment">// Syntax: localStorage.getItem(key)</span>
+<span class="keyword">let</span> username = localStorage.<span class="function">getItem</span>(<span class="string">'username'</span>);
+<span class="function">console.log</span>(username);  <span class="comment">// "Sarah"</span>
+
+<span class="comment">// If key doesn't exist, returns null</span>
+<span class="keyword">let</span> missing = localStorage.<span class="function">getItem</span>(<span class="string">'notThere'</span>);
+<span class="function">console.log</span>(missing);  <span class="comment">// null</span></div>
+
+                <h3>3. Removing Data (removeItem)</h3>
+                <div class="code-block"><span class="comment">// Remove a specific item</span>
+localStorage.<span class="function">removeItem</span>(<span class="string">'username'</span>);
+
+<span class="comment">// Check if it's gone</span>
+<span class="function">console.log</span>(localStorage.<span class="function">getItem</span>(<span class="string">'username'</span>));  <span class="comment">// null</span></div>
+
+                <h3>4. Clearing Everything (clear)</h3>
+                <div class="code-block"><span class="comment">// Remove ALL items from localStorage</span>
+localStorage.<span class="function">clear</span>();
+
+<span class="comment">// Everything is gone!</span></div>
+
+                <div class="error-box">
+                    <strong>⚠️ Warning:</strong> <code>localStorage.clear()</code> deletes EVERYTHING from your domain. Use carefully!
+                </div>
+
+                <h3>Checking if Key Exists</h3>
+                <div class="code-block"><span class="keyword">if</span> (localStorage.<span class="function">getItem</span>(<span class="string">'username'</span>) !== <span class="keyword">null</span>) {
+  <span class="function">console.log</span>(<span class="string">"Username exists!"</span>);
+} <span class="keyword">else</span> {
+  <span class="function">console.log</span>(<span class="string">"No username saved"</span>);
+}
+
+<span class="comment">// Or shorter</span>
+<span class="keyword">if</span> (localStorage.<span class="function">getItem</span>(<span class="string">'username'</span>)) {
+  <span class="function">console.log</span>(<span class="string">"Username exists!"</span>);
+}</div>
+
+                <h3>Getting Number of Items</h3>
+                <div class="code-block"><span class="keyword">let</span> itemCount = localStorage.length;
+<span class="function">console.log</span>(<span class="string">"Items in storage:"</span>, itemCount);</div>
+
+                <h3>Looping Through All Items</h3>
+                <div class="code-block"><span class="comment">// Method 1: Using key()</span>
+<span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">0</span>; i < localStorage.length; i++) {
+  <span class="keyword">let</span> key = localStorage.<span class="function">key</span>(i);
+  <span class="keyword">let</span> value = localStorage.<span class="function">getItem</span>(key);
+  <span class="function">console.log</span>(key, <span class="string">":"</span>, value);
+}
+
+<span class="comment">// Method 2: Using Object.keys()</span>
+Object.<span class="function">keys</span>(localStorage).<span class="function">forEach</span>(key => {
+  <span class="function">console.log</span>(key, <span class="string">":"</span>, localStorage.<span class="function">getItem</span>(key));
+});</div>
+
+                <h3>Real-World Example: Remember Username</h3>
+                <div class="example">
+                    <div class="code-block" style="margin-top: 10px;"><span class="comment">// When user logs in</span>
+<span class="keyword">function</span> <span class="function">saveUsername</span>(username) {
+  localStorage.<span class="function">setItem</span>(<span class="string">'username'</span>, username);
+  <span class="function">console.log</span>(<span class="string">"Username saved!"</span>);
+}
+
+<span class="comment">// When page loads</span>
+<span class="keyword">function</span> <span class="function">loadUsername</span>() {
+  <span class="keyword">let</span> username = localStorage.<span class="function">getItem</span>(<span class="string">'username'</span>);
+  
+  <span class="keyword">if</span> (username) {
+    document.<span class="function">querySelector</span>(<span class="string">'#welcomeMsg'</span>).textContent = 
+      <span class="string">`Welcome back, </span>${username}<span class="string">!`</span>;
+  } <span class="keyword">else</span> {
+    document.<span class="function">querySelector</span>(<span class="string">'#welcomeMsg'</span>).textContent = 
+      <span class="string">'Welcome, new user!'</span>;
+  }
+}
+
+<span class="comment">// Call on page load</span>
+<span class="function">loadUsername</span>();</div>
+                </div>
+
+                <h3>Real-World Example: Dark Mode Toggle</h3>
+                <div class="example">
+                    <div class="code-block" style="margin-top: 10px;"><span class="keyword">function</span> <span class="function">toggleDarkMode</span>() {
+  <span class="keyword">let</span> body = document.body;
+  body.classList.<span class="function">toggle</span>(<span class="string">'dark-mode'</span>);
+  
+  <span class="comment">// Save preference</span>
+  <span class="keyword">if</span> (body.classList.<span class="function">contains</span>(<span class="string">'dark-mode'</span>)) {
+    localStorage.<span class="function">setItem</span>(<span class="string">'theme'</span>, <span class="string">'dark'</span>);
+  } <span class="keyword">else</span> {
+    localStorage.<span class="function">setItem</span>(<span class="string">'theme'</span>, <span class="string">'light'</span>);
+  }
+}
+
+<span class="comment">// Load saved theme on page load</span>
+<span class="keyword">function</span> <span class="function">loadTheme</span>() {
+  <span class="keyword">let</span> theme = localStorage.<span class="function">getItem</span>(<span class="string">'theme'</span>);
+  
+  <span class="keyword">if</span> (theme === <span class="string">'dark'</span>) {
+    document.body.classList.<span class="function">add</span>(<span class="string">'dark-mode'</span>);
+  }
+}
+
+<span class="comment">// Call when page loads</span>
+<span class="function">loadTheme</span>();</div>
+                </div>
+            </div>
+
+            <!-- JSON Tab -->
+            <div id="json" class="tab-content">
+                <h2>Working with JSON</h2>
+                <p>Local Storage only stores strings, but we often need to store objects and arrays. That's where JSON comes in!</p>
+
+                <h3>What is JSON?</h3>
+                <p>JSON (JavaScript Object Notation) is a way to convert JavaScript objects into strings (and back).</p>
+
+                <div class="example">
+                    <strong>Think of it like this:</strong><br>
+                    • You have a JavaScript object (complex data)<br>
+                    • Convert it to a string with <code>JSON.stringify()</code><br>
+                    • Save the string to localStorage<br>
+                    • Later, get the string back<br>
+                    • Convert back to an object with <code>JSON.parse()</code>
+                </div>
+
+                <h3>JSON.stringify() - Object to String</h3>
+                <div class="code-block"><span class="comment">// JavaScript object</span>
+<span class="keyword">let</span> user = {
+  name: <span class="string">"Sarah"</span>,
+  age: <span class="number">15</span>,
+  hobbies: [<span class="string">"coding"</span>, <span class="string">"reading"</span>]
+};
+
+<span class="comment">// Convert to JSON string</span>
+<span class="keyword">let</span> jsonString = JSON.<span class="function">stringify</span>(user);
+<span class="function">console.log</span>(jsonString);
+<span class="comment">// {"name":"Sarah","age":15,"hobbies":["coding","reading"]}</span>
+
+<span class="comment">// Now we can save it!</span>
+localStorage.<span class="function">setItem</span>(<span class="string">'user'</span>, jsonString);</div>
+
+                <h3>JSON.parse() - String to Object</h3>
+                <div class="code-block"><span class="comment">// Get the string back</span>
+<span class="keyword">let</span> savedString = localStorage.<span class="function">getItem</span>(<span class="string">'user'</span>);
+
+<span class="comment">// Convert back to object</span>
+<span class="keyword">let</span> user = JSON.<span class="function">parse</span>(savedString);
+
+<span class="comment">// Now we can use it like a normal object!</span>
+<span class="function">console.log</span>(user.name);       <span class="comment">// "Sarah"</span>
+<span class="function">console.log</span>(user.age);        <span class="comment">// 15</span>
+<span class="function">console.log</span>(user.hobbies[<span class="number">0</span>]); <span class="comment">// "coding"</span></div>
+
+                <h3>Complete Example: Saving an Object</h3>
+                <div class="code-block"><span class="comment">// Create an object</span>
+<span class="keyword">let</span> settings = {
+  theme: <span class="string">'dark'</span>,
+  fontSize: <span class="number">16</span>,
+  notifications: <span class="keyword">true</span>
+};
+
+<span class="comment">// Save to localStorage</span>
+localStorage.<span class="function">setItem</span>(<span class="string">'settings'</span>, JSON.<span class="function">stringify</span>(settings));
+
+<span class="comment">// Later... load it back</span>
+<span class="keyword">let</span> savedSettings = JSON.<span class="function">parse</span>(localStorage.<span class="function">getItem</span>(<span class="string">'settings'</span>));
+<span class="function">console.log</span>(savedSettings.theme);  <span class="comment">// "dark"</span></div>
+
+                <h3>Saving Arrays</h3>
+                <div class="code-block"><span class="comment">// Array of tasks</span>
+<span class="keyword">let</span> tasks = [
+  <span class="string">"Buy groceries"</span>,
+  <span class="string">"Finish homework"</span>,
+  <span class="string">"Call mom"</span>
+];
+
+<span class="comment">// Save array</span>
+localStorage.<span class="function">setItem</span>(<span class="string">'tasks'</span>, JSON.<span class="function">stringify</span>(tasks));
+
+<span class="comment">// Load array</span>
+<span class="keyword">let</span> savedTasks = JSON.<span class="function">parse</span>(localStorage.<span class="function">getItem</span>(<span class="string">'tasks'</span>));
+<span class="function">console.log</span>(savedTasks[<span class="number">0</span>]);  <span class="comment">// "Buy groceries"</span></div>
+
+                <h3>Handling Null/Missing Data</h3>
+                <div class="code-block"><span class="keyword">function</span> <span class="function">getTasks</span>() {
+  <span class="keyword">let</span> tasksString = localStorage.<span class="function">getItem</span>(<span class="string">'tasks'</span>);
+  
+  <span class="comment">// If nothing saved, return empty array</span>
+  <span class="keyword">if</span> (tasksString === <span class="keyword">null</span>) {
+    <span class="keyword">return</span> [];
+  }
+  
+  <span class="comment">// Otherwise, parse and return</span>
+  <span class="keyword">return</span> JSON.<span class="function">parse</span>(tasksString);
+}
+
+<span class="comment">// Shorter version using || operator</span>
+<span class="keyword">function</span> <span class="function">getTasks</span>() {
+  <span class="keyword">return</span> JSON.<span class="function">parse</span>(localStorage.<span class="function">getItem</span>(<span class="string">'tasks'</span>)) || [];
+}</div>
+
+                <div class="tip">
+                    <strong>💡 Always handle null!</strong> If a key doesn't exist, <code>getItem()</code> returns null. Trying to parse null will cause an error!
+                </div>
+
+                <h3>Real Example: Saving To-Do List</h3>
+                <div class="example">
+                    <div class="code-block" style="margin-top: 10px;"><span class="comment">// Load tasks from storage</span>
+<span class="keyword">function</span> <span class="function">loadTasks</span>() {
+  <span class="keyword">let</span> tasksString = localStorage.<span class="function">getItem</span>(<span class="string">'todos'</span>);
+  <span class="keyword">return</span> tasksString ? JSON.<span class="function">parse</span>(tasksString) : [];
+}
+
+<span class="comment">// Save tasks to storage</span>
+<span class="keyword">function</span> <span class="function">saveTasks</span>(tasks) {
+  localStorage.<span class="function">setItem</span>(<span class="string">'todos'</span>, JSON.<span class="function">stringify</span>(tasks));
+}
+
+<span class="comment">// Add a new task</span>
+<span class="keyword">function</span> <span class="function">addTask</span>(taskText) {
+  <span class="keyword">let</span> tasks = <span class="function">loadTasks</span>();          <span class="comment">// Load existing</span>
+  tasks.<span class="function">push</span>(taskText);              <span class="comment">// Add new task</span>
+  <span class="function">saveTasks</span>(tasks);                <span class="comment">// Save back</span>
+}
+
+<span class="comment">// Delete a task</span>
+<span class="keyword">function</span> <span class="function">deleteTask</span>(index) {
+  <span class="keyword">let</span> tasks = <span class="function">loadTasks</span>();
+  tasks.<span class="function">splice</span>(index, <span class="number">1</span>);          <span class="comment">// Remove one item</span>
+  <span class="function">saveTasks</span>(tasks);
+}</div>
+                </div>
+
+                <h3>Pretty Printing JSON</h3>
+                <div class="code-block"><span class="comment">// Normal stringify (compact)</span>
+<span class="keyword">let</span> json = JSON.<span class="function">stringify</span>(user);
+
+<span class="comment">// Pretty print (with indentation)</span>
+<span class="keyword">let</span> prettyJson = JSON.<span class="function">stringify</span>(user, <span class="keyword">null</span>, <span class="number">2</span>);
+<span class="function">console.log</span>(prettyJson);
+<span class="comment">/*
+{
+  "name": "Sarah",
+  "age": 15,
+  "hobbies": [
+    "coding",
+    "reading"
+  ]
+}
+*/</span></div>
+
+                <div class="error-box">
+                    <strong>Common Errors:</strong><br>
+                    ❌ <code>JSON.parse(null)</code> - Will throw error!<br>
+                    ✅ Check for null first: <code>if (data) JSON.parse(data)</code><br><br>
+                    ❌ <code>JSON.stringify(undefined)</code> - Returns undefined<br>
+                    ✅ Make sure you're not stringifying undefined values
+                </div>
+            </div>
+
+            <!-- Storage Tab -->
+            <div id="storage" class="tab-content">
+                <h2>Complete Storage Patterns</h2>
+                <p>Let's look at professional patterns for working with Local Storage in real applications.</p>
+
+                <h3>Pattern 1: Helper Functions</h3>
+                <p>Create reusable functions for common operations:</p>
+
+                <div class="code-block"><span class="comment">// Save any data</span>
+<span class="keyword">function</span> <span class="function">saveToStorage</span>(key, data) {
+  localStorage.<span class="function">setItem</span>(key, JSON.<span class="function">stringify</span>(data));
+}
+
+<span class="comment">// Load any data</span>
+<span class="keyword">function</span> <span class="function">loadFromStorage</span>(key, defaultValue = <span class="keyword">null</span>) {
+  <span class="keyword">let</span> data = localStorage.<span class="function">getItem</span>(key);
+  <span class="keyword">return</span> data ? JSON.<span class="function">parse</span>(data) : defaultValue;
+}
+
+<span class="comment">// Usage</span>
+<span class="function">saveToStorage</span>(<span class="string">'user'</span>, { name: <span class="string">'Sarah'</span>, age: <span class="number">15</span> });
+<span class="keyword">let</span> user = <span class="function">loadFromStorage</span>(<span class="string">'user'</span>, {});  <span class="comment">// Default to empty object</span></div>
+
+                <h3>Pattern 2: Storage Manager Class</h3>
+                <div class="code-block"><span class="keyword">class</span> <span class="function">StorageManager</span> {
+  <span class="keyword">constructor</span>(storageKey) {
+    <span class="keyword">this</span>.key = storageKey;
+  }
+  
+  <span class="function">save</span>(data) {
+    localStorage.<span class="function">setItem</span>(<span class="keyword">this</span>.key, JSON.<span class="function">stringify</span>(data));
+  }
+  
+  <span class="function">load</span>(defaultValue = []) {
+    <span class="keyword">let</span> data = localStorage.<span class="function">getItem</span>(<span class="keyword">this</span>.key);
+    <span class="keyword">return</span> data ? JSON.<span class="function">parse</span>(data) : defaultValue;
+  }
+  
+  <span class="function">clear</span>() {
+    localStorage.<span class="function">removeItem</span>(<span class="keyword">this</span>.key);
+  }
+}
+
+<span class="comment">// Usage</span>
+<span class="keyword">let</span> taskStorage = <span class="keyword">new</span> <span class="function">StorageManager</span>(<span class="string">'tasks'</span>);
+taskStorage.<span class="function">save</span>([<span class="string">'Task 1'</span>, <span class="string">'Task 2'</span>]);
+<span class="keyword">let</span> tasks = taskStorage.<span class="function">load</span>();</div>
+
+                <h3>Pattern 3: Auto-Save on Changes</h3>
+                <div class="code-block"><span class="keyword">let</span> tasks = [];
+
+<span class="keyword">function</span> <span class="function">initializeTasks</span>() {
+  tasks = <span class="function">loadFromStorage</span>(<span class="string">'tasks'</span>, []);
+  <span class="function">renderTasks</span>();
+}
+
+<span class="keyword">function</span> <span class="function">addTask</span>(text) {
+  tasks.<span class="function">push</span>({ text, completed: <span class="keyword">false</span>, id: Date.<span class="function">now</span>() });
+  <span class="function">saveTasks</span>();
+  <span class="function">renderTasks</span>();
+}
+
+<span class="keyword">function</span> <span class="function">deleteTask</span>(id) {
+  tasks = tasks.<span class="function">filter</span>(task => task.id !== id);
+  <span class="function">saveTasks</span>();
+  <span class="function">renderTasks</span>();
+}
+
+<span class="keyword">function</span> <span class="function">saveTasks</span>() {
+  <span class="function">saveToStorage</span>(<span class="string">'tasks'</span>, tasks);
+}</div>
+
+                <h3>Pattern 4: Error Handling</h3>
+                <div class="code-block"><span class="keyword">function</span> <span class="function">safeLoadFromStorage</span>(key, defaultValue) {
+  <span class="keyword">try</span> {
+    <span class="keyword">let</span> data = localStorage.<span class="function">getItem</span>(key);
+    <span class="keyword">return</span> data ? JSON.<span class="function">parse</span>(data) : defaultValue;
+  } <span class="keyword">catch</span> (error) {
+    <span class="function">console.error</span>(<span class="string">'Error loading from storage:'</span>, error);
+    <span class="keyword">return</span> defaultValue;
+  }
+}
+
+<span class="keyword">function</span> <span class="function">safeSaveToStorage</span>(key, data) {
+  <span class="keyword">try</span> {
+    localStorage.<span class="function">setItem</span>(key, JSON.<span class="function">stringify</span>(data));
+    <span class="keyword">return</span> <span class="keyword">true</span>;
+  } <span class="keyword">catch</span> (error) {
+    <span class="keyword">if</span> (error.name === <span class="string">'QuotaExceededError'</span>) {
+      <span class="function">console.error</span>(<span class="string">'Storage quota exceeded!'</span>);
+    } <span class="keyword">else</span> {
+      <span class="function">console.error</span>(<span class="string">'Error saving to storage:'</span>, error);
+    }
+    <span class="keyword">return</span> <span class="keyword">false</span>;
+  }
+}</div>
+
+                <h3>Pattern 5: Checking Available Space</h3>
+                <div class="code-block"><span class="keyword">function</span> <span class="function">getStorageUsage</span>() {
+  <span class="keyword">let</span> total = <span class="number">0</span>;
+  <span class="keyword">for</span> (<span class="keyword">let</span> key <span class="keyword">in</span> localStorage) {
+    <span class="keyword">if</span> (localStorage.<span class="function">hasOwnProperty</span>(key)) {
+      total += localStorage[key].length + key.length;
+    }
+  }
+  <span class="comment">// Convert to KB</span>
+  <span class="keyword">return</span> (total / <span class="number">1024</span>).<span class="function">toFixed</span>(<span class="number">2</span>) + <span class="string">' KB'</span>;
+}
+
+<span class="function">console.log</span>(<span class="string">'Storage used:'</span>, <span class="function">getStorageUsage</span>());</div>
+
+                <h3>Real Example: User Settings</h3>
+                <div class="example">
+                    <div class="code-block" style="margin-top: 10px;"><span class="keyword">const</span> <span class="function">DEFAULT_SETTINGS</span> = {
+  theme: <span class="string">'light'</span>,
+  fontSize: <span class="number">16</span>,
+  language: <span class="string">'en'</span>,
+  notifications: <span class="keyword">true</span>
+};
+
+<span class="keyword">function</span> <span class="function">loadSettings</span>() {
+  <span class="keyword">return</span> <span class="function">loadFromStorage</span>(<span class="string">'settings'</span>, <span class="function">DEFAULT_SETTINGS</span>);
+}
+
+<span class="keyword">function</span> <span class="function">updateSetting</span>(key, value) {
+  <span class="keyword">let</span> settings = <span class="function">loadSettings</span>();
+  settings[key] = value;
+  <span class="function">saveToStorage</span>(<span class="string">'settings'</span>, settings);
+  <span class="function">applySettings</span>(settings);
+}
+
+<span class="keyword">function</span> <span class="function">applySettings</span>(settings) {
+  <span class="comment">// Apply theme</span>
+  document.body.classList.<span class="function">toggle</span>(<span class="string">'dark-theme'</span>, settings.theme === <span class="string">'dark'</span>);
+  
+  <span class="comment">// Apply font size</span>
+  document.documentElement.style.fontSize = settings.fontSize + <span class="string">'px'</span>;
+}
+
+<span class="comment">// On page load</span>
+<span class="keyword">let</span> settings = <span class="function">loadSettings</span>();
+<span class="function">applySettings</span>(settings);</div>
+                </div>
+
+                <div class="tip">
+                    <strong>💡 Pro Tips:</strong><br>
+                    • Always provide default values when loading<br>
+                    • Use try-catch for production code<br>
+                    • Consider prefixing keys (e.g., "myapp_tasks")<br>
+                    • Don't store sensitive data (passwords, credit cards)<br>
+                    • Periodically clean up old data
+                </div>
+            </div>
+
+            <!-- Build Tab -->
+            <div id="build" class="tab-content">
+                <h2>Let's Build a Persistent To-Do List!</h2>
+                <p>Build a complete to-do list that saves data to localStorage so tasks persist even after page refresh!</p>
+
+                <div class="step">
+                    <span class="step-number">1</span>
+                    <strong>HTML Structure (Same as Week 5)</strong>
+                    <div class="code-block" style="margin-top: 10px;"><span class="keyword">&lt;!DOCTYPE html&gt;</span>
+<span class="keyword">&lt;html&gt;</span>
+<span class="keyword">&lt;head&gt;</span>
+  <span class="keyword">&lt;title&gt;</span>Persistent To-Do List<span class="keyword">&lt;/title&gt;</span>
+  <span class="keyword">&lt;style&gt;</span>
+    <span class="comment">/* Same CSS as Week 5 */</span>
+  <span class="keyword">&lt;/style&gt;</span>
+<span class="keyword">&lt;/head&gt;</span>
+<span class="keyword">&lt;body&gt;</span>
+  <span class="keyword">&lt;div</span> <span class="function">class</span>=<span class="string">"container"</span><span class="keyword">&gt;</span>
+    <span class="keyword">&lt;h1&gt;</span>My Persistent To-Do List<span class="keyword">&lt;/h1&gt;</span>
+    
+    <span class="keyword">&lt;div</span> <span class="function">class</span>=<span class="string">"input-section"</span><span class="keyword">&gt;</span>
+      <span class="keyword">&lt;input</span> <span class="function">type</span>=<span class="string">"text"</span> <span class="function">id</span>=<span class="string">"taskInput"</span> 
+             <span class="function">placeholder</span>=<span class="string">"Add a new task..."</span><span class="keyword">&gt;</span>
+      <span class="keyword">&lt;button</span> <span class="function">id</span>=<span class="string">"addBtn"</span><span class="keyword">&gt;</span>Add<span class="keyword">&lt;/button&gt;</span>
+    <span class="keyword">&lt;/div&gt;</span>
+    
+    <span class="keyword">&lt;ul</span> <span class="function">id</span>=<span class="string">"taskList"</span><span class="keyword">&gt;&lt;/ul&gt;</span>
+    
+    <span class="keyword">&lt;div</span> <span class="function">class</span>=<span class="string">"stats"</span><span class="keyword">&gt;</span>
+      <span class="keyword">&lt;span</span> <span class="function">id</span>=<span class="string">"taskCount"</span><span class="keyword">&gt;</span>0 tasks<span class="keyword">&lt;/span&gt;</span>
+      <span class="keyword">&lt;button</span> <span class="function">id</span>=<span class="string">"clearBtn"</span><span class="keyword">&gt;</span>Clear All<span class="keyword">&lt;/button&gt;</span>
+    <span class="keyword">&lt;/div&gt;</span>
+  <span class="keyword">&lt;/div&gt;</span>
+  
+  <span class="keyword">&lt;script&gt;</span>
+    <span class="comment">// JavaScript will go here</span>
+  <span class="keyword">&lt;/script&gt;</span>
+<span class="keyword">&lt;/body&gt;</span>
+<span class="keyword">&lt;/html&gt;</span></div>
+                </div>
+
+                <div class="step">
+                    <span class="step-number">2</span>
+                    <strong>Storage Helper Functions</strong>
+                    <div class="code-block" style="margin-top: 10px;"><span class="comment">// Load tasks from localStorage</span>
+<span class="keyword">function</span> <span class="function">loadTasks</span>() {
+  <span class="keyword">let</span> tasksString = localStorage.<span class="function">getItem</span>(<span class="string">'tasks'</span>);
+  <span class="keyword">return</span> tasksString ? JSON.<span class="function">parse</span>(tasksString) : [];
+}
+
+<span class="comment">// Save tasks to localStorage</span>
+<span class="keyword">function</span> <span class="function">saveTasks</span>() {
+  localStorage.<span class="function">setItem</span>(<span class="string">'tasks'</span>, JSON.<span class="function">stringify</span>(tasks));
+  <span class="function">updateTaskCount</span>();
+}</div>
+                </div>
+
+                <div class="step">
+                    <span class="step-number">3</span>
+                    <strong>Complete JavaScript with Persistence</strong>
+                    <div class="code-block" style="margin-top: 10px;"><span class="comment">// Get elements</span>
+<span class="keyword">const</span> taskInput = document.<span class="function">querySelector</span>(<span class="string">'#taskInput'</span>);
+<span class="keyword">const</span> addBtn = document.<span class="function">querySelector</span>(<span class="string">'#addBtn'</span>);
+<span class="keyword">const</span> clearBtn = document.<span class="function">querySelector</span>(<span class="string">'#clearBtn'</span>);
+<span class="keyword">const</span> taskList = document.<span class="function">querySelector</span>(<span class="string">'#taskList'</span>);
+<span class="keyword">const</span> taskCount = document.<span class="function">querySelector</span>(<span class="string">'#taskCount'</span>);
+
+<span class="comment">// Task array (loaded from storage)</span>
+<span class="keyword">let</span> tasks = <span class="function">loadTasks</span>();
+
+<span class="comment">// Initialize - render tasks on page load</span>
+<span class="keyword">function</span> <span class="function">init</span>() {
+  <span class="function">renderTasks</span>();
+  <span class="function">updateTaskCount</span>();
+}
+
+<span class="comment">// Render all tasks to the DOM</span>
+<span class="keyword">function</span> <span class="function">renderTasks</span>() {
+  taskList.innerHTML = <span class="string">''</span>;  <span class="comment">// Clear list</span>
+  
+  tasks.<span class="function">forEach</span>((task, index) => {
+    <span class="keyword">let</span> li = document.<span class="function">createElement</span>(<span class="string">'li'</span>);
+    li.className = <span class="string">'task-item'</span>;
+    <span class="keyword">if</span> (task.completed) {
+      li.classList.<span class="function">add</span>(<span class="string">'completed'</span>);
+    }
+    
+    <span class="keyword">let</span> span = document.<span class="function">createElement</span>(<span class="string">'span'</span>);
+    span.className = <span class="string">'task-text'</span>;
+    span.textContent = task.text;
+    span.<span class="function">addEventListener</span>(<span class="string">'click'</span>, () => <span class="function">toggleTask</span>(index));
+    
+    <span class="keyword">let</span> deleteBtn = document.<span class="function">createElement</span>(<span class="string">'button'</span>);
+    deleteBtn.className = <span class="string">'delete-btn'</span>;
+    deleteBtn.textContent = <span class="string">'Delete'</span>;
+    deleteBtn.<span class="function">addEventListener</span>(<span class="string">'click'</span>, () => <span class="function">deleteTask</span>(index));
+    
+    li.<span class="function">appendChild</span>(span);
+    li.<span class="function">appendChild</span>(deleteBtn);
+    taskList.<span class="function">appendChild</span>(li);
+  });
+}
+
+<span class="comment">// Add new task</span>
+<span class="keyword">function</span> <span class="function">addTask</span>() {
+  <span class="keyword">let</span> text = taskInput.value.<span class="function">trim</span>();
+  
+  <span class="keyword">if</span> (text === <span class="string">''</span>) {
+    <span class="function">alert</span>(<span class="string">'Please enter a task!'</span>);
+    <span class="keyword">return</span>;
+  }
+  
+  tasks.<span class="function">push</span>({
+    text: text,
+    completed: <span class="keyword">false</span>,
+    id: Date.<span class="function">now</span>()
+  });
+  
+  <span class="function">saveTasks</span>();         <span class="comment">// Save to localStorage!</span>
+  <span class="function">renderTasks</span>();
+  
+  taskInput.value = <span class="string">''</span>;
+  taskInput.<span class="function">focus</span>();
+}
+
+<span class="comment">// Toggle task completion</span>
+<span class="keyword">function</span> <span class="function">toggleTask</span>(index) {
+  tasks[index].completed = !tasks[index].completed;
+  <span class="function">saveTasks</span>();         <span class="comment">// Save to localStorage!</span>
+  <span class="function">renderTasks</span>();
+}
+
+<span class="comment">// Delete task</span>
+<span class="keyword">function</span> <span class="function">deleteTask</span>(index) {
+  tasks.<span class="function">splice</span>(index, <span class="number">1</span>);
+  <span class="function">saveTasks</span>();         <span class="comment">// Save to localStorage!</span>
+  <span class="function">renderTasks</span>();
+}
+
+<span class="comment">// Clear all tasks</span>
+<span class="keyword">function</span> <span class="function">clearAllTasks</span>() {
+  <span class="keyword">if</span> (<span class="function">confirm</span>(<span class="string">'Delete all tasks?'</span>)) {
+    tasks = [];
+    <span class="function">saveTasks</span>();     <span class="comment">// Save to localStorage!</span>
+    <span class="function">renderTasks</span>();
+  }
+}
+
+<span class="comment">// Update task counter</span>
+<span class="keyword">function</span> <span class="function">updateTaskCount</span>() {
+  <span class="keyword">let</span> total = tasks.length;
+  <span class="keyword">let</span> completed = tasks.<span class="function">filter</span>(t => t.completed).length;
+  taskCount.textContent = <span class="string">`</span>${total}<span class="string"> tasks (</span>${completed}<span class="string"> completed)`</span>;
+}
+
+<span class="comment">// Event listeners</span>
+addBtn.<span class="function">addEventListener</span>(<span class="string">'click'</span>, addTask);
+clearBtn.<span class="function">addEventListener</span>(<span class="string">'click'</span>, clearAllTasks);
+taskInput.<span class="function">addEventListener</span>(<span class="string">'keypress'</span>, (e) => {
+  <span class="keyword">if</span> (e.key === <span class="string">'Enter'</span>) <span class="function">addTask</span>();
+});
+
+<span class="comment">// Initialize on page load</span>
+<span class="function">init</span>();</div>
+                </div>
+
+                <div class="tip">
+                    <strong>💡 Key Differences from Week 5:</strong><br>
+                    1. Tasks are loaded from localStorage on page load<br>
+                    2. Every change (add, delete, toggle) saves to localStorage<br>
+                    3. Data persists even after refresh!<br>
+                    4. Added task counter and clear all button
+                </div>
+
+                <h3>Testing Your Persistent To-Do List</h3>
+                <ol style="padding-left: 20px; margin: 15px 0; line-height: 1.8;">
+                    <li>Add several tasks</li>
+                    <li>Mark some as complete</li>
+                    <li><strong>Refresh the page</strong> - tasks should still be there!</li>
+                    <li>Close the browser and reopen - still there!</li>
+                    <li>Open DevTools → Application → Local Storage to see the saved data</li>
+                    <li>Try Clear All button</li>
+                </ol>
+
+                <div class="example">
+                    <strong>🎉 Congratulations!</strong> You've built a fully persistent web application! This is a real, production-ready pattern used in professional web development.
+                </div>
+            </div>
+
+            <!-- Challenge Tab -->
+            <div id="challenge" class="tab-content">
+                <h2>🚀 Week 6 Challenges!</h2>
+                <p>You've mastered data persistence! Now take it further:</p>
+
+                <h3>To-Do List Enhancements</h3>
+                <ul class="checklist">
+                    <li>Add edit functionality to modify existing tasks</li>
+                    <li>Add priority levels (high, medium, low) that are saved</li>
+                    <li>Add categories/tags for tasks</li>
+                    <li>Add due dates with date picker</li>
+                    <li>Add filter buttons (All / Active / Completed)</li>
+                    <li>Add sort options (by date, priority, alphabetical)</li>
+                    <li>Add "Import/Export" to save tasks as JSON file</li>
+                    <li>Add statistics (total completed, completion rate, etc.)</li>
+                </ul>
+
+                <h3>New Project Ideas</h3>
+
+                <div class="example">
+                    <strong>Notes App</strong>
+                    <ul style="padding-left: 20px; margin-top: 10px;">
+                        <li>Create, edit, and delete notes</li>
+                        <li>Save each note with title and content</li>
+                        <li>Add timestamps (created, last modified)</li>
+                        <li>Search through notes</li>
+                        <li>Pin important notes to top</li>
+                    </ul>
+                </div>
+
+                <div class="example">
+                    <strong>Expense Tracker</strong>
+                    <ul style="padding-left: 20px; margin-top: 10px;">
+                        <li>Add expenses with amount, category, date</li>
+                        <li>Calculate total spending</li>
+                        <li>Show spending by category</li>
+                        <li>Set monthly budget</li>
+                        <li>Save all data persistently</li>
+                    </ul>
+                </div>
+
+                <div class="example">
+                    <strong>Habit Tracker</strong>
+                    <ul style="padding-left: 20px; margin-top: 10px;">
+                        <li>Create habits to track</li>
+                        <li>Mark habits as completed each day</li>
+                        <li>Show streak (consecutive days completed)</li>
+                        <li>Show calendar view of completions</li>
+                        <li>Calculate completion percentage</li>
+                    </ul>
+                </div>
+
+                <div class="example">
+                    <strong>Shopping List</strong>
+                    <ul style="padding-left: 20px; margin-top: 10px;">
+                        <li>Add items with quantity</li>
+                        <li>Check off items as you shop</li>
+                        <li>Organize by category (produce, dairy, etc.)</li>
+                        <li>Save frequently bought items</li>
+                        <li>Share list (export as text)</li>
+                    </ul>
+                </div>
+
+                <h3>Advanced Challenges</h3>
+
+                <div class="demo-box">
+                    <strong>Multi-User Support:</strong><br>
+                    • Add user login (store username in localStorage)<br>
+                    • Separate data for each user<br>
+                    • Switch between users<br><br>
+                    
+                    <strong>Data Backup:</strong><br>
+                    • Export all data as JSON file<br>
+                    • Import data from JSON file<br>
+                    • Add "Restore" feature for deleted items<br><br>
+                    
+                    <strong>Performance:</strong><br>
+                    • Only save changed data (not everything every time)<br>
+                    • Implement debouncing for auto-save<br>
+                    • Add loading indicators<br><br>
+                    
+                    <strong>Offline-First:</strong><br>
+                    • Make app work completely offline<br>
+                    • Add service worker (advanced!)<br>
+                    • Sync when online
+                </div>
+
+                <h3>What You've Accomplished! 🎉</h3>
+                <ul style="padding-left: 20px; margin: 15px 0; line-height: 1.8;">
+                    <li>✅ Understand Local Storage and how browsers save data</li>
+                    <li>✅ Save and load simple data (strings, numbers)</li>
+                    <li>✅ Work with JSON to save complex data (objects, arrays)</li>
+                    <li>✅ Handle edge cases (missing data, null values)</li>
+                    <li>✅ Build professional storage patterns</li>
+                    <li>✅ Created a fully persistent web application!</li>
+                </ul>
+
+                <p style="margin-top: 20px; padding: 15px; background: #e8f5e9; border-radius: 6px;">
+                    <strong>Next Steps:</strong> You now have all the fundamental skills of web development! You can build interactive, persistent web applications. From here, you could learn about APIs (fetching data from servers), async JavaScript (handling delays), modern frameworks (React, Vue), or build more complex projects. But first, practice by building lots of small apps!
+                </p>
+
+                <div class="tip">
+                    <strong>💡 Portfolio Tip:</strong> The projects you build this week are perfect for your portfolio! They show you understand data persistence, which is a crucial skill. Make them look good with CSS, add nice features, and put them on GitHub Pages!
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Panel: Code Editor and Preview -->
+        <div class="panel">
+            <h2>✏️ Your Code Editor</h2>
+            <textarea id="codeEditor" placeholder="Type your HTML + JavaScript here..."><!DOCTYPE html>
+<html>
+<head>
+  <title>Local Storage Demo</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 600px;
+      margin: 50px auto;
+      padding: 20px;
+    }
+    
+    input, button {
+      padding: 10px;
+      font-size: 16px;
+      margin: 5px;
+    }
+    
+    button {
+      background: #fa709a;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    
+    .output {
+      margin-top: 20px;
+      padding: 15px;
+      background: #f8f9fa;
+      border-radius: 5px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Local Storage Practice</h1>
+  
+  <div>
+    <input type="text" id="nameInput" placeholder="Enter your name">
+    <button onclick="saveName()">Save Name</button>
+    <button onclick="loadName()">Load Name</button>
+    <button onclick="clearName()">Clear Name</button>
+  </div>
+  
+  <div class="output" id="output">
+    Your name will appear here...
+  </div>
+  
+  <script>
+    function saveName() {
+      let name = document.getElementById('nameInput').value;
+      localStorage.setItem('userName', name);
+      document.getElementById('output').textContent = 'Saved: ' + name;
+    }
+    
+    function loadName() {
+      let name = localStorage.getItem('userName');
+      if (name) {
+        document.getElementById('output').textContent = 'Welcome back, ' + name + '!';
+      } else {
+        document.getElementById('output').textContent = 'No name saved yet.';
+      }
+    }
+    
+    function clearName() {
+      localStorage.removeItem('userName');
+      document.getElementById('output').textContent = 'Name cleared!';
+    }
+    
+    // Load name on page load
+    window.onload = loadName;
+  </script>
+</body>
+</html></textarea>
+            
+            <button onclick="updatePreview()">🔄 Run Code</button>
+            
+            <h2 style="margin-top: 30px;">👀 Live Preview</h2>
+            <iframe id="preview" class="preview-frame"></iframe>
+
+            <div style="margin-top: 20px; padding: 15px; background: #fff9e6; border-radius: 6px; border-left: 4px solid #ffd700;">
+                <strong>💡 Try This:</strong><br>
+                1. Enter your name and click Save<br>
+                2. Click "Run Code" again (simulates page refresh)<br>
+                3. Click Load - your name is still there!<br>
+                4. Open DevTools (F12) → Application → Local Storage to see the saved data
+            </div>
+        </div>
+    </div>
+
+    <div style="position: fixed; bottom: 0; left: 0; right: 0; background: rgba(250, 112, 154, 0.95); color: white; padding: 10px 20px; text-align: center; font-size: 14px; backdrop-filter: blur(10px);">
+        <strong>Week 6: Local Storage & Data Persistence</strong> | Made with ❤️ for learning web development | <strong>Build apps that remember!</strong>
+    </div>
+
+    <script>
+        function showTab(tabName) {
+            const contents = document.querySelectorAll('.tab-content');
+            contents.forEach(content => content.classList.remove('active'));
+            
+            const tabs = document.querySelectorAll('.tab');
+            tabs.forEach(tab => tab.classList.remove('active'));
+            
+            document.getElementById(tabName).classList.add('active');
+            event.target.classList.add('active');
+        }
+
+        function updatePreview() {
+            const code = document.getElementById('codeEditor').value;
+            
+            // Get the iframe container
+            const previewContainer = document.getElementById('preview').parentNode;
+            const oldPreview = document.getElementById('preview');
+            
+            // Create a completely new iframe
+            const newPreview = document.createElement('iframe');
+            newPreview.id = 'preview';
+            newPreview.className = 'preview-frame';
+            
+            // Replace the old iframe with the new one
+            previewContainer.replaceChild(newPreview, oldPreview);
+            
+            // Write the code to the new iframe
+            const previewDoc = newPreview.contentDocument || newPreview.contentWindow.document;
+            
+            previewDoc.open();
+            previewDoc.write(code);
+            previewDoc.close();
+        }
+
+        // Initial preview update
+        window.onload = function() {
+            updatePreview();
+        }
+    </script>
+</body>
+</html>

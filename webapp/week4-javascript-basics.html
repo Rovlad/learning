@@ -1,0 +1,1502 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Week 4: JavaScript Basics!</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            height: calc(100vh - 40px);
+        }
+
+        .panel {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            overflow-y: auto;
+        }
+
+        .lesson-panel {
+            display: flex;
+            flex-direction: column;
+        }
+
+        h1 {
+            color: #ff6b6b;
+            margin-bottom: 10px;
+            font-size: 28px;
+        }
+
+        h2 {
+            color: #ee5a6f;
+            margin-top: 25px;
+            margin-bottom: 15px;
+            font-size: 22px;
+        }
+
+        h3 {
+            color: #ff6b6b;
+            margin-top: 20px;
+            margin-bottom: 10px;
+            font-size: 18px;
+        }
+
+        .step {
+            background: #fff5f5;
+            border-left: 4px solid #ff6b6b;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 4px;
+        }
+
+        .step-number {
+            display: inline-block;
+            background: #ff6b6b;
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 30px;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+
+        code {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+        }
+
+        .code-block {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 15px;
+            border-radius: 6px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            overflow-x: auto;
+            margin: 10px 0;
+            line-height: 1.5;
+        }
+
+        .keyword {
+            color: #ff79c6;
+        }
+
+        .function {
+            color: #50fa7b;
+        }
+
+        .string {
+            color: #f1fa8c;
+        }
+
+        .number {
+            color: #bd93f9;
+        }
+
+        .comment {
+            color: #6272a4;
+        }
+
+        textarea {
+            width: 100%;
+            min-height: 300px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            padding: 15px;
+            border: 2px solid #ff6b6b;
+            border-radius: 6px;
+            resize: vertical;
+        }
+
+        button {
+            background: #ff6b6b;
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 15px;
+            transition: all 0.3s;
+        }
+
+        button:hover {
+            background: #ee5a6f;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .preview-frame {
+            width: 100%;
+            height: 400px;
+            border: 2px solid #ff6b6b;
+            border-radius: 6px;
+            background: white;
+            margin-top: 15px;
+        }
+
+        .console-output {
+            background: #1e1e1e;
+            color: #d4d4d4;
+            padding: 15px;
+            border-radius: 6px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            min-height: 150px;
+            max-height: 300px;
+            overflow-y: auto;
+            margin-top: 15px;
+            white-space: pre-wrap;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #e0e0e0;
+            flex-wrap: wrap;
+        }
+
+        .tab {
+            padding: 10px 20px;
+            background: none;
+            border: none;
+            color: #666;
+            font-weight: 600;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s;
+            margin: 0;
+        }
+
+        .tab.active {
+            color: #ff6b6b;
+            border-bottom-color: #ff6b6b;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .tip {
+            background: #fff9e6;
+            border-left: 4px solid #ffd700;
+            padding: 12px;
+            margin: 15px 0;
+            border-radius: 4px;
+        }
+
+        .tip strong {
+            color: #cc8800;
+        }
+
+        .checklist {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .checklist li {
+            padding: 8px 0;
+            padding-left: 30px;
+            position: relative;
+        }
+
+        .checklist li:before {
+            content: "☐";
+            position: absolute;
+            left: 0;
+            font-size: 20px;
+            color: #ff6b6b;
+        }
+
+        .example {
+            background: #e8f5e9;
+            border-left: 4px solid #4caf50;
+            padding: 12px;
+            margin: 15px 0;
+            border-radius: 4px;
+        }
+
+        .demo-box {
+            background: #f0f0f0;
+            border: 2px dashed #ff6b6b;
+            padding: 20px;
+            margin: 15px 0;
+            border-radius: 6px;
+        }
+
+        .error-box {
+            background: #ffebee;
+            border-left: 4px solid #f44336;
+            padding: 12px;
+            margin: 15px 0;
+            border-radius: 4px;
+            color: #c62828;
+        }
+
+        @media (max-width: 1200px) {
+            .container {
+                grid-template-columns: 1fr;
+                height: auto;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Left Panel: Lessons -->
+        <div class="panel lesson-panel">
+            <h1>💻 Week 4: JavaScript Basics!</h1>
+            <p style="color: #666; margin-bottom: 20px;">Welcome to programming! This week you'll learn JavaScript and make your websites truly interactive and dynamic!</p>
+
+            <div class="tabs">
+                <button class="tab active" onclick="showTab('learn')">📚 Learn</button>
+                <button class="tab" onclick="showTab('variables')">📦 Variables</button>
+                <button class="tab" onclick="showTab('functions')">⚙️ Functions</button>
+                <button class="tab" onclick="showTab('conditionals')">🔀 Conditionals</button>
+                <button class="tab" onclick="showTab('loops')">🔄 Loops</button>
+                <button class="tab" onclick="showTab('debugging')">🐛 Debugging</button>
+                <button class="tab" onclick="showTab('build')">🔨 Build</button>
+                <button class="tab" onclick="showTab('challenge')">🚀 Challenge</button>
+            </div>
+
+            <!-- Learn Tab -->
+            <div id="learn" class="tab-content active">
+                <h2>Welcome to Programming!</h2>
+                <p>Until now, your websites have been static - they look nice but can't think or make decisions. JavaScript changes everything!</p>
+
+                <h3>What is JavaScript?</h3>
+                <p>JavaScript is a <strong>programming language</strong> that runs in the browser. It's what makes websites interactive, dynamic, and smart.</p>
+
+                <div class="example">
+                    <strong>Think about websites you use:</strong><br>
+                    • When you click "Like" and the heart turns red → JavaScript<br>
+                    • When you type in a search box and get suggestions → JavaScript<br>
+                    • When a form tells you "Password too short" → JavaScript<br>
+                    • When items get added to your shopping cart → JavaScript<br><br>
+                    JavaScript makes the web come alive!
+                </div>
+
+                <h3>The Three Languages of the Web (Revisited)</h3>
+                <div class="demo-box">
+                    <strong>HTML</strong> = The structure (nouns)<br>
+                    <em>"A button, a heading, a paragraph"</em><br><br>
+                    
+                    <strong>CSS</strong> = The style (adjectives)<br>
+                    <em>"Blue, large, centered"</em><br><br>
+                    
+                    <strong>JavaScript</strong> = The behavior (verbs)<br>
+                    <em>"Click, calculate, show, hide, change"</em>
+                </div>
+
+                <h3>How JavaScript Works</h3>
+                <p>JavaScript is a <strong>programming language</strong>. Unlike HTML and CSS which describe things, JavaScript gives <strong>instructions</strong>:</p>
+
+                <div class="code-block"><span class="comment">// JavaScript tells the computer what to DO</span>
+<span class="keyword">let</span> age = <span class="number">15</span>;
+<span class="keyword">if</span> (age < <span class="number">18</span>) {
+  <span class="function">alert</span>(<span class="string">"You're a teenager!"</span>);
+}</div>
+
+                <h3>Where Does JavaScript Go?</h3>
+                <p>JavaScript goes inside <code>&lt;script&gt;</code> tags, usually at the end of your HTML:</p>
+
+                <div class="code-block"><span class="keyword">&lt;body&gt;</span>
+  <span class="keyword">&lt;h1&gt;</span>My Page<span class="keyword">&lt;/h1&gt;</span>
+  <span class="keyword">&lt;button</span> <span class="function">onclick</span>=<span class="string">"sayHello()"</span><span class="keyword">&gt;</span>Click Me<span class="keyword">&lt;/button&gt;</span>
+  
+  <span class="keyword">&lt;script&gt;</span>
+    <span class="keyword">function</span> <span class="function">sayHello</span>() {
+      <span class="function">alert</span>(<span class="string">"Hello!"</span>);
+    }
+  <span class="keyword">&lt;/script&gt;</span>
+<span class="keyword">&lt;/body&gt;</span></div>
+
+                <h3>The Five Core Concepts This Week</h3>
+
+                <div class="step">
+                    <span class="step-number">1</span>
+                    <strong>Variables</strong> - Storing information
+                    <p style="margin-top: 5px;">Like boxes that hold data: numbers, text, true/false values</p>
+                </div>
+
+                <div class="step">
+                    <span class="step-number">2</span>
+                    <strong>Functions</strong> - Reusable blocks of code
+                    <p style="margin-top: 5px;">Like recipes - write once, use many times</p>
+                </div>
+
+                <div class="step">
+                    <span class="step-number">3</span>
+                    <strong>Conditionals</strong> - Making decisions
+                    <p style="margin-top: 5px;">IF this is true, THEN do that</p>
+                </div>
+
+                <div class="step">
+                    <span class="step-number">4</span>
+                    <strong>Loops</strong> - Repeating actions
+                    <p style="margin-top: 5px;">Do this 10 times, or until something happens</p>
+                </div>
+
+                <div class="step">
+                    <span class="step-number">5</span>
+                    <strong>Debugging</strong> - Finding and fixing errors
+                    <p style="margin-top: 5px;">Using console.log() to see what's happening</p>
+                </div>
+
+                <h3>Your First Line of JavaScript!</h3>
+                <p>Try this in your browser's console (press F12, then click "Console"):</p>
+                <div class="code-block"><span class="function">console.log</span>(<span class="string">"Hello, JavaScript!"</span>);</div>
+                <p style="margin-top: 10px; font-size: 14px; color: #666;">You should see your message appear in the console!</p>
+
+                <div class="tip">
+                    <strong>💡 Programming is Problem Solving:</strong> JavaScript is about breaking big problems into small steps that a computer can follow. Don't worry if it feels weird at first - everyone starts here!
+                </div>
+
+                <h3>Why JavaScript Matters</h3>
+                <p>JavaScript is one of the most popular programming languages in the world. Learn JavaScript and you can:</p>
+                <ul style="padding-left: 20px; margin: 15px 0; line-height: 1.8;">
+                    <li>Build interactive websites</li>
+                    <li>Create web applications (Gmail, Facebook, Netflix)</li>
+                    <li>Make mobile apps (React Native)</li>
+                    <li>Build server applications (Node.js)</li>
+                    <li>Program games and animations</li>
+                    <li>And much more!</li>
+                </ul>
+            </div>
+
+            <!-- Variables Tab -->
+            <div id="variables" class="tab-content">
+                <h2>Variables - Storing Information</h2>
+                <p>Variables are like labeled boxes that store data. You can put things in, take things out, and change what's inside.</p>
+
+                <h3>Creating Variables</h3>
+                <p>Use <code>let</code> or <code>const</code> to create a variable:</p>
+
+                <div class="code-block"><span class="keyword">let</span> name = <span class="string">"Sarah"</span>;      <span class="comment">// Can be changed later</span>
+<span class="keyword">const</span> age = <span class="number">15</span>;        <span class="comment">// Cannot be changed</span></div>
+
+                <div class="tip">
+                    <strong>💡 let vs const:</strong><br>
+                    • Use <code>const</code> when the value won't change (like your birthday)<br>
+                    • Use <code>let</code> when the value might change (like your age)
+                </div>
+
+                <h3>Data Types</h3>
+                <p>Variables can hold different types of data:</p>
+
+                <div class="step">
+                    <span class="step-number">1</span>
+                    <strong>String</strong> - Text (always in quotes)
+                    <div class="code-block" style="margin-top: 10px;"><span class="keyword">let</span> firstName = <span class="string">"Alice"</span>;
+<span class="keyword">let</span> greeting = <span class="string">"Hello, world!"</span>;
+<span class="keyword">let</span> emoji = <span class="string">"🎉"</span>;</div>
+                </div>
+
+                <div class="step">
+                    <span class="step-number">2</span>
+                    <strong>Number</strong> - Numbers (no quotes)
+                    <div class="code-block" style="margin-top: 10px;"><span class="keyword">let</span> age = <span class="number">15</span>;
+<span class="keyword">let</span> price = <span class="number">19.99</span>;
+<span class="keyword">let</span> temperature = <span class="number">-5</span>;</div>
+                </div>
+
+                <div class="step">
+                    <span class="step-number">3</span>
+                    <strong>Boolean</strong> - True or False
+                    <div class="code-block" style="margin-top: 10px;"><span class="keyword">let</span> isStudent = <span class="keyword">true</span>;
+<span class="keyword">let</span> hasLicense = <span class="keyword">false</span>;
+<span class="keyword">let</span> isRaining = <span class="keyword">true</span>;</div>
+                </div>
+
+                <div class="step">
+                    <span class="step-number">4</span>
+                    <strong>Array</strong> - List of items
+                    <div class="code-block" style="margin-top: 10px;"><span class="keyword">let</span> colors = [<span class="string">"red"</span>, <span class="string">"blue"</span>, <span class="string">"green"</span>];
+<span class="keyword">let</span> numbers = [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>];
+<span class="keyword">let</span> mixed = [<span class="string">"hello"</span>, <span class="number">42</span>, <span class="keyword">true</span>];</div>
+                </div>
+
+                <h3>Using Variables</h3>
+                <div class="code-block"><span class="keyword">let</span> name = <span class="string">"Alex"</span>;
+<span class="function">console.log</span>(name);           <span class="comment">// Shows: Alex</span>
+
+<span class="keyword">let</span> score = <span class="number">10</span>;
+score = score + <span class="number">5</span>;             <span class="comment">// score is now 15</span>
+<span class="function">console.log</span>(score);          <span class="comment">// Shows: 15</span></div>
+
+                <h3>Math with Variables</h3>
+                <div class="code-block"><span class="keyword">let</span> x = <span class="number">10</span>;
+<span class="keyword">let</span> y = <span class="number">5</span>;
+
+<span class="function">console.log</span>(x + y);          <span class="comment">// 15 (addition)</span>
+<span class="function">console.log</span>(x - y);          <span class="comment">// 5 (subtraction)</span>
+<span class="function">console.log</span>(x * y);          <span class="comment">// 50 (multiplication)</span>
+<span class="function">console.log</span>(x / y);          <span class="comment">// 2 (division)</span>
+<span class="function">console.log</span>(x % y);          <span class="comment">// 0 (remainder/modulo)</span></div>
+
+                <h3>Combining Strings</h3>
+                <div class="code-block"><span class="keyword">let</span> firstName = <span class="string">"Sarah"</span>;
+<span class="keyword">let</span> lastName = <span class="string">"Smith"</span>;
+
+<span class="comment">// Method 1: Using +</span>
+<span class="keyword">let</span> fullName = firstName + <span class="string">" "</span> + lastName;
+<span class="function">console.log</span>(fullName);       <span class="comment">// "Sarah Smith"</span>
+
+<span class="comment">// Method 2: Template literals (modern way)</span>
+<span class="keyword">let</span> greeting = <span class="string">`Hello, </span>${firstName}<span class="string">!`</span>;
+<span class="function">console.log</span>(greeting);       <span class="comment">// "Hello, Sarah!"</span></div>
+
+                <h3>Accessing Array Items</h3>
+                <div class="code-block"><span class="keyword">let</span> fruits = [<span class="string">"apple"</span>, <span class="string">"banana"</span>, <span class="string">"orange"</span>];
+
+<span class="function">console.log</span>(fruits[<span class="number">0</span>]);      <span class="comment">// "apple" (first item)</span>
+<span class="function">console.log</span>(fruits[<span class="number">1</span>]);      <span class="comment">// "banana" (second item)</span>
+<span class="function">console.log</span>(fruits[<span class="number">2</span>]);      <span class="comment">// "orange" (third item)</span>
+
+<span class="comment">// Arrays start counting at 0!</span></div>
+
+                <div class="example">
+                    <strong>Try This:</strong><br>
+                    Open your browser console (F12 → Console) and type:<br>
+                    <code>let message = "I'm learning JavaScript!";</code><br>
+                    Then type: <code>console.log(message);</code><br>
+                    You'll see your message appear!
+                </div>
+
+                <div class="error-box">
+                    <strong>Common Mistakes:</strong><br>
+                    ❌ <code>let name = Sarah;</code> (missing quotes around text)<br>
+                    ✅ <code>let name = "Sarah";</code><br><br>
+                    ❌ <code>let age = "15";</code> (quotes make it text, not a number)<br>
+                    ✅ <code>let age = 15;</code>
+                </div>
+            </div>
+
+            <!-- Functions Tab -->
+            <div id="functions" class="tab-content">
+                <h2>Functions - Reusable Code Blocks</h2>
+                <p>Functions are like recipes - you write them once, then use them whenever you need them!</p>
+
+                <h3>Creating a Function</h3>
+                <div class="code-block"><span class="keyword">function</span> <span class="function">sayHello</span>() {
+  <span class="function">console.log</span>(<span class="string">"Hello!"</span>);
+}
+
+<span class="comment">// Use (call) the function</span>
+<span class="function">sayHello</span>();              <span class="comment">// Shows: Hello!</span></div>
+
+                <h3>Functions with Parameters</h3>
+                <p>Parameters let you pass information into a function:</p>
+
+                <div class="code-block"><span class="keyword">function</span> <span class="function">greet</span>(name) {
+  <span class="function">console.log</span>(<span class="string">"Hello, "</span> + name + <span class="string">"!"</span>);
+}
+
+<span class="function">greet</span>(<span class="string">"Sarah"</span>);         <span class="comment">// Shows: Hello, Sarah!</span>
+<span class="function">greet</span>(<span class="string">"Alex"</span>);          <span class="comment">// Shows: Hello, Alex!</span>
+<span class="function">greet</span>(<span class="string">"Emma"</span>);          <span class="comment">// Shows: Hello, Emma!</span></div>
+
+                <h3>Multiple Parameters</h3>
+                <div class="code-block"><span class="keyword">function</span> <span class="function">add</span>(a, b) {
+  <span class="keyword">let</span> result = a + b;
+  <span class="function">console.log</span>(result);
+}
+
+<span class="function">add</span>(<span class="number">5</span>, <span class="number">3</span>);              <span class="comment">// Shows: 8</span>
+<span class="function">add</span>(<span class="number">10</span>, <span class="number">20</span>);            <span class="comment">// Shows: 30</span></div>
+
+                <h3>Returning Values</h3>
+                <p>Functions can send back (return) a value:</p>
+
+                <div class="code-block"><span class="keyword">function</span> <span class="function">multiply</span>(x, y) {
+  <span class="keyword">return</span> x * y;
+}
+
+<span class="keyword">let</span> result = <span class="function">multiply</span>(<span class="number">4</span>, <span class="number">5</span>);
+<span class="function">console.log</span>(result);      <span class="comment">// Shows: 20</span>
+
+<span class="comment">// You can use the result directly</span>
+<span class="keyword">let</span> total = <span class="function">multiply</span>(<span class="number">3</span>, <span class="number">7</span>) + <span class="number">10</span>;
+<span class="function">console.log</span>(total);       <span class="comment">// Shows: 31 (21 + 10)</span></div>
+
+                <h3>Real-World Examples</h3>
+
+                <div class="example">
+                    <strong>Calculate Area of Rectangle</strong>
+                    <div class="code-block" style="margin-top: 10px;"><span class="keyword">function</span> <span class="function">calculateArea</span>(width, height) {
+  <span class="keyword">let</span> area = width * height;
+  <span class="keyword">return</span> area;
+}
+
+<span class="keyword">let</span> roomArea = <span class="function">calculateArea</span>(<span class="number">10</span>, <span class="number">12</span>);
+<span class="function">console.log</span>(<span class="string">"Room area: "</span> + roomArea + <span class="string">" sq ft"</span>);
+<span class="comment">// Shows: Room area: 120 sq ft</span></div>
+                </div>
+
+                <div class="example">
+                    <strong>Convert Temperature</strong>
+                    <div class="code-block" style="margin-top: 10px;"><span class="keyword">function</span> <span class="function">celsiusToFahrenheit</span>(celsius) {
+  <span class="keyword">let</span> fahrenheit = (celsius * <span class="number">9</span>/<span class="number">5</span>) + <span class="number">32</span>;
+  <span class="keyword">return</span> fahrenheit;
+}
+
+<span class="keyword">let</span> temp = <span class="function">celsiusToFahrenheit</span>(<span class="number">25</span>);
+<span class="function">console.log</span>(temp);        <span class="comment">// Shows: 77</span></div>
+                </div>
+
+                <div class="example">
+                    <strong>Check if Even or Odd</strong>
+                    <div class="code-block" style="margin-top: 10px;"><span class="keyword">function</span> <span class="function">isEven</span>(number) {
+  <span class="keyword">if</span> (number % <span class="number">2</span> === <span class="number">0</span>) {
+    <span class="keyword">return</span> <span class="keyword">true</span>;
+  } <span class="keyword">else</span> {
+    <span class="keyword">return</span> <span class="keyword">false</span>;
+  }
+}
+
+<span class="function">console.log</span>(<span class="function">isEven</span>(<span class="number">4</span>));    <span class="comment">// true</span>
+<span class="function">console.log</span>(<span class="function">isEven</span>(<span class="number">7</span>));    <span class="comment">// false</span></div>
+                </div>
+
+                <h3>Arrow Functions (Modern Syntax)</h3>
+                <p>A shorter way to write functions:</p>
+
+                <div class="code-block"><span class="comment">// Traditional function</span>
+<span class="keyword">function</span> <span class="function">double</span>(x) {
+  <span class="keyword">return</span> x * <span class="number">2</span>;
+}
+
+<span class="comment">// Arrow function (same thing!)</span>
+<span class="keyword">const</span> <span class="function">double</span> = (x) => {
+  <span class="keyword">return</span> x * <span class="number">2</span>;
+}
+
+<span class="comment">// Even shorter (when returning one thing)</span>
+<span class="keyword">const</span> <span class="function">double</span> = x => x * <span class="number">2</span>;</div>
+
+                <div class="tip">
+                    <strong>💡 Why Functions Are Awesome:</strong><br>
+                    • Write code once, use it many times<br>
+                    • Break big problems into smaller pieces<br>
+                    • Make code easier to read and understand<br>
+                    • Fix bugs in one place instead of everywhere
+                </div>
+
+                <div class="error-box">
+                    <strong>Common Mistakes:</strong><br>
+                    ❌ Forgetting parentheses: <code>sayHello;</code><br>
+                    ✅ Call with parentheses: <code>sayHello();</code><br><br>
+                    ❌ Wrong order: Call before defining<br>
+                    ✅ Define function first, then call it
+                </div>
+            </div>
+
+            <!-- Conditionals Tab -->
+            <div id="conditionals" class="tab-content">
+                <h2>Conditionals - Making Decisions</h2>
+                <p>Conditionals let your code make decisions based on conditions. Think "IF this is true, THEN do that."</p>
+
+                <h3>The if Statement</h3>
+                <div class="code-block"><span class="keyword">let</span> age = <span class="number">16</span>;
+
+<span class="keyword">if</span> (age >= <span class="number">18</span>) {
+  <span class="function">console.log</span>(<span class="string">"You can vote!"</span>);
+}</div>
+
+                <h3>if...else</h3>
+                <p>Do one thing if true, another thing if false:</p>
+
+                <div class="code-block"><span class="keyword">let</span> temperature = <span class="number">25</span>;
+
+<span class="keyword">if</span> (temperature > <span class="number">30</span>) {
+  <span class="function">console.log</span>(<span class="string">"It's hot!"</span>);
+} <span class="keyword">else</span> {
+  <span class="function">console.log</span>(<span class="string">"It's nice!"</span>);
+}</div>
+
+                <h3>if...else if...else</h3>
+                <p>Check multiple conditions:</p>
+
+                <div class="code-block"><span class="keyword">let</span> score = <span class="number">85</span>;
+
+<span class="keyword">if</span> (score >= <span class="number">90</span>) {
+  <span class="function">console.log</span>(<span class="string">"Grade: A"</span>);
+} <span class="keyword">else if</span> (score >= <span class="number">80</span>) {
+  <span class="function">console.log</span>(<span class="string">"Grade: B"</span>);
+} <span class="keyword">else if</span> (score >= <span class="number">70</span>) {
+  <span class="function">console.log</span>(<span class="string">"Grade: C"</span>);
+} <span class="keyword">else</span> {
+  <span class="function">console.log</span>(<span class="string">"Grade: F"</span>);
+}
+<span class="comment">// Shows: Grade: B</span></div>
+
+                <h3>Comparison Operators</h3>
+                <p>Used to compare values:</p>
+
+                <div class="code-block"><span class="comment">// Equality</span>
+<span class="number">5</span> === <span class="number">5</span>           <span class="comment">// true (equal to)</span>
+<span class="number">5</span> !== <span class="number">3</span>           <span class="comment">// true (not equal to)</span>
+
+<span class="comment">// Comparison</span>
+<span class="number">10</span> > <span class="number">5</span>            <span class="comment">// true (greater than)</span>
+<span class="number">10</span> < <span class="number">5</span>            <span class="comment">// false (less than)</span>
+<span class="number">10</span> >= <span class="number">10</span>          <span class="comment">// true (greater than or equal)</span>
+<span class="number">5</span> <= <span class="number">10</span>           <span class="comment">// true (less than or equal)</span></div>
+
+                <div class="tip">
+                    <strong>💡 Important:</strong> Use <code>===</code> (three equals) for comparison, not <code>=</code> (one equals)!<br>
+                    • <code>=</code> assigns a value: <code>x = 5</code><br>
+                    • <code>===</code> compares values: <code>x === 5</code>
+                </div>
+
+                <h3>Logical Operators</h3>
+                <p>Combine multiple conditions:</p>
+
+                <div class="code-block"><span class="keyword">let</span> age = <span class="number">20</span>;
+<span class="keyword">let</span> hasLicense = <span class="keyword">true</span>;
+
+<span class="comment">// AND - both must be true</span>
+<span class="keyword">if</span> (age >= <span class="number">16</span> && hasLicense) {
+  <span class="function">console.log</span>(<span class="string">"You can drive!"</span>);
+}
+
+<span class="comment">// OR - at least one must be true</span>
+<span class="keyword">if</span> (age < <span class="number">13</span> || age > <span class="number">65</span>) {
+  <span class="function">console.log</span>(<span class="string">"Discount available!"</span>);
+}
+
+<span class="comment">// NOT - reverses the condition</span>
+<span class="keyword">if</span> (!hasLicense) {
+  <span class="function">console.log</span>(<span class="string">"You need a license"</span>);
+}</div>
+
+                <h3>Real-World Examples</h3>
+
+                <div class="example">
+                    <strong>Password Validator</strong>
+                    <div class="code-block" style="margin-top: 10px;"><span class="keyword">function</span> <span class="function">checkPassword</span>(password) {
+  <span class="keyword">if</span> (password.length < <span class="number">8</span>) {
+    <span class="function">console.log</span>(<span class="string">"Password too short!"</span>);
+  } <span class="keyword">else if</span> (password.length > <span class="number">20</span>) {
+    <span class="function">console.log</span>(<span class="string">"Password too long!"</span>);
+  } <span class="keyword">else</span> {
+    <span class="function">console.log</span>(<span class="string">"Password is good!"</span>);
+  }
+}
+
+<span class="function">checkPassword</span>(<span class="string">"abc"</span>);         <span class="comment">// Password too short!</span>
+<span class="function">checkPassword</span>(<span class="string">"mySecure123"</span>);  <span class="comment">// Password is good!</span></div>
+                </div>
+
+                <div class="example">
+                    <strong>Age Category</strong>
+                    <div class="code-block" style="margin-top: 10px;"><span class="keyword">function</span> <span class="function">getAgeGroup</span>(age) {
+  <span class="keyword">if</span> (age < <span class="number">13</span>) {
+    <span class="keyword">return</span> <span class="string">"Child"</span>;
+  } <span class="keyword">else if</span> (age < <span class="number">20</span>) {
+    <span class="keyword">return</span> <span class="string">"Teenager"</span>;
+  } <span class="keyword">else if</span> (age < <span class="number">65</span>) {
+    <span class="keyword">return</span> <span class="string">"Adult"</span>;
+  } <span class="keyword">else</span> {
+    <span class="keyword">return</span> <span class="string">"Senior"</span>;
+  }
+}
+
+<span class="function">console.log</span>(<span class="function">getAgeGroup</span>(<span class="number">15</span>));  <span class="comment">// Teenager</span></div>
+                </div>
+
+                <div class="example">
+                    <strong>Weekend Checker</strong>
+                    <div class="code-block" style="margin-top: 10px;"><span class="keyword">function</span> <span class="function">isWeekend</span>(day) {
+  <span class="keyword">if</span> (day === <span class="string">"Saturday"</span> || day === <span class="string">"Sunday"</span>) {
+    <span class="keyword">return</span> <span class="keyword">true</span>;
+  } <span class="keyword">else</span> {
+    <span class="keyword">return</span> <span class="keyword">false</span>;
+  }
+}
+
+<span class="function">console.log</span>(<span class="function">isWeekend</span>(<span class="string">"Saturday"</span>));  <span class="comment">// true</span>
+<span class="function">console.log</span>(<span class="function">isWeekend</span>(<span class="string">"Monday"</span>));    <span class="comment">// false</span></div>
+                </div>
+
+                <h3>Ternary Operator (Shortcut)</h3>
+                <p>A shorter way to write simple if...else:</p>
+
+                <div class="code-block"><span class="comment">// Long way</span>
+<span class="keyword">let</span> age = <span class="number">20</span>;
+<span class="keyword">let</span> status;
+<span class="keyword">if</span> (age >= <span class="number">18</span>) {
+  status = <span class="string">"adult"</span>;
+} <span class="keyword">else</span> {
+  status = <span class="string">"minor"</span>;
+}
+
+<span class="comment">// Short way (ternary)</span>
+<span class="keyword">let</span> status = age >= <span class="number">18</span> ? <span class="string">"adult"</span> : <span class="string">"minor"</span>;</div>
+
+                <div class="error-box">
+                    <strong>Common Mistakes:</strong><br>
+                    ❌ <code>if (age = 18)</code> (assignment, not comparison)<br>
+                    ✅ <code>if (age === 18)</code><br><br>
+                    ❌ <code>if age > 18</code> (missing parentheses)<br>
+                    ✅ <code>if (age > 18)</code>
+                </div>
+            </div>
+
+            <!-- Loops Tab -->
+            <div id="loops" class="tab-content">
+                <h2>Loops - Repeating Actions</h2>
+                <p>Loops let you repeat code multiple times without writing it over and over. Perfect for processing lists or doing something many times!</p>
+
+                <h3>The for Loop</h3>
+                <p>Use when you know how many times to repeat:</p>
+
+                <div class="code-block"><span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">0</span>; i < <span class="number">5</span>; i++) {
+  <span class="function">console.log</span>(<span class="string">"Count: "</span> + i);
+}
+<span class="comment">// Shows: Count: 0, Count: 1, Count: 2, Count: 3, Count: 4</span></div>
+
+                <p style="margin-top: 10px; font-size: 14px; color: #666;">Breaking it down:</p>
+                <ul style="padding-left: 20px; margin: 10px 0; line-height: 1.8; font-size: 14px;">
+                    <li><code>let i = 0</code> - Start at 0</li>
+                    <li><code>i < 5</code> - Keep going while i is less than 5</li>
+                    <li><code>i++</code> - Add 1 to i each time (same as i = i + 1)</li>
+                </ul>
+
+                <h3>Looping Through Arrays</h3>
+                <div class="code-block"><span class="keyword">let</span> fruits = [<span class="string">"apple"</span>, <span class="string">"banana"</span>, <span class="string">"orange"</span>];
+
+<span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">0</span>; i < fruits.length; i++) {
+  <span class="function">console.log</span>(fruits[i]);
+}
+<span class="comment">// Shows: apple, banana, orange</span></div>
+
+                <h3>The while Loop</h3>
+                <p>Use when you don't know how many times to repeat:</p>
+
+                <div class="code-block"><span class="keyword">let</span> count = <span class="number">0</span>;
+
+<span class="keyword">while</span> (count < <span class="number">3</span>) {
+  <span class="function">console.log</span>(<span class="string">"Count is: "</span> + count);
+  count++;
+}
+<span class="comment">// Shows: Count is: 0, Count is: 1, Count is: 2</span></div>
+
+                <div class="tip">
+                    <strong>⚠️ Warning:</strong> Be careful with while loops! If the condition never becomes false, you'll create an infinite loop that crashes your browser!
+                </div>
+
+                <h3>Modern Array Loops</h3>
+
+                <div class="step">
+                    <span class="step-number">1</span>
+                    <strong>forEach</strong> - Loop through each item
+                    <div class="code-block" style="margin-top: 10px;"><span class="keyword">let</span> colors = [<span class="string">"red"</span>, <span class="string">"green"</span>, <span class="string">"blue"</span>];
+
+colors.<span class="function">forEach</span>(<span class="keyword">function</span>(color) {
+  <span class="function">console.log</span>(color);
+});
+
+<span class="comment">// Or with arrow function:</span>
+colors.<span class="function">forEach</span>(color => <span class="function">console.log</span>(color));</div>
+                </div>
+
+                <div class="step">
+                    <span class="step-number">2</span>
+                    <strong>for...of</strong> - Cleaner array loop
+                    <div class="code-block" style="margin-top: 10px;"><span class="keyword">let</span> numbers = [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>];
+
+<span class="keyword">for</span> (<span class="keyword">let</span> num <span class="keyword">of</span> numbers) {
+  <span class="function">console.log</span>(num * <span class="number">2</span>);
+}
+<span class="comment">// Shows: 2, 4, 6, 8, 10</span></div>
+                </div>
+
+                <h3>Real-World Examples</h3>
+
+                <div class="example">
+                    <strong>Sum All Numbers in Array</strong>
+                    <div class="code-block" style="margin-top: 10px;"><span class="keyword">function</span> <span class="function">sumArray</span>(numbers) {
+  <span class="keyword">let</span> total = <span class="number">0</span>;
+  
+  <span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">0</span>; i < numbers.length; i++) {
+    total = total + numbers[i];
+  }
+  
+  <span class="keyword">return</span> total;
+}
+
+<span class="keyword">let</span> scores = [<span class="number">85</span>, <span class="number">90</span>, <span class="number">78</span>, <span class="number">92</span>];
+<span class="function">console.log</span>(<span class="function">sumArray</span>(scores));  <span class="comment">// Shows: 345</span></div>
+                </div>
+
+                <div class="example">
+                    <strong>Find Largest Number</strong>
+                    <div class="code-block" style="margin-top: 10px;"><span class="keyword">function</span> <span class="function">findMax</span>(numbers) {
+  <span class="keyword">let</span> max = numbers[<span class="number">0</span>];  <span class="comment">// Start with first number</span>
+  
+  <span class="keyword">for</span> (<span class="keyword">let</span> num <span class="keyword">of</span> numbers) {
+    <span class="keyword">if</span> (num > max) {
+      max = num;
+    }
+  }
+  
+  <span class="keyword">return</span> max;
+}
+
+<span class="keyword">let</span> temps = [<span class="number">72</span>, <span class="number">85</span>, <span class="number">91</span>, <span class="number">68</span>, <span class="number">77</span>];
+<span class="function">console.log</span>(<span class="function">findMax</span>(temps));  <span class="comment">// Shows: 91</span></div>
+                </div>
+
+                <div class="example">
+                    <strong>Count Down</strong>
+                    <div class="code-block" style="margin-top: 10px;"><span class="keyword">function</span> <span class="function">countDown</span>(start) {
+  <span class="keyword">for</span> (<span class="keyword">let</span> i = start; i >= <span class="number">0</span>; i--) {
+    <span class="function">console.log</span>(i);
+  }
+  <span class="function">console.log</span>(<span class="string">"Blast off!"</span>);
+}
+
+<span class="function">countDown</span>(<span class="number">5</span>);
+<span class="comment">// Shows: 5, 4, 3, 2, 1, 0, Blast off!</span></div>
+                </div>
+
+                <div class="example">
+                    <strong>Build HTML List</strong>
+                    <div class="code-block" style="margin-top: 10px;"><span class="keyword">let</span> items = [<span class="string">"Milk"</span>, <span class="string">"Eggs"</span>, <span class="string">"Bread"</span>];
+<span class="keyword">let</span> html = <span class="string">""</span>;
+
+<span class="keyword">for</span> (<span class="keyword">let</span> item <span class="keyword">of</span> items) {
+  html += <span class="string">`&lt;li&gt;</span>${item}<span class="string">&lt;/li&gt;`</span>;
+}
+
+<span class="function">console.log</span>(html);
+<span class="comment">// Shows: &lt;li&gt;Milk&lt;/li&gt;&lt;li&gt;Eggs&lt;/li&gt;&lt;li&gt;Bread&lt;/li&gt;</span></div>
+                </div>
+
+                <h3>Loop Control</h3>
+
+                <div class="code-block"><span class="comment">// break - stop the loop early</span>
+<span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">0</span>; i < <span class="number">10</span>; i++) {
+  <span class="keyword">if</span> (i === <span class="number">5</span>) {
+    <span class="keyword">break</span>;  <span class="comment">// Stop when i is 5</span>
+  }
+  <span class="function">console.log</span>(i);
+}
+<span class="comment">// Shows: 0, 1, 2, 3, 4</span>
+
+<span class="comment">// continue - skip to next iteration</span>
+<span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">0</span>; i < <span class="number">5</span>; i++) {
+  <span class="keyword">if</span> (i === <span class="number">2</span>) {
+    <span class="keyword">continue</span>;  <span class="comment">// Skip when i is 2</span>
+  }
+  <span class="function">console.log</span>(i);
+}
+<span class="comment">// Shows: 0, 1, 3, 4 (skips 2)</span></div>
+
+                <div class="error-box">
+                    <strong>Common Mistakes:</strong><br>
+                    ❌ <code>for (let i = 0; i < 5)</code> (missing i++)<br>
+                    ✅ <code>for (let i = 0; i < 5; i++)</code><br><br>
+                    ❌ Infinite loop: <code>while (true) { ... }</code><br>
+                    ✅ Always have a condition that becomes false!
+                </div>
+            </div>
+
+            <!-- Debugging Tab -->
+            <div id="debugging" class="tab-content">
+                <h2>Debugging - Finding and Fixing Errors</h2>
+                <p>Debugging is the process of finding and fixing errors in your code. Every programmer spends a LOT of time debugging - it's a normal part of coding!</p>
+
+                <h3>Types of Errors</h3>
+
+                <div class="step">
+                    <span class="step-number">1</span>
+                    <strong>Syntax Errors</strong> - Typos in your code
+                    <div class="error-box" style="margin-top: 10px;">
+                        <code>console.log("Hello"  // Missing closing )</code><br>
+                        <code>let name = Sarah;    // Missing quotes</code><br>
+                        <code>if (x > 5 {          // Missing )</code>
+                    </div>
+                    <p style="margin-top: 10px; font-size: 14px;">These prevent your code from running at all. Check the console for error messages!</p>
+                </div>
+
+                <div class="step">
+                    <span class="step-number">2</span>
+                    <strong>Logic Errors</strong> - Code runs but does wrong thing
+                    <div class="code-block" style="margin-top: 10px;"><span class="comment">// Bug: Should add, not subtract</span>
+<span class="keyword">function</span> <span class="function">add</span>(a, b) {
+  <span class="keyword">return</span> a - b;  <span class="comment">// Oops! Wrong operator</span>
+}</div>
+                    <p style="margin-top: 10px; font-size: 14px;">Code runs but gives wrong results. Use console.log() to find these!</p>
+                </div>
+
+                <div class="step">
+                    <span class="step-number">3</span>
+                    <strong>Runtime Errors</strong> - Errors that happen while running
+                    <div class="code-block" style="margin-top: 10px;"><span class="keyword">let</span> numbers = [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>];
+<span class="function">console.log</span>(numbers[<span class="number">10</span>]);  <span class="comment">// undefined - index doesn't exist</span></div>
+                </div>
+
+                <h3>Using console.log()</h3>
+                <p>Your #1 debugging tool! Use it to see what's happening in your code:</p>
+
+                <div class="code-block"><span class="keyword">function</span> <span class="function">calculateTotal</span>(price, quantity) {
+  <span class="function">console.log</span>(<span class="string">"Price:"</span>, price);      <span class="comment">// Check the inputs</span>
+  <span class="function">console.log</span>(<span class="string">"Quantity:"</span>, quantity);
+  
+  <span class="keyword">let</span> total = price * quantity;
+  <span class="function">console.log</span>(<span class="string">"Total:"</span>, total);      <span class="comment">// Check the result</span>
+  
+  <span class="keyword">return</span> total;
+}</div>
+
+                <h3>Debugging Strategies</h3>
+
+                <div class="example">
+                    <strong>1. Print Everything</strong><br>
+                    Add console.log() statements to see values at each step:
+                    <div class="code-block" style="margin-top: 10px;"><span class="keyword">function</span> <span class="function">average</span>(numbers) {
+  <span class="function">console.log</span>(<span class="string">"Input array:"</span>, numbers);
+  
+  <span class="keyword">let</span> sum = <span class="number">0</span>;
+  <span class="keyword">for</span> (<span class="keyword">let</span> num <span class="keyword">of</span> numbers) {
+    sum += num;
+    <span class="function">console.log</span>(<span class="string">"Current sum:"</span>, sum);
+  }
+  
+  <span class="keyword">let</span> avg = sum / numbers.length;
+  <span class="function">console.log</span>(<span class="string">"Final average:"</span>, avg);
+  
+  <span class="keyword">return</span> avg;
+}</div>
+                </div>
+
+                <div class="example">
+                    <strong>2. Comment Out Code</strong><br>
+                    Use <code>//</code> to temporarily disable code and find where the error is:
+                    <div class="code-block" style="margin-top: 10px;"><span class="keyword">function</span> <span class="function">processData</span>() {
+  <span class="function">getData</span>();           <span class="comment">// This works</span>
+  <span class="comment">// validateData();   // Comment this out to test</span>
+  <span class="comment">// saveData();       // Comment this out to test</span>
+}</div>
+                </div>
+
+                <div class="example">
+                    <strong>3. Check the Console</strong><br>
+                    Press F12 and click "Console" to see:<br>
+                    • Error messages (in red)<br>
+                    • Your console.log() output<br>
+                    • Line numbers where errors occur
+                </div>
+
+                <div class="example">
+                    <strong>4. Read Error Messages Carefully</strong><br>
+                    Error messages tell you exactly what's wrong:
+                    <div class="error-box" style="margin-top: 10px;">
+                        <code>Uncaught ReferenceError: name is not defined</code><br>
+                        → You're using a variable that doesn't exist<br><br>
+                        <code>Uncaught TypeError: Cannot read property 'length' of undefined</code><br>
+                        → You're trying to use .length on something that doesn't exist
+                    </div>
+                </div>
+
+                <h3>Common Debugging Patterns</h3>
+
+                <div class="code-block"><span class="comment">// 1. Check if variable exists</span>
+<span class="function">console.log</span>(<span class="string">"Is name defined?"</span>, name);
+
+<span class="comment">// 2. Check type of variable</span>
+<span class="function">console.log</span>(<span class="string">"Type:"</span>, <span class="keyword">typeof</span> age);
+
+<span class="comment">// 3. Check array contents</span>
+<span class="function">console.log</span>(<span class="string">"Array:"</span>, myArray);
+<span class="function">console.log</span>(<span class="string">"Length:"</span>, myArray.length);
+
+<span class="comment">// 4. Check if condition is true</span>
+<span class="function">console.log</span>(<span class="string">"Is x > 10?"</span>, x > <span class="number">10</span>);
+
+<span class="comment">// 5. Mark checkpoints in your code</span>
+<span class="function">console.log</span>(<span class="string">"=== Checkpoint 1 ==="</span>);
+<span class="comment">// ... some code ...</span>
+<span class="function">console.log</span>(<span class="string">"=== Checkpoint 2 ==="</span>);</div>
+
+                <h3>Debugging Workflow</h3>
+                <ol style="padding-left: 20px; margin: 15px 0; line-height: 1.8;">
+                    <li>Read the error message</li>
+                    <li>Find the line number</li>
+                    <li>Add console.log() before and after that line</li>
+                    <li>Check what values variables have</li>
+                    <li>Compare to what you expected</li>
+                    <li>Fix the code</li>
+                    <li>Test again!</li>
+                </ol>
+
+                <div class="tip">
+                    <strong>💡 Debugging Tips:</strong><br>
+                    • Use descriptive console.log() messages: <code>console.log("User age:", age)</code><br>
+                    • Check one thing at a time<br>
+                    • Take breaks if you're stuck - fresh eyes help!<br>
+                    • Google error messages - you're not the first person with this error!<br>
+                    • Ask for help - explain the problem to someone (even a rubber duck!)
+                </div>
+
+                <h3>Practice Exercise</h3>
+                <div class="demo-box">
+                    <p><strong>Find the bugs in this code:</strong></p>
+                    <div class="code-block" style="margin-top: 10px;"><span class="keyword">function</span> <span class="function">greetUser</span>(name) {
+  <span class="keyword">if</span> (name = <span class="string">""</span>) {
+    <span class="function">console.log</span>(<span class="string">"Please enter a name"</span>);
+  } <span class="keyword">else</span> {
+    <span class="function">console.log</span>(<span class="string">"Hello "</span> + name);
+  }
+}</div>
+                    <p style="margin-top: 10px;">Bugs to find:</p>
+                    <ol style="padding-left: 20px; margin: 10px 0; line-height: 1.8; font-size: 14px;">
+                        <li>Should use <code>===</code> not <code>=</code> for comparison</li>
+                        <li>Missing <code>!</code> in the message (should be "Hello!")</li>
+                    </ol>
+                </div>
+            </div>
+
+            <!-- Build Tab -->
+            <div id="build" class="tab-content">
+                <h2>Let's Build a Calculator!</h2>
+                <p>Time to put everything together! You'll build a working calculator that can add, subtract, multiply, and divide.</p>
+
+                <div class="step">
+                    <span class="step-number">1</span>
+                    <strong>Create the HTML Structure</strong>
+                    <div class="code-block" style="margin-top: 10px;"><span class="keyword">&lt;!DOCTYPE html&gt;</span>
+<span class="keyword">&lt;html&gt;</span>
+<span class="keyword">&lt;head&gt;</span>
+  <span class="keyword">&lt;title&gt;</span>Simple Calculator<span class="keyword">&lt;/title&gt;</span>
+  <span class="keyword">&lt;style&gt;</span>
+    <span class="comment">/* Add CSS here */</span>
+  <span class="keyword">&lt;/style&gt;</span>
+<span class="keyword">&lt;/head&gt;</span>
+<span class="keyword">&lt;body&gt;</span>
+  <span class="keyword">&lt;div</span> <span class="function">class</span>=<span class="string">"calculator"</span><span class="keyword">&gt;</span>
+    <span class="keyword">&lt;h1&gt;</span>Calculator<span class="keyword">&lt;/h1&gt;</span>
+    
+    <span class="keyword">&lt;input</span> <span class="function">type</span>=<span class="string">"number"</span> <span class="function">id</span>=<span class="string">"num1"</span> <span class="function">placeholder</span>=<span class="string">"First number"</span><span class="keyword">&gt;</span>
+    <span class="keyword">&lt;input</span> <span class="function">type</span>=<span class="string">"number"</span> <span class="function">id</span>=<span class="string">"num2"</span> <span class="function">placeholder</span>=<span class="string">"Second number"</span><span class="keyword">&gt;</span>
+    
+    <span class="keyword">&lt;div</span> <span class="function">class</span>=<span class="string">"buttons"</span><span class="keyword">&gt;</span>
+      <span class="keyword">&lt;button</span> <span class="function">onclick</span>=<span class="string">"add()"</span><span class="keyword">&gt;</span>+<span class="keyword">&lt;/button&gt;</span>
+      <span class="keyword">&lt;button</span> <span class="function">onclick</span>=<span class="string">"subtract()"</span><span class="keyword">&gt;</span>-<span class="keyword">&lt;/button&gt;</span>
+      <span class="keyword">&lt;button</span> <span class="function">onclick</span>=<span class="string">"multiply()"</span><span class="keyword">&gt;</span>×<span class="keyword">&lt;/button&gt;</span>
+      <span class="keyword">&lt;button</span> <span class="function">onclick</span>=<span class="string">"divide()"</span><span class="keyword">&gt;</span>÷<span class="keyword">&lt;/button&gt;</span>
+    <span class="keyword">&lt;/div&gt;</span>
+    
+    <span class="keyword">&lt;div</span> <span class="function">id</span>=<span class="string">"result"</span><span class="keyword">&gt;</span>Result: <span class="keyword">&lt;/div&gt;</span>
+  <span class="keyword">&lt;/div&gt;</span>
+  
+  <span class="keyword">&lt;script&gt;</span>
+    <span class="comment">// JavaScript will go here</span>
+  <span class="keyword">&lt;/script&gt;</span>
+<span class="keyword">&lt;/body&gt;</span>
+<span class="keyword">&lt;/html&gt;</span></div>
+                </div>
+
+                <div class="step">
+                    <span class="step-number">2</span>
+                    <strong>Add CSS Styling</strong>
+                    <div class="code-block" style="margin-top: 10px;"><span class="function">.calculator</span> {
+  <span class="keyword">max-width</span>: <span class="number">400px</span>;
+  <span class="keyword">margin</span>: <span class="number">50px</span> <span class="keyword">auto</span>;
+  <span class="keyword">padding</span>: <span class="number">30px</span>;
+  <span class="keyword">background</span>: <span class="string">white</span>;
+  <span class="keyword">border-radius</span>: <span class="number">10px</span>;
+  <span class="keyword">box-shadow</span>: <span class="number">0</span> <span class="number">5px</span> <span class="number">20px</span> <span class="function">rgba</span>(<span class="number">0</span>,<span class="number">0</span>,<span class="number">0</span>,<span class="number">0.1</span>);
+}
+
+<span class="function">input</span> {
+  <span class="keyword">width</span>: <span class="number">100%</span>;
+  <span class="keyword">padding</span>: <span class="number">15px</span>;
+  <span class="keyword">margin</span>: <span class="number">10px</span> <span class="number">0</span>;
+  <span class="keyword">font-size</span>: <span class="number">18px</span>;
+  <span class="keyword">border</span>: <span class="number">2px</span> <span class="keyword">solid</span> <span class="string">#ddd</span>;
+  <span class="keyword">border-radius</span>: <span class="number">5px</span>;
+}
+
+<span class="function">.buttons</span> {
+  <span class="keyword">display</span>: <span class="keyword">grid</span>;
+  <span class="keyword">grid-template-columns</span>: <span class="function">repeat</span>(<span class="number">4</span>, <span class="number">1fr</span>);
+  <span class="keyword">gap</span>: <span class="number">10px</span>;
+  <span class="keyword">margin</span>: <span class="number">20px</span> <span class="number">0</span>;
+}
+
+<span class="function">button</span> {
+  <span class="keyword">padding</span>: <span class="number">20px</span>;
+  <span class="keyword">font-size</span>: <span class="number">24px</span>;
+  <span class="keyword">border</span>: <span class="keyword">none</span>;
+  <span class="keyword">background</span>: <span class="string">#ff6b6b</span>;
+  <span class="keyword">color</span>: <span class="string">white</span>;
+  <span class="keyword">border-radius</span>: <span class="number">5px</span>;
+  <span class="keyword">cursor</span>: <span class="keyword">pointer</span>;
+  <span class="keyword">transition</span>: <span class="number">0.3s</span>;
+}
+
+<span class="function">button:hover</span> {
+  <span class="keyword">background</span>: <span class="string">#ee5a6f</span>;
+  <span class="keyword">transform</span>: <span class="function">translateY</span>(<span class="number">-2px</span>);
+}
+
+<span class="function">#result</span> {
+  <span class="keyword">margin-top</span>: <span class="number">20px</span>;
+  <span class="keyword">padding</span>: <span class="number">20px</span>;
+  <span class="keyword">background</span>: <span class="string">#f8f9fa</span>;
+  <span class="keyword">border-radius</span>: <span class="number">5px</span>;
+  <span class="keyword">font-size</span>: <span class="number">24px</span>;
+  <span class="keyword">text-align</span>: <span class="keyword">center</span>;
+  <span class="keyword">font-weight</span>: <span class="keyword">bold</span>;
+}</div>
+                </div>
+
+                <div class="step">
+                    <span class="step-number">3</span>
+                    <strong>Write the JavaScript Functions</strong>
+                    <div class="code-block" style="margin-top: 10px;"><span class="comment">// Get input values</span>
+<span class="keyword">function</span> <span class="function">getNumbers</span>() {
+  <span class="keyword">let</span> num1 = <span class="function">parseFloat</span>(document.<span class="function">getElementById</span>(<span class="string">'num1'</span>).value);
+  <span class="keyword">let</span> num2 = <span class="function">parseFloat</span>(document.<span class="function">getElementById</span>(<span class="string">'num2'</span>).value);
+  <span class="keyword">return</span> { num1, num2 };
+}
+
+<span class="comment">// Display result</span>
+<span class="keyword">function</span> <span class="function">showResult</span>(result) {
+  document.<span class="function">getElementById</span>(<span class="string">'result'</span>).textContent = <span class="string">'Result: '</span> + result;
+}
+
+<span class="comment">// Calculator functions</span>
+<span class="keyword">function</span> <span class="function">add</span>() {
+  <span class="keyword">let</span> { num1, num2 } = <span class="function">getNumbers</span>();
+  <span class="keyword">let</span> result = num1 + num2;
+  <span class="function">showResult</span>(result);
+  <span class="function">console.log</span>(<span class="string">`</span>${num1}<span class="string"> + </span>${num2}<span class="string"> = </span>${result}<span class="string">`</span>);
+}
+
+<span class="keyword">function</span> <span class="function">subtract</span>() {
+  <span class="keyword">let</span> { num1, num2 } = <span class="function">getNumbers</span>();
+  <span class="keyword">let</span> result = num1 - num2;
+  <span class="function">showResult</span>(result);
+  <span class="function">console.log</span>(<span class="string">`</span>${num1}<span class="string"> - </span>${num2}<span class="string"> = </span>${result}<span class="string">`</span>);
+}
+
+<span class="keyword">function</span> <span class="function">multiply</span>() {
+  <span class="keyword">let</span> { num1, num2 } = <span class="function">getNumbers</span>();
+  <span class="keyword">let</span> result = num1 * num2;
+  <span class="function">showResult</span>(result);
+  <span class="function">console.log</span>(<span class="string">`</span>${num1}<span class="string"> × </span>${num2}<span class="string"> = </span>${result}<span class="string">`</span>);
+}
+
+<span class="keyword">function</span> <span class="function">divide</span>() {
+  <span class="keyword">let</span> { num1, num2 } = <span class="function">getNumbers</span>();
+  
+  <span class="keyword">if</span> (num2 === <span class="number">0</span>) {
+    <span class="function">showResult</span>(<span class="string">"Cannot divide by zero!"</span>);
+    <span class="keyword">return</span>;
+  }
+  
+  <span class="keyword">let</span> result = num1 / num2;
+  <span class="function">showResult</span>(result);
+  <span class="function">console.log</span>(<span class="string">`</span>${num1}<span class="string"> ÷ </span>${num2}<span class="string"> = </span>${result}<span class="string">`</span>);
+}</div>
+                </div>
+
+                <div class="tip">
+                    <strong>💡 How It Works:</strong><br>
+                    1. User enters two numbers<br>
+                    2. User clicks a button (+, -, ×, ÷)<br>
+                    3. JavaScript gets the values from the inputs<br>
+                    4. Does the math operation<br>
+                    5. Shows the result on the page<br>
+                    6. Logs the calculation to the console
+                </div>
+
+                <h3>Testing Your Calculator</h3>
+                <ol style="padding-left: 20px; margin: 15px 0; line-height: 1.8;">
+                    <li>Open the page in your browser</li>
+                    <li>Enter 10 and 5 in the boxes</li>
+                    <li>Click each button and check the results</li>
+                    <li>Try dividing by zero - should show error message</li>
+                    <li>Open console (F12) to see the calculations logged</li>
+                </ol>
+            </div>
+
+            <!-- Challenge Tab -->
+            <div id="challenge" class="tab-content">
+                <h2>🚀 Week 4 Challenges!</h2>
+                <p>You've learned the basics! Now build something awesome:</p>
+
+                <h3>Calculator Enhancements</h3>
+                <ul class="checklist">
+                    <li>Add a "Clear" button to reset the calculator</li>
+                    <li>Add more operations: power, square root, percentage</li>
+                    <li>Show calculation history (last 5 calculations)</li>
+                    <li>Add input validation (check if numbers are valid)</li>
+                    <li>Make it work with keyboard (Enter to calculate)</li>
+                </ul>
+
+                <h3>Alternative Projects</h3>
+
+                <div class="example">
+                    <strong>Quiz App</strong>
+                    <div class="code-block" style="margin-top: 10px;"><span class="keyword">let</span> score = <span class="number">0</span>;
+<span class="keyword">let</span> questions = [
+  {
+    question: <span class="string">"What is 5 + 3?"</span>,
+    options: [<span class="string">"7"</span>, <span class="string">"8"</span>, <span class="string">"9"</span>],
+    answer: <span class="string">"8"</span>
+  },
+  <span class="comment">// Add more questions...</span>
+];
+
+<span class="keyword">function</span> <span class="function">checkAnswer</span>(userAnswer, correctAnswer) {
+  <span class="keyword">if</span> (userAnswer === correctAnswer) {
+    score++;
+    <span class="keyword">return</span> <span class="string">"Correct!"</span>;
+  } <span class="keyword">else</span> {
+    <span class="keyword">return</span> <span class="string">"Wrong! The answer is "</span> + correctAnswer;
+  }
+}</div>
+                </div>
+
+                <div class="example">
+                    <strong>To-Do List</strong>
+                    <div class="code-block" style="margin-top: 10px;"><span class="keyword">let</span> todos = [];
+
+<span class="keyword">function</span> <span class="function">addTodo</span>(task) {
+  todos.<span class="function">push</span>(task);
+  <span class="function">displayTodos</span>();
+}
+
+<span class="keyword">function</span> <span class="function">removeTodo</span>(index) {
+  todos.<span class="function">splice</span>(index, <span class="number">1</span>);
+  <span class="function">displayTodos</span>();
+}
+
+<span class="keyword">function</span> <span class="function">displayTodos</span>() {
+  <span class="keyword">let</span> list = <span class="string">""</span>;
+  <span class="keyword">for</span> (<span class="keyword">let</span> i = <span class="number">0</span>; i < todos.length; i++) {
+    list += <span class="string">`&lt;li&gt;</span>${todos[i]}<span class="string">&lt;/li&gt;`</span>;
+  }
+  document.<span class="function">getElementById</span>(<span class="string">'list'</span>).innerHTML = list;
+}</div>
+                </div>
+
+                <div class="example">
+                    <strong>Number Guessing Game</strong>
+                    <div class="code-block" style="margin-top: 10px;"><span class="keyword">let</span> randomNumber = Math.<span class="function">floor</span>(Math.<span class="function">random</span>() * <span class="number">100</span>) + <span class="number">1</span>;
+<span class="keyword">let</span> attempts = <span class="number">0</span>;
+
+<span class="keyword">function</span> <span class="function">checkGuess</span>(guess) {
+  attempts++;
+  
+  <span class="keyword">if</span> (guess === randomNumber) {
+    <span class="keyword">return</span> <span class="string">`Correct! You got it in </span>${attempts}<span class="string"> attempts!`</span>;
+  } <span class="keyword">else if</span> (guess < randomNumber) {
+    <span class="keyword">return</span> <span class="string">"Too low! Try again."</span>;
+  } <span class="keyword">else</span> {
+    <span class="keyword">return</span> <span class="string">"Too high! Try again."</span>;
+  }
+}</div>
+                </div>
+
+                <h3>JavaScript Practice Exercises</h3>
+
+                <div class="demo-box">
+                    <p><strong>Try writing functions for these:</strong></p>
+                    <ol style="padding-left: 20px; margin: 10px 0; line-height: 1.8;">
+                        <li>FizzBuzz: Print 1-100, but "Fizz" for multiples of 3, "Buzz" for 5, "FizzBuzz" for both</li>
+                        <li>Reverse a string: <code>reverse("hello")</code> returns "olleh"</li>
+                        <li>Find factorial: <code>factorial(5)</code> returns 120 (5×4×3×2×1)</li>
+                        <li>Check palindrome: <code>isPalindrome("racecar")</code> returns true</li>
+                        <li>Sum of array: <code>sum([1,2,3,4,5])</code> returns 15</li>
+                    </ol>
+                </div>
+
+                <h3>What You've Accomplished! 🎉</h3>
+                <ul style="padding-left: 20px; margin: 15px 0; line-height: 1.8;">
+                    <li>✅ Learned to store data in variables</li>
+                    <li>✅ Created reusable functions</li>
+                    <li>✅ Made programs that make decisions with conditionals</li>
+                    <li>✅ Used loops to repeat actions efficiently</li>
+                    <li>✅ Debugged code using console.log()</li>
+                    <li>✅ Built your first JavaScript-powered tool!</li>
+                </ul>
+
+                <p style="margin-top: 20px; padding: 15px; background: #e8f5e9; border-radius: 6px;">
+                    <strong>Next Steps:</strong> You now know the fundamentals of programming! Next week, you'll learn DOM manipulation - how to make JavaScript interact with HTML elements, handle events, and create truly dynamic web pages. Update your GitHub Pages with your calculator!
+                </p>
+
+                <div class="tip">
+                    <strong>💡 Keep Coding:</strong> The best way to learn programming is to write code every day. Try to build something small each day, even if it's just a simple function. Challenge yourself to solve problems without looking at examples!
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Panel: Code Editor and Preview -->
+        <div class="panel">
+            <h2>✏️ Your Code Editor</h2>
+            <textarea id="codeEditor" placeholder="Type your HTML + JavaScript here..."><!DOCTYPE html>
+<html>
+<head>
+  <title>JavaScript Practice</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+  </style>
+</head>
+<body>
+  <h1>JavaScript Test Area</h1>
+  <p>Open the console (F12) to see your output!</p>
+  
+  <script>
+    // Try your JavaScript here!
+    console.log("Hello, JavaScript!");
+    
+    // Example: Create a variable
+    let name = "Student";
+    console.log("Hello, " + name + "!");
+    
+    // Example: Create a function
+    function greet(name) {
+      return "Welcome, " + name + "!";
+    }
+    
+    console.log(greet("Sarah"));
+  </script>
+</body>
+</html></textarea>
+            
+            <button onclick="updatePreview()">🔄 Run Code</button>
+            
+            <h2 style="margin-top: 30px;">👀 Live Preview</h2>
+            <iframe id="preview" class="preview-frame"></iframe>
+
+            <h2 style="margin-top: 20px;">📺 Console Output</h2>
+            <div id="consoleOutput" class="console-output">Press "Run Code" to see console.log() output here!</div>
+
+            <div style="margin-top: 20px; padding: 15px; background: #fff9e6; border-radius: 6px; border-left: 4px solid #ffd700;">
+                <strong>💡 Debugging Tip:</strong><br>
+                Use console.log() in your code to see what's happening! The output will appear both in the Console Output box above and in your browser's console (F12).
+            </div>
+        </div>
+    </div>
+
+    <div style="position: fixed; bottom: 0; left: 0; right: 0; background: rgba(255, 107, 107, 0.95); color: white; padding: 10px 20px; text-align: center; font-size: 14px; backdrop-filter: blur(10px);">
+        <strong>Week 4: JavaScript Basics</strong> | Made with ❤️ for learning web development | <strong>Press F12 to open the console!</strong>
+    </div>
+
+    <script>
+        function showTab(tabName) {
+            const contents = document.querySelectorAll('.tab-content');
+            contents.forEach(content => content.classList.remove('active'));
+            
+            const tabs = document.querySelectorAll('.tab');
+            tabs.forEach(tab => tab.classList.remove('active'));
+            
+            document.getElementById(tabName).classList.add('active');
+            event.target.classList.add('active');
+        }
+
+        function updatePreview() {
+            const code = document.getElementById('codeEditor').value;
+            const consoleOutput = document.getElementById('consoleOutput');
+            
+            // Clear previous console output
+            consoleOutput.textContent = '';
+            
+            // Get the iframe container
+            const previewContainer = document.getElementById('preview').parentNode;
+            const oldPreview = document.getElementById('preview');
+            
+            // Create a completely new iframe
+            const newPreview = document.createElement('iframe');
+            newPreview.id = 'preview';
+            newPreview.className = 'preview-frame';
+            
+            // Replace the old iframe with the new one
+            previewContainer.replaceChild(newPreview, oldPreview);
+            
+            // Write the code to the new iframe
+            const previewDoc = newPreview.contentDocument || newPreview.contentWindow.document;
+            
+            previewDoc.open();
+            previewDoc.write(`
+                <script>
+                    // Override console.log to send messages to parent
+                    (function() {
+                        const originalConsoleLog = console.log;
+                        console.log = function(...args) {
+                            try {
+                                window.parent.postMessage({ type: 'console', data: args }, '*');
+                            } catch(e) {}
+                            originalConsoleLog.apply(console, args);
+                        };
+                    })();
+                <\/script>
+                ${code}
+            `);
+            previewDoc.close();
+        }
+
+        // Listen for console messages from iframe
+        window.addEventListener('message', function(event) {
+            if (event.data.type === 'console') {
+                const consoleOutput = document.getElementById('consoleOutput');
+                const output = event.data.data.map(arg => {
+                    if (typeof arg === 'object') {
+                        return JSON.stringify(arg, null, 2);
+                    }
+                    return String(arg);
+                }).join(' ');
+                
+                consoleOutput.textContent += output + '\n';
+            }
+        });
+
+        // Initial preview update
+        window.onload = function() {
+            updatePreview();
+        }
+    </script>
+</body>
+</html>

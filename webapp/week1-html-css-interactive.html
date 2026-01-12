@@ -1,0 +1,782 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Week 1: Build Your First Webpage!</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            height: calc(100vh - 40px);
+        }
+
+        .panel {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            overflow-y: auto;
+        }
+
+        .lesson-panel {
+            display: flex;
+            flex-direction: column;
+        }
+
+        h1 {
+            color: #667eea;
+            margin-bottom: 10px;
+            font-size: 28px;
+        }
+
+        h2 {
+            color: #764ba2;
+            margin-top: 25px;
+            margin-bottom: 15px;
+            font-size: 22px;
+        }
+
+        h3 {
+            color: #667eea;
+            margin-top: 20px;
+            margin-bottom: 10px;
+            font-size: 18px;
+        }
+
+        .step {
+            background: #f7f7ff;
+            border-left: 4px solid #667eea;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 4px;
+        }
+
+        .step-number {
+            display: inline-block;
+            background: #667eea;
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 30px;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+
+        code {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+        }
+
+        .code-block {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 15px;
+            border-radius: 6px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            overflow-x: auto;
+            margin: 10px 0;
+            line-height: 1.5;
+        }
+
+        .tag {
+            color: #ff79c6;
+        }
+
+        .attribute {
+            color: #50fa7b;
+        }
+
+        .value {
+            color: #f1fa8c;
+        }
+
+        textarea {
+            width: 100%;
+            min-height: 300px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            padding: 15px;
+            border: 2px solid #667eea;
+            border-radius: 6px;
+            resize: vertical;
+        }
+
+        button {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 15px;
+            transition: all 0.3s;
+        }
+
+        button:hover {
+            background: #764ba2;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .preview-frame {
+            width: 100%;
+            height: 500px;
+            border: 2px solid #667eea;
+            border-radius: 6px;
+            background: white;
+            margin-top: 15px;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #e0e0e0;
+        }
+
+        .tab {
+            padding: 10px 20px;
+            background: none;
+            border: none;
+            color: #666;
+            font-weight: 600;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s;
+            margin: 0;
+        }
+
+        .tab.active {
+            color: #667eea;
+            border-bottom-color: #667eea;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .tip {
+            background: #fff9e6;
+            border-left: 4px solid #ffd700;
+            padding: 12px;
+            margin: 15px 0;
+            border-radius: 4px;
+        }
+
+        .tip strong {
+            color: #cc8800;
+        }
+
+        .checklist {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .checklist li {
+            padding: 8px 0;
+            padding-left: 30px;
+            position: relative;
+        }
+
+        .checklist li:before {
+            content: "☐";
+            position: absolute;
+            left: 0;
+            font-size: 20px;
+            color: #667eea;
+        }
+
+        .example {
+            background: #e8f5e9;
+            border-left: 4px solid #4caf50;
+            padding: 12px;
+            margin: 15px 0;
+            border-radius: 4px;
+        }
+
+        @media (max-width: 1200px) {
+            .container {
+                grid-template-columns: 1fr;
+                height: auto;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Left Panel: Lessons -->
+        <div class="panel lesson-panel">
+            <h1>🌟 Week 1: Build Your First Webpage!</h1>
+            <p style="color: #666; margin-bottom: 20px;">Welcome to web development! Today you'll learn HTML and CSS basics by building your own "About Me" page.</p>
+
+            <div class="tabs">
+                <button class="tab active" onclick="showTab('learn')">📚 Learn</button>
+                <button class="tab" onclick="showTab('build')">🔨 Build</button>
+                <button class="tab" onclick="showTab('style')">🎨 Style</button>
+                <button class="tab" onclick="showTab('deploy')">🌐 Deploy</button>
+                <button class="tab" onclick="showTab('challenge')">🚀 Challenge</button>
+            </div>
+
+            <!-- Learn Tab -->
+            <div id="learn" class="tab-content active">
+                <h2>How Websites Work</h2>
+                <p>Before we start building, let's understand what happens when you visit a website!</p>
+
+                <h3>What is a Web Browser?</h3>
+                <p>A <strong>browser</strong> (like Chrome, Firefox, Safari, or Edge) is a special program that reads code and turns it into beautiful webpages you can see and interact with.</p>
+                
+                <div class="example">
+                    <strong>Think of it like this:</strong><br>
+                    • HTML code is like a recipe written in a special language<br>
+                    • The browser is like a chef who reads the recipe<br>
+                    • The webpage you see is the finished meal!<br><br>
+                    When you type a website address (like google.com), the browser downloads the HTML code from the internet and instantly displays it as a webpage.
+                </div>
+
+                <h3>The Three Languages of the Web</h3>
+                <p>Every website you've ever visited is built using three main languages working together:</p>
+                <ul style="padding-left: 20px; margin: 15px 0; line-height: 1.8;">
+                    <li><strong>HTML</strong> - The structure (what's on the page)</li>
+                    <li><strong>CSS</strong> - The style (how it looks)</li>
+                    <li><strong>JavaScript</strong> - The behavior (how it works) - we'll learn this later!</li>
+                </ul>
+
+                <h2>What is HTML?</h2>
+                <p>HTML (HyperText Markup Language) is the skeleton of every webpage. It defines the structure and content using <strong>tags</strong>.</p>
+
+                <div class="tip">
+                    <strong>💡 Why "HyperText"?</strong> Because it can link to other pages! That's what makes the web a "web" of connected pages.
+                </div>
+
+                <h3>How HTML Tags Work</h3>
+                <p>HTML uses <strong>tags</strong> (written with angle brackets like <code>&lt; &gt;</code>) to tell the browser what each piece of content is.</p>
+                <p>Most tags come in pairs - an <strong>opening tag</strong> and a <strong>closing tag</strong>:</p>
+                <div class="code-block"><span class="tag">&lt;h1&gt;</span>This is a heading<span class="tag">&lt;/h1&gt;</span>
+<span class="tag">&lt;p&gt;</span>This is a paragraph<span class="tag">&lt;/p&gt;</span></div>
+                <p style="margin-top: 10px; font-size: 14px; color: #666;">Notice the closing tag has a forward slash (/) before the tag name!</p>
+
+                <h3>Basic HTML Structure</h3>
+                <p>Every HTML page follows this basic structure:</p>
+                <div class="code-block"><span class="tag">&lt;!DOCTYPE html&gt;</span>  <span class="comment">&lt;!-- Tells browser this is HTML5 --&gt;</span>
+<span class="tag">&lt;html&gt;</span>  <span class="comment">&lt;!-- Everything goes inside here --&gt;</span>
+  <span class="tag">&lt;head&gt;</span>  <span class="comment">&lt;!-- Information ABOUT the page --&gt;</span>
+    <span class="tag">&lt;title&gt;</span>My First Page<span class="tag">&lt;/title&gt;</span>
+  <span class="tag">&lt;/head&gt;</span>
+  <span class="tag">&lt;body&gt;</span>  <span class="comment">&lt;!-- What you SEE on the page --&gt;</span>
+    <span class="tag">&lt;h1&gt;</span>Hello, World!<span class="tag">&lt;/h1&gt;</span>
+    <span class="tag">&lt;p&gt;</span>This is a paragraph.<span class="tag">&lt;/p&gt;</span>
+  <span class="tag">&lt;/body&gt;</span>
+<span class="tag">&lt;/html&gt;</span></div>
+
+                <div class="example">
+                    <strong>Understanding the structure:</strong><br>
+                    • <code>&lt;head&gt;</code> = Information the browser needs (title, styles, etc.)<br>
+                    • <code>&lt;body&gt;</code> = Everything you actually see on the webpage<br>
+                    • Think of <code>&lt;head&gt;</code> as backstage and <code>&lt;body&gt;</code> as the stage!
+                </div>
+
+                <h3>Common HTML Tags</h3>
+                <p>Here are the most important tags you'll use:</p>
+                <ul style="padding-left: 20px; margin: 15px 0;">
+                    <li><code>&lt;h1&gt;</code> to <code>&lt;h6&gt;</code> - Headings (h1 is biggest, h6 is smallest)</li>
+                    <li><code>&lt;p&gt;</code> - Paragraph (regular text)</li>
+                    <li><code>&lt;a href="url"&gt;</code> - Link (takes you to another page)</li>
+                    <li><code>&lt;img src="url"&gt;</code> - Image (shows a picture)</li>
+                    <li><code>&lt;div&gt;</code> - Container/box (groups things together)</li>
+                    <li><code>&lt;ul&gt;</code> and <code>&lt;li&gt;</code> - Unordered list (bullet points)</li>
+                    <li><code>&lt;strong&gt;</code> - Bold text (important!)</li>
+                    <li><code>&lt;em&gt;</code> - Italic text (emphasis)</li>
+                </ul>
+
+                <div class="tip">
+                    <strong>💡 Self-closing tags:</strong> Some tags like <code>&lt;img&gt;</code> and <code>&lt;br&gt;</code> don't need a closing tag because they don't wrap around content!
+                </div>
+
+                <h2>What is CSS?</h2>
+                <p>CSS (Cascading Style Sheets) makes your webpage beautiful. While HTML creates the structure, CSS controls how everything looks - colors, fonts, spacing, layout, and more.</p>
+
+                <div class="example">
+                    <strong>HTML vs CSS analogy:</strong><br>
+                    Imagine building a house:<br>
+                    • HTML = The walls, doors, and windows (structure)<br>
+                    • CSS = The paint, furniture, and decorations (style)<br><br>
+                    You need both to make something beautiful AND functional!
+                </div>
+
+                <h3>How CSS Works</h3>
+                <p>CSS uses <strong>selectors</strong> to target HTML elements, then applies <strong>properties</strong> to style them:</p>
+                <div class="code-block"><span class="tag">selector</span> {
+  <span class="attribute">property</span>: <span class="value">value</span>;
+  <span class="attribute">property</span>: <span class="value">value</span>;
+}</div>
+
+                <h3>Basic CSS Syntax</h3>
+                <p>Here's a real example - styling all heading 1 elements:</p>
+                <div class="code-block"><span class="tag">h1</span> {
+  <span class="attribute">color</span>: <span class="value">blue</span>;
+  <span class="attribute">font-size</span>: <span class="value">36px</span>;
+  <span class="attribute">text-align</span>: <span class="value">center</span>;
+}</div>
+                <p style="margin-top: 10px; font-size: 14px; color: #666;">This says: "Find all h1 tags and make them blue, 36 pixels tall, and centered"</p>
+
+                <h3>Where Does CSS Go?</h3>
+                <p>You put CSS inside <code>&lt;style&gt;</code> tags in the <code>&lt;head&gt;</code> section:</p>
+                <div class="code-block"><span class="tag">&lt;head&gt;</span>
+  <span class="tag">&lt;style&gt;</span>
+    <span class="tag">body</span> {
+      <span class="attribute">background-color</span>: <span class="value">lightblue</span>;
+    }
+  <span class="tag">&lt;/style&gt;</span>
+<span class="tag">&lt;/head&gt;</span></div>
+
+                <h3>Common CSS Properties</h3>
+                <p>These are the properties you'll use most often:</p>
+                <ul style="padding-left: 20px; margin: 15px 0;">
+                    <li><code>color</code> - Text color</li>
+                    <li><code>background-color</code> - Background color</li>
+                    <li><code>font-size</code> - Size of text (use px for pixels)</li>
+                    <li><code>font-family</code> - Type of font (Arial, Times New Roman, etc.)</li>
+                    <li><code>padding</code> - Space inside an element</li>
+                    <li><code>margin</code> - Space outside an element</li>
+                    <li><code>border</code> - Border around element</li>
+                    <li><code>text-align</code> - Alignment (left, center, right)</li>
+                </ul>
+
+                <div class="example">
+                    <strong>Padding vs Margin:</strong><br>
+                    Think of an element like a picture frame:<br>
+                    • <strong>Padding</strong> = Space between the picture and the frame<br>
+                    • <strong>Margin</strong> = Space between the frame and other objects<br><br>
+                    Both create space, but in different places!
+                </div>
+
+                <div class="tip">
+                    <strong>💡 Tip:</strong> CSS colors can be written as names (<code>blue</code>), hex codes (<code>#0000ff</code>), or RGB values (<code>rgb(0,0,255)</code>). They all work!
+                </div>
+
+                <h3>Try It Yourself!</h3>
+                <p>The best way to learn is to experiment! Try changing values in the code editor on the right and see what happens. You can't break anything - just refresh if something goes wrong!</p>
+            </div>
+
+            <!-- Build Tab -->
+            <div id="build" class="tab-content">
+                <h2>Let's Build Your About Me Page!</h2>
+                <p>Follow these steps to create your first webpage. Type the code in the editor on the right.</p>
+
+                <div class="step">
+                    <span class="step-number">1</span>
+                    <strong>Start with the basic structure</strong>
+                    <div class="code-block" style="margin-top: 10px;"><span class="tag">&lt;!DOCTYPE html&gt;</span>
+<span class="tag">&lt;html&gt;</span>
+<span class="tag">&lt;head&gt;</span>
+  <span class="tag">&lt;title&gt;</span>About Me<span class="tag">&lt;/title&gt;</span>
+<span class="tag">&lt;/head&gt;</span>
+<span class="tag">&lt;body&gt;</span>
+
+<span class="tag">&lt;/body&gt;</span>
+<span class="tag">&lt;/html&gt;</span></div>
+                </div>
+
+                <div class="step">
+                    <span class="step-number">2</span>
+                    <strong>Add your name as a heading</strong>
+                    <p style="margin: 10px 0;">Inside the <code>&lt;body&gt;</code> tag, add:</p>
+                    <div class="code-block"><span class="tag">&lt;h1&gt;</span>Your Name Here<span class="tag">&lt;/h1&gt;</span></div>
+                </div>
+
+                <div class="step">
+                    <span class="step-number">3</span>
+                    <strong>Add a paragraph about yourself</strong>
+                    <div class="code-block" style="margin-top: 10px;"><span class="tag">&lt;p&gt;</span>Hi! I'm learning to build websites. 
+I love [your hobbies here].<span class="tag">&lt;/p&gt;</span></div>
+                </div>
+
+                <div class="step">
+                    <span class="step-number">4</span>
+                    <strong>Add a section about your interests</strong>
+                    <div class="code-block" style="margin-top: 10px;"><span class="tag">&lt;h2&gt;</span>My Interests<span class="tag">&lt;/h2&gt;</span>
+<span class="tag">&lt;ul&gt;</span>
+  <span class="tag">&lt;li&gt;</span>Interest 1<span class="tag">&lt;/li&gt;</span>
+  <span class="tag">&lt;li&gt;</span>Interest 2<span class="tag">&lt;/li&gt;</span>
+  <span class="tag">&lt;li&gt;</span>Interest 3<span class="tag">&lt;/li&gt;</span>
+<span class="tag">&lt;/ul&gt;</span></div>
+                </div>
+
+                <div class="step">
+                    <span class="step-number">5</span>
+                    <strong>Add an image (optional)</strong>
+                    <div class="code-block" style="margin-top: 10px;"><span class="tag">&lt;img</span> <span class="attribute">src</span>=<span class="value">"https://via.placeholder.com/200"</span> 
+     <span class="attribute">alt</span>=<span class="value">"Your description"</span><span class="tag">&gt;</span></div>
+                    <p style="margin-top: 10px; font-size: 14px; color: #666;">Replace the URL with any image URL you like!</p>
+                </div>
+
+                <div class="tip">
+                    <strong>💡 Tip:</strong> Click "Update Preview" after each step to see your changes!
+                </div>
+            </div>
+
+            <!-- Style Tab -->
+            <div id="style" class="tab-content">
+                <h2>Make It Beautiful with CSS!</h2>
+                <p>Now let's add some style to make your page look amazing.</p>
+
+                <div class="step">
+                    <span class="step-number">1</span>
+                    <strong>Add a style section</strong>
+                    <p style="margin: 10px 0;">In the <code>&lt;head&gt;</code> section, add this:</p>
+                    <div class="code-block"><span class="tag">&lt;style&gt;</span>
+  <span class="comment">/* Your CSS will go here */</span>
+<span class="tag">&lt;/style&gt;</span></div>
+                </div>
+
+                <div class="step">
+                    <span class="step-number">2</span>
+                    <strong>Style the body</strong>
+                    <div class="code-block" style="margin-top: 10px;"><span class="tag">body</span> {
+  <span class="attribute">font-family</span>: <span class="value">Arial, sans-serif</span>;
+  <span class="attribute">background-color</span>: <span class="value">#f0f8ff</span>;
+  <span class="attribute">padding</span>: <span class="value">20px</span>;
+  <span class="attribute">max-width</span>: <span class="value">800px</span>;
+  <span class="attribute">margin</span>: <span class="value">0 auto</span>;
+}</div>
+                </div>
+
+                <div class="step">
+                    <span class="step-number">3</span>
+                    <strong>Style the heading</strong>
+                    <div class="code-block" style="margin-top: 10px;"><span class="tag">h1</span> {
+  <span class="attribute">color</span>: <span class="value">#2c3e50</span>;
+  <span class="attribute">text-align</span>: <span class="value">center</span>;
+  <span class="attribute">border-bottom</span>: <span class="value">3px solid #3498db</span>;
+  <span class="attribute">padding-bottom</span>: <span class="value">10px</span>;
+}</div>
+                </div>
+
+                <div class="step">
+                    <span class="step-number">4</span>
+                    <strong>Style paragraphs</strong>
+                    <div class="code-block" style="margin-top: 10px;"><span class="tag">p</span> {
+  <span class="attribute">line-height</span>: <span class="value">1.6</span>;
+  <span class="attribute">color</span>: <span class="value">#555</span>;
+}</div>
+                </div>
+
+                <div class="step">
+                    <span class="step-number">5</span>
+                    <strong>Style the image</strong>
+                    <div class="code-block" style="margin-top: 10px;"><span class="tag">img</span> {
+  <span class="attribute">border-radius</span>: <span class="value">10px</span>;
+  <span class="attribute">display</span>: <span class="value">block</span>;
+  <span class="attribute">margin</span>: <span class="value">20px auto</span>;
+}</div>
+                </div>
+
+                <div class="example">
+                    <strong>🎨 Try these colors:</strong><br>
+                    <code>#3498db</code> - Blue<br>
+                    <code>#e74c3c</code> - Red<br>
+                    <code>#2ecc71</code> - Green<br>
+                    <code>#f39c12</code> - Orange<br>
+                    <code>#9b59b6</code> - Purple
+                </div>
+            </div>
+
+            <!-- Deploy Tab -->
+            <div id="deploy" class="tab-content">
+                <h2>🌐 Put Your Page on the Internet!</h2>
+                <p>Let's make your page live so anyone in the world can see it! We'll use GitHub (a place where developers share code) and GitHub Pages (free website hosting).</p>
+
+                <h3>Part 1: Create a GitHub Account</h3>
+
+                <div class="step">
+                    <span class="step-number">1</span>
+                    <strong>Go to GitHub</strong>
+                    <p style="margin: 10px 0;">Open a new tab and go to <a href="https://github.com" target="_blank" style="color: #667eea; text-decoration: none;">github.com</a></p>
+                </div>
+
+                <div class="step">
+                    <span class="step-number">2</span>
+                    <strong>Sign Up</strong>
+                    <p style="margin: 10px 0;">Click "Sign up" and create your account:</p>
+                    <ul style="padding-left: 20px; margin: 10px 0;">
+                        <li>Choose a username (this will be in your website URL!)</li>
+                        <li>Use your email address</li>
+                        <li>Create a strong password</li>
+                        <li>Verify you're human (follow the puzzle)</li>
+                    </ul>
+                </div>
+
+                <div class="step">
+                    <span class="step-number">3</span>
+                    <strong>Verify Your Email</strong>
+                    <p style="margin: 10px 0;">Check your email for a verification message from GitHub and click the link inside.</p>
+                </div>
+
+                <div class="tip">
+                    <strong>💡 Tip:</strong> Choose a professional username - you might use this for years! Many developers use their real name or a creative variation.
+                </div>
+
+                <h3>Part 2: Create Your First Repository</h3>
+
+                <div class="step">
+                    <span class="step-number">4</span>
+                    <strong>Create a New Repository</strong>
+                    <p style="margin: 10px 0;">Once logged in, click the green "New" button (or the + icon in the top right)</p>
+                </div>
+
+                <div class="step">
+                    <span class="step-number">5</span>
+                    <strong>Name Your Repository</strong>
+                    <p style="margin: 10px 0;">Very important! Name it exactly: <code>yourusername.github.io</code></p>
+                    <p style="margin: 10px 0; font-size: 14px; color: #666;">Replace "yourusername" with your actual GitHub username. For example, if your username is "sarahcodes", name it: <code>sarahcodes.github.io</code></p>
+                    <div class="example">
+                        <strong>Why this name?</strong> This special name tells GitHub you want to create a website. It will automatically become your website address!
+                    </div>
+                </div>
+
+                <div class="step">
+                    <span class="step-number">6</span>
+                    <strong>Repository Settings</strong>
+                    <ul style="padding-left: 20px; margin: 10px 0;">
+                        <li>Make it <strong>Public</strong> (so anyone can visit your site)</li>
+                        <li>Check "Add a README file"</li>
+                        <li>Click "Create repository"</li>
+                    </ul>
+                </div>
+
+                <h3>Part 3: Add Your Webpage</h3>
+
+                <div class="step">
+                    <span class="step-number">7</span>
+                    <strong>Create index.html File</strong>
+                    <p style="margin: 10px 0;">In your new repository, click "Add file" → "Create new file"</p>
+                    <p style="margin: 10px 0;">Name it: <code>index.html</code></p>
+                </div>
+
+                <div class="step">
+                    <span class="step-number">8</span>
+                    <strong>Copy Your Code</strong>
+                    <p style="margin: 10px 0;">From the editor on the right, copy ALL your HTML code (including the <code>&lt;!DOCTYPE html&gt;</code> at the top)</p>
+                    <p style="margin: 10px 0;">Paste it into the GitHub file editor</p>
+                </div>
+
+                <div class="step">
+                    <span class="step-number">9</span>
+                    <strong>Commit Your Changes</strong>
+                    <p style="margin: 10px 0;">Scroll down and click the green "Commit changes" button</p>
+                    <div class="tip">
+                        <strong>💡 What's a commit?</strong> It's like saving your work. You're telling GitHub: "Save this version of my file!"
+                    </div>
+                </div>
+
+                <h3>Part 4: See Your Live Website! 🎉</h3>
+
+                <div class="step">
+                    <span class="step-number">10</span>
+                    <strong>Wait a Moment</strong>
+                    <p style="margin: 10px 0;">GitHub Pages takes about 1-2 minutes to publish your site</p>
+                </div>
+
+                <div class="step">
+                    <span class="step-number">11</span>
+                    <strong>Visit Your Website!</strong>
+                    <p style="margin: 10px 0;">Open a new tab and go to:</p>
+                    <div class="code-block">https://yourusername.github.io</div>
+                    <p style="margin: 10px 0; font-size: 14px; color: #666;">Replace "yourusername" with your GitHub username</p>
+                    <div class="example">
+                        <strong>🎊 Congratulations!</strong> You just put your first website on the internet! Share this link with friends and family!
+                    </div>
+                </div>
+
+                <h3>Making Changes Later</h3>
+                <div class="step">
+                    <span class="step-number">12</span>
+                    <strong>Update Your Website</strong>
+                    <p style="margin: 10px 0;">To change your website later:</p>
+                    <ul style="padding-left: 20px; margin: 10px 0;">
+                        <li>Go to your repository on GitHub</li>
+                        <li>Click on <code>index.html</code></li>
+                        <li>Click the pencil icon (✏️) to edit</li>
+                        <li>Make your changes</li>
+                        <li>Scroll down and click "Commit changes"</li>
+                        <li>Wait 1-2 minutes and refresh your website!</li>
+                    </ul>
+                </div>
+
+                <div class="tip">
+                    <strong>💡 Pro Tip:</strong> You can add more pages by creating new .html files. For example, <code>projects.html</code> would be available at <code>yourusername.github.io/projects.html</code>
+                </div>
+
+                <h3>Troubleshooting</h3>
+                <ul style="padding-left: 20px; margin: 15px 0; line-height: 1.8;">
+                    <li><strong>Page not showing?</strong> Check that your repository name is exactly <code>yourusername.github.io</code></li>
+                    <li><strong>Seeing old content?</strong> Hold Shift and click Refresh in your browser</li>
+                    <li><strong>Changes not appearing?</strong> Wait a few minutes - GitHub Pages takes time to update</li>
+                </ul>
+
+                <div class="example" style="margin-top: 20px;">
+                    <strong>✅ Checklist - You're Done When:</strong>
+                    <ul style="padding-left: 20px; margin-top: 10px;">
+                        <li>✓ You have a GitHub account</li>
+                        <li>✓ You created a repository named <code>yourusername.github.io</code></li>
+                        <li>✓ You created an <code>index.html</code> file with your code</li>
+                        <li>✓ You can see your website at your GitHub Pages URL</li>
+                        <li>✓ You shared your link with someone!</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Challenge Tab -->
+            <div id="challenge" class="tab-content">
+                <h2>🚀 Ready for a Challenge?</h2>
+                <p>You've learned the basics! Now try these extras:</p>
+
+                <h3>Challenge Checklist</h3>
+                <ul class="checklist">
+                    <li>Add a "My Goals" section with another list</li>
+                    <li>Add a link to your favorite website using <code>&lt;a&gt;</code></li>
+                    <li>Change the background color to your favorite color</li>
+                    <li>Add a border around your image</li>
+                    <li>Make the h2 headings a different color</li>
+                    <li>Add padding around your paragraphs</li>
+                    <li>Try using <code>&lt;strong&gt;</code> and <code>&lt;em&gt;</code> in your text</li>
+                </ul>
+
+                <h3>Bonus Challenge: Hover Effect!</h3>
+                <p>Make your links change color when you hover over them:</p>
+                <div class="code-block"><span class="tag">a</span> {
+  <span class="attribute">color</span>: <span class="value">#3498db</span>;
+  <span class="attribute">text-decoration</span>: <span class="value">none</span>;
+}
+
+<span class="tag">a:hover</span> {
+  <span class="attribute">color</span>: <span class="value">#e74c3c</span>;
+  <span class="attribute">text-decoration</span>: <span class="value">underline</span>;
+}</div>
+
+                <h3>Super Bonus: Center Everything!</h3>
+                <p>Wrap everything in a div and center it:</p>
+                <div class="code-block"><span class="tag">&lt;div</span> <span class="attribute">class</span>=<span class="value">"container"</span><span class="tag">&gt;</span>
+  <span class="comment">/* All your content here */</span>
+<span class="tag">&lt;/div&gt;</span>
+
+<span class="comment">/* In your CSS: */</span>
+<span class="tag">.container</span> {
+  <span class="attribute">background</span>: <span class="value">white</span>;
+  <span class="attribute">padding</span>: <span class="value">30px</span>;
+  <span class="attribute">border-radius</span>: <span class="value">10px</span>;
+  <span class="attribute">box-shadow</span>: <span class="value">0 0 20px rgba(0,0,0,0.1)</span>;
+}</div>
+
+                <div class="tip">
+                    <strong>💡 Remember:</strong> There's no wrong way to be creative! Experiment and have fun!
+                </div>
+
+                <h3>What You've Accomplished! 🎉</h3>
+                <ul style="padding-left: 20px; margin: 15px 0; line-height: 1.8;">
+                    <li>✅ Built your first complete webpage</li>
+                    <li>✅ Learned HTML structure and tags</li>
+                    <li>✅ Styled elements with CSS</li>
+                    <li>✅ Created a GitHub account</li>
+                    <li>✅ Deployed your page to the internet!</li>
+                    <li>✅ Made something you can share with the world!</li>
+                </ul>
+
+                <p style="margin-top: 20px; padding: 15px; background: #e8f5e9; border-radius: 6px;">
+                    <strong>Next Steps:</strong> Your website is live! Next week, you'll learn how to make it look great on mobile devices and add more complex layouts. You can keep updating your site anytime through GitHub!
+                </p>
+            </div>
+        </div>
+
+        <!-- Right Panel: Code Editor and Preview -->
+        <div class="panel">
+            <h2>✏️ Your Code Editor</h2>
+            <textarea id="codeEditor" placeholder="Type your HTML code here..."><!DOCTYPE html>
+<html>
+<head>
+  <title>About Me</title>
+  <style>
+    /* Add your CSS here */
+  </style>
+</head>
+<body>
+  <h1>Start building your page!</h1>
+  <p>Follow the steps on the left to create your About Me page.</p>
+</body>
+</html></textarea>
+            
+            <button onclick="updatePreview()">🔄 Update Preview</button>
+            
+            <h2 style="margin-top: 30px;">👀 Live Preview</h2>
+            <iframe id="preview" class="preview-frame"></iframe>
+        </div>
+    </div>
+
+    <div style="position: fixed; bottom: 0; left: 0; right: 0; background: rgba(102, 126, 234, 0.95); color: white; padding: 10px 20px; text-align: center; font-size: 14px; backdrop-filter: blur(10px);">
+        <strong>Week 1: HTML & CSS Basics</strong> | Made with ❤️ for learning web development | <a href="https://github.com" target="_blank" style="color: #fff; text-decoration: underline;">Host this on GitHub Pages</a>
+    </div>
+
+    <script>
+        function showTab(tabName) {
+            // Hide all tab contents
+            const contents = document.querySelectorAll('.tab-content');
+            contents.forEach(content => content.classList.remove('active'));
+            
+            // Remove active class from all tabs
+            const tabs = document.querySelectorAll('.tab');
+            tabs.forEach(tab => tab.classList.remove('active'));
+            
+            // Show selected tab content
+            document.getElementById(tabName).classList.add('active');
+            
+            // Add active class to clicked tab
+            event.target.classList.add('active');
+        }
+
+        function updatePreview() {
+            const code = document.getElementById('codeEditor').value;
+            const preview = document.getElementById('preview');
+            const previewDoc = preview.contentDocument || preview.contentWindow.document;
+            
+            previewDoc.open();
+            previewDoc.write(code);
+            previewDoc.close();
+        }
+
+        // Initial preview update
+        window.onload = function() {
+            updatePreview();
+        }
+    </script>
+</body>
+</html>

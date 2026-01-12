@@ -1,0 +1,1414 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Week 5: DOM Manipulation!</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #84fab0 0%, #8fd3f4 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            height: calc(100vh - 40px);
+        }
+
+        .panel {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            overflow-y: auto;
+        }
+
+        .lesson-panel {
+            display: flex;
+            flex-direction: column;
+        }
+
+        h1 {
+            color: #06a77d;
+            margin-bottom: 10px;
+            font-size: 28px;
+        }
+
+        h2 {
+            color: #05a077;
+            margin-top: 25px;
+            margin-bottom: 15px;
+            font-size: 22px;
+        }
+
+        h3 {
+            color: #06a77d;
+            margin-top: 20px;
+            margin-bottom: 10px;
+            font-size: 18px;
+        }
+
+        .step {
+            background: #f0fdf9;
+            border-left: 4px solid #06a77d;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 4px;
+        }
+
+        .step-number {
+            display: inline-block;
+            background: #06a77d;
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 30px;
+            font-weight: bold;
+            margin-right: 10px;
+        }
+
+        code {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+        }
+
+        .code-block {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 15px;
+            border-radius: 6px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            overflow-x: auto;
+            margin: 10px 0;
+            line-height: 1.5;
+        }
+
+        .keyword {
+            color: #ff79c6;
+        }
+
+        .function {
+            color: #50fa7b;
+        }
+
+        .string {
+            color: #f1fa8c;
+        }
+
+        .number {
+            color: #bd93f9;
+        }
+
+        .comment {
+            color: #6272a4;
+        }
+
+        textarea {
+            width: 100%;
+            min-height: 300px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            padding: 15px;
+            border: 2px solid #06a77d;
+            border-radius: 6px;
+            resize: vertical;
+        }
+
+        button {
+            background: #06a77d;
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 15px;
+            transition: all 0.3s;
+        }
+
+        button:hover {
+            background: #05a077;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .preview-frame {
+            width: 100%;
+            height: 500px;
+            border: 2px solid #06a77d;
+            border-radius: 6px;
+            background: white;
+            margin-top: 15px;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #e0e0e0;
+            flex-wrap: wrap;
+        }
+
+        .tab {
+            padding: 10px 20px;
+            background: none;
+            border: none;
+            color: #666;
+            font-weight: 600;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s;
+            margin: 0;
+        }
+
+        .tab.active {
+            color: #06a77d;
+            border-bottom-color: #06a77d;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .tip {
+            background: #fff9e6;
+            border-left: 4px solid #ffd700;
+            padding: 12px;
+            margin: 15px 0;
+            border-radius: 4px;
+        }
+
+        .tip strong {
+            color: #cc8800;
+        }
+
+        .checklist {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .checklist li {
+            padding: 8px 0;
+            padding-left: 30px;
+            position: relative;
+        }
+
+        .checklist li:before {
+            content: "☐";
+            position: absolute;
+            left: 0;
+            font-size: 20px;
+            color: #06a77d;
+        }
+
+        .example {
+            background: #e8f5e9;
+            border-left: 4px solid #4caf50;
+            padding: 12px;
+            margin: 15px 0;
+            border-radius: 4px;
+        }
+
+        .demo-box {
+            background: #f0f0f0;
+            border: 2px dashed #06a77d;
+            padding: 20px;
+            margin: 15px 0;
+            border-radius: 6px;
+        }
+
+        .interactive-demo {
+            background: white;
+            border: 2px solid #06a77d;
+            padding: 20px;
+            margin: 15px 0;
+            border-radius: 6px;
+        }
+
+        .interactive-demo button {
+            margin: 5px;
+        }
+
+        .error-box {
+            background: #ffebee;
+            border-left: 4px solid #f44336;
+            padding: 12px;
+            margin: 15px 0;
+            border-radius: 4px;
+            color: #c62828;
+        }
+
+        @media (max-width: 1200px) {
+            .container {
+                grid-template-columns: 1fr;
+                height: auto;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Left Panel: Lessons -->
+        <div class="panel lesson-panel">
+            <h1>🎯 Week 5: DOM Manipulation!</h1>
+            <p style="color: #666; margin-bottom: 20px;">This week you'll learn to make JavaScript interact with HTML - changing content, responding to clicks, and creating truly dynamic web pages!</p>
+
+            <div class="tabs">
+                <button class="tab active" onclick="showTab('learn')">📚 Learn</button>
+                <button class="tab" onclick="showTab('selecting')">🎯 Selecting</button>
+                <button class="tab" onclick="showTab('manipulating')">✏️ Manipulating</button>
+                <button class="tab" onclick="showTab('events')">👆 Events</button>
+                <button class="tab" onclick="showTab('creating')">➕ Creating</button>
+                <button class="tab" onclick="showTab('build')">🔨 Build</button>
+                <button class="tab" onclick="showTab('challenge')">🚀 Challenge</button>
+            </div>
+
+            <!-- Learn Tab -->
+            <div id="learn" class="tab-content active">
+                <h2>What is the DOM?</h2>
+                <p>DOM stands for <strong>Document Object Model</strong>. It's how JavaScript sees and interacts with your HTML page.</p>
+
+                <div class="example">
+                    <strong>Think of it like this:</strong><br>
+                    • Your HTML is a document (a web page)<br>
+                    • The browser turns it into objects JavaScript can work with<br>
+                    • JavaScript can then read and change these objects<br>
+                    • Changes happen instantly on the page!<br><br>
+                    The DOM is the bridge between HTML and JavaScript.
+                </div>
+
+                <h3>The DOM Tree</h3>
+                <p>The browser sees your HTML as a tree structure:</p>
+
+                <div class="code-block"><span class="keyword">&lt;html&gt;</span>
+  <span class="keyword">&lt;head&gt;</span>
+    <span class="keyword">&lt;title&gt;</span>My Page<span class="keyword">&lt;/title&gt;</span>
+  <span class="keyword">&lt;/head&gt;</span>
+  <span class="keyword">&lt;body&gt;</span>
+    <span class="keyword">&lt;h1</span> <span class="function">id</span>=<span class="string">"title"</span><span class="keyword">&gt;</span>Hello<span class="keyword">&lt;/h1&gt;</span>
+    <span class="keyword">&lt;p</span> <span class="function">class</span>=<span class="string">"text"</span><span class="keyword">&gt;</span>Content<span class="keyword">&lt;/p&gt;</span>
+  <span class="keyword">&lt;/body&gt;</span>
+<span class="keyword">&lt;/html&gt;</span></div>
+
+                <p style="margin-top: 10px;">JavaScript can access each element like objects in a tree:</p>
+                <div class="demo-box">
+                    <pre style="font-family: monospace; line-height: 1.8;">
+document
+  └─ html
+      ├─ head
+      │   └─ title
+      └─ body
+          ├─ h1 (id="title")
+          └─ p (class="text")</pre>
+                </div>
+
+                <h3>Why DOM Manipulation Matters</h3>
+                <p>Everything interactive on a website uses DOM manipulation:</p>
+
+                <ul style="padding-left: 20px; margin: 15px 0; line-height: 1.8;">
+                    <li><strong>Facebook:</strong> When you click "Like", DOM changes the button color</li>
+                    <li><strong>Gmail:</strong> When you delete an email, DOM removes it from the list</li>
+                    <li><strong>Netflix:</strong> When you hover over a movie, DOM shows the description</li>
+                    <li><strong>Shopping carts:</strong> When you add an item, DOM updates the count</li>
+                </ul>
+
+                <h3>What You'll Learn This Week</h3>
+
+                <div class="step">
+                    <span class="step-number">1</span>
+                    <strong>Selecting Elements</strong>
+                    <p style="margin-top: 5px;">Find HTML elements so JavaScript can work with them</p>
+                </div>
+
+                <div class="step">
+                    <span class="step-number">2</span>
+                    <strong>Manipulating Elements</strong>
+                    <p style="margin-top: 5px;">Change text, HTML, styles, and attributes</p>
+                </div>
+
+                <div class="step">
+                    <span class="step-number">3</span>
+                    <strong>Handling Events</strong>
+                    <p style="margin-top: 5px;">Respond to clicks, typing, mouse movement, and more</p>
+                </div>
+
+                <div class="step">
+                    <span class="step-number">4</span>
+                    <strong>Creating Elements</strong>
+                    <p style="margin-top: 5px;">Add new elements to the page dynamically</p>
+                </div>
+
+                <h3>The document Object</h3>
+                <p>The <code>document</code> object represents your entire HTML page. It's your starting point for all DOM manipulation:</p>
+
+                <div class="code-block"><span class="comment">// The document object is always available</span>
+<span class="function">console.log</span>(document);           <span class="comment">// Shows the entire HTML</span>
+<span class="function">console.log</span>(document.title);     <span class="comment">// Shows page title</span>
+<span class="function">console.log</span>(document.body);      <span class="comment">// Shows the body element</span></div>
+
+                <div class="tip">
+                    <strong>💡 Important:</strong> JavaScript can only access the DOM after the HTML has loaded. That's why we put <code>&lt;script&gt;</code> tags at the end of the <code>&lt;body&gt;</code>, or use event listeners like <code>DOMContentLoaded</code>.
+                </div>
+
+                <h3>Try It Right Now!</h3>
+                <div class="interactive-demo">
+                    <p id="demo-text">This text will change!</p>
+                    <button onclick="document.getElementById('demo-text').textContent = 'See? DOM manipulation!'">Click to Change Text</button>
+                    <button onclick="document.getElementById('demo-text').style.color = 'red'">Make it Red</button>
+                    <button onclick="document.getElementById('demo-text').style.fontSize = '24px'">Make it Bigger</button>
+                </div>
+                <p style="margin-top: 10px; font-size: 14px; color: #666;">☝️ Click the buttons above to see DOM manipulation in action!</p>
+            </div>
+
+            <!-- Selecting Tab -->
+            <div id="selecting" class="tab-content">
+                <h2>Selecting Elements</h2>
+                <p>Before you can change an element, you need to select (find) it. There are several ways to do this:</p>
+
+                <h3>1. Select by ID</h3>
+                <p>Use <code>getElementById()</code> to find an element with a specific ID:</p>
+
+                <div class="code-block"><span class="comment">// HTML: &lt;h1 id="title"&gt;Hello&lt;/h1&gt;</span>
+
+<span class="keyword">let</span> title = document.<span class="function">getElementById</span>(<span class="string">'title'</span>);
+<span class="function">console.log</span>(title);  <span class="comment">// Shows: &lt;h1 id="title"&gt;Hello&lt;/h1&gt;</span></div>
+
+                <div class="tip">
+                    <strong>💡 Remember:</strong> IDs should be unique - only one element should have each ID. Use <code>getElementById</code> (no 's' at the end) because you're getting one element.
+                </div>
+
+                <h3>2. Select by Class</h3>
+                <p>Use <code>getElementsByClassName()</code> to find all elements with a class:</p>
+
+                <div class="code-block"><span class="comment">// HTML: &lt;p class="text"&gt;Para 1&lt;/p&gt;
+//        &lt;p class="text"&gt;Para 2&lt;/p&gt;</span>
+
+<span class="keyword">let</span> paragraphs = document.<span class="function">getElementsByClassName</span>(<span class="string">'text'</span>);
+<span class="function">console.log</span>(paragraphs);      <span class="comment">// HTMLCollection with both &lt;p&gt; elements</span>
+<span class="function">console.log</span>(paragraphs[<span class="number">0</span>]);  <span class="comment">// First paragraph</span>
+<span class="function">console.log</span>(paragraphs[<span class="number">1</span>]);  <span class="comment">// Second paragraph</span></div>
+
+                <h3>3. Select by Tag Name</h3>
+                <p>Use <code>getElementsByTagName()</code> to find all elements of a type:</p>
+
+                <div class="code-block"><span class="keyword">let</span> allParagraphs = document.<span class="function">getElementsByTagName</span>(<span class="string">'p'</span>);
+<span class="keyword">let</span> allDivs = document.<span class="function">getElementsByTagName</span>(<span class="string">'div'</span>);
+<span class="keyword">let</span> allButtons = document.<span class="function">getElementsByTagName</span>(<span class="string">'button'</span>);</div>
+
+                <h3>4. Query Selector (Modern Way!) ⭐</h3>
+                <p>Use <code>querySelector()</code> with CSS selectors - the most flexible method:</p>
+
+                <div class="code-block"><span class="comment">// Get first matching element</span>
+<span class="keyword">let</span> title = document.<span class="function">querySelector</span>(<span class="string">'#title'</span>);        <span class="comment">// By ID</span>
+<span class="keyword">let</span> para = document.<span class="function">querySelector</span>(<span class="string">'.text'</span>);         <span class="comment">// By class</span>
+<span class="keyword">let</span> button = document.<span class="function">querySelector</span>(<span class="string">'button'</span>);      <span class="comment">// By tag</span>
+
+<span class="comment">// Get ALL matching elements</span>
+<span class="keyword">let</span> allParas = document.<span class="function">querySelectorAll</span>(<span class="string">'.text'</span>);
+<span class="keyword">let</span> allButtons = document.<span class="function">querySelectorAll</span>(<span class="string">'button'</span>);
+
+<span class="comment">// Complex selectors (just like CSS!)</span>
+<span class="keyword">let</span> firstPara = document.<span class="function">querySelector</span>(<span class="string">'div p'</span>);        <span class="comment">// p inside div</span>
+<span class="keyword">let</span> activeBtn = document.<span class="function">querySelector</span>(<span class="string">'.btn.active'</span>); <span class="comment">// Multiple classes</span></div>
+
+                <div class="example">
+                    <strong>querySelector vs querySelectorAll:</strong><br>
+                    • <code>querySelector()</code> - Returns FIRST matching element<br>
+                    • <code>querySelectorAll()</code> - Returns ALL matching elements (NodeList)<br><br>
+                    Use <code>querySelectorAll()</code> when you want to work with multiple elements!
+                </div>
+
+                <h3>Comparison Table</h3>
+                <div class="demo-box">
+                    <table style="width: 100%; border-collapse: collapse;">
+                        <tr style="background: #f0f9ff;">
+                            <th style="padding: 10px; border: 1px solid #ddd; text-align: left;">Method</th>
+                            <th style="padding: 10px; border: 1px solid #ddd; text-align: left;">Returns</th>
+                            <th style="padding: 10px; border: 1px solid #ddd; text-align: left;">Example</th>
+                        </tr>
+                        <tr>
+                            <td style="padding: 10px; border: 1px solid #ddd;"><code>getElementById</code></td>
+                            <td style="padding: 10px; border: 1px solid #ddd;">Single element</td>
+                            <td style="padding: 10px; border: 1px solid #ddd;"><code>('title')</code></td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 10px; border: 1px solid #ddd;"><code>getElementsByClassName</code></td>
+                            <td style="padding: 10px; border: 1px solid #ddd;">HTMLCollection</td>
+                            <td style="padding: 10px; border: 1px solid #ddd;"><code>('text')</code></td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 10px; border: 1px solid #ddd;"><code>querySelector</code></td>
+                            <td style="padding: 10px; border: 1px solid #ddd;">Single element</td>
+                            <td style="padding: 10px; border: 1px solid #ddd;"><code>('#title')</code></td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 10px; border: 1px solid #ddd;"><code>querySelectorAll</code></td>
+                            <td style="padding: 10px; border: 1px solid #ddd;">NodeList</td>
+                            <td style="padding: 10px; border: 1px solid #ddd;"><code>('.text')</code></td>
+                        </tr>
+                    </table>
+                </div>
+
+                <div class="tip">
+                    <strong>💡 Best Practice:</strong> Use <code>querySelector()</code> and <code>querySelectorAll()</code> for most cases - they're more flexible and use CSS selectors you already know!
+                </div>
+
+                <h3>Checking if Element Exists</h3>
+                <div class="code-block"><span class="keyword">let</span> element = document.<span class="function">querySelector</span>(<span class="string">'#myId'</span>);
+
+<span class="keyword">if</span> (element) {
+  <span class="function">console.log</span>(<span class="string">"Element found!"</span>);
+} <span class="keyword">else</span> {
+  <span class="function">console.log</span>(<span class="string">"Element doesn't exist"</span>);
+}</div>
+
+                <div class="error-box">
+                    <strong>Common Mistakes:</strong><br>
+                    ❌ <code>document.getElementById('#title')</code> (no # needed!)<br>
+                    ✅ <code>document.getElementById('title')</code><br><br>
+                    ❌ <code>document.querySelector('title')</code> (missing #)<br>
+                    ✅ <code>document.querySelector('#title')</code>
+                </div>
+            </div>
+
+            <!-- Manipulating Tab -->
+            <div id="manipulating" class="tab-content">
+                <h2>Manipulating Elements</h2>
+                <p>Once you've selected an element, you can change it in many ways!</p>
+
+                <h3>1. Changing Text Content</h3>
+
+                <div class="step">
+                    <span class="step-number">1</span>
+                    <strong>textContent</strong> - Get or set text (no HTML)
+                    <div class="code-block" style="margin-top: 10px;"><span class="comment">// HTML: &lt;h1 id="title"&gt;Old Title&lt;/h1&gt;</span>
+
+<span class="keyword">let</span> title = document.<span class="function">querySelector</span>(<span class="string">'#title'</span>);
+
+<span class="comment">// Get text</span>
+<span class="function">console.log</span>(title.textContent);  <span class="comment">// "Old Title"</span>
+
+<span class="comment">// Set text</span>
+title.textContent = <span class="string">"New Title"</span>;     <span class="comment">// Changes to "New Title"</span></div>
+                </div>
+
+                <div class="step">
+                    <span class="step-number">2</span>
+                    <strong>innerHTML</strong> - Get or set HTML content
+                    <div class="code-block" style="margin-top: 10px;"><span class="keyword">let</span> div = document.<span class="function">querySelector</span>(<span class="string">'.content'</span>);
+
+<span class="comment">// Get HTML</span>
+<span class="function">console.log</span>(div.innerHTML);
+
+<span class="comment">// Set HTML (can include tags!)</span>
+div.innerHTML = <span class="string">'&lt;p&gt;New &lt;strong&gt;paragraph&lt;/strong&gt;&lt;/p&gt;'</span>;</div>
+                </div>
+
+                <div class="tip">
+                    <strong>💡 textContent vs innerHTML:</strong><br>
+                    • Use <code>textContent</code> for plain text (safer)<br>
+                    • Use <code>innerHTML</code> when you need to add HTML tags
+                </div>
+
+                <h3>2. Changing Styles</h3>
+                <p>Modify CSS directly from JavaScript:</p>
+
+                <div class="code-block"><span class="keyword">let</span> box = document.<span class="function">querySelector</span>(<span class="string">'.box'</span>);
+
+<span class="comment">// Change individual styles</span>
+box.style.color = <span class="string">'red'</span>;
+box.style.backgroundColor = <span class="string">'yellow'</span>;  <span class="comment">// Note: backgroundColor not background-color</span>
+box.style.fontSize = <span class="string">'24px'</span>;
+box.style.border = <span class="string">'2px solid blue'</span>;
+box.style.padding = <span class="string">'20px'</span>;
+box.style.display = <span class="string">'none'</span>;          <span class="comment">// Hide element</span>
+box.style.display = <span class="string">'block'</span>;         <span class="comment">// Show element</span></div>
+
+                <div class="example">
+                    <strong>CSS Property Name Changes:</strong><br>
+                    CSS dashes become camelCase in JavaScript:<br>
+                    • <code>background-color</code> → <code>backgroundColor</code><br>
+                    • <code>font-size</code> → <code>fontSize</code><br>
+                    • <code>border-radius</code> → <code>borderRadius</code>
+                </div>
+
+                <h3>3. Working with Classes</h3>
+                <p>Instead of changing individual styles, it's better to add/remove CSS classes:</p>
+
+                <div class="code-block"><span class="keyword">let</span> button = document.<span class="function">querySelector</span>(<span class="string">'.btn'</span>);
+
+<span class="comment">// Add a class</span>
+button.classList.<span class="function">add</span>(<span class="string">'active'</span>);
+
+<span class="comment">// Remove a class</span>
+button.classList.<span class="function">remove</span>(<span class="string">'active'</span>);
+
+<span class="comment">// Toggle a class (add if not there, remove if there)</span>
+button.classList.<span class="function">toggle</span>(<span class="string">'active'</span>);
+
+<span class="comment">// Check if class exists</span>
+<span class="keyword">if</span> (button.classList.<span class="function">contains</span>(<span class="string">'active'</span>)) {
+  <span class="function">console.log</span>(<span class="string">"Button is active!"</span>);
+}</div>
+
+                <div class="tip">
+                    <strong>💡 Best Practice:</strong> Use <code>classList</code> instead of modifying <code>style</code> directly. Define styles in CSS, then add/remove classes with JavaScript. This keeps styling in CSS where it belongs!
+                </div>
+
+                <h3>4. Changing Attributes</h3>
+                <p>Modify HTML attributes like <code>src</code>, <code>href</code>, <code>alt</code>:</p>
+
+                <div class="code-block"><span class="keyword">let</span> img = document.<span class="function">querySelector</span>(<span class="string">'img'</span>);
+
+<span class="comment">// Get attribute</span>
+<span class="keyword">let</span> source = img.<span class="function">getAttribute</span>(<span class="string">'src'</span>);
+<span class="function">console.log</span>(source);
+
+<span class="comment">// Set attribute</span>
+img.<span class="function">setAttribute</span>(<span class="string">'src'</span>, <span class="string">'new-image.jpg'</span>);
+img.<span class="function">setAttribute</span>(<span class="string">'alt'</span>, <span class="string">'New description'</span>);
+
+<span class="comment">// Remove attribute</span>
+img.<span class="function">removeAttribute</span>(<span class="string">'alt'</span>);
+
+<span class="comment">// Shortcut for common attributes</span>
+img.src = <span class="string">'another-image.jpg'</span>;
+img.alt = <span class="string">'Another description'</span>;</div>
+
+                <h3>5. Getting/Setting Values</h3>
+                <p>For form elements like inputs:</p>
+
+                <div class="code-block"><span class="keyword">let</span> input = document.<span class="function">querySelector</span>(<span class="string">'#username'</span>);
+
+<span class="comment">// Get value</span>
+<span class="keyword">let</span> value = input.value;
+<span class="function">console.log</span>(value);
+
+<span class="comment">// Set value</span>
+input.value = <span class="string">"John Doe"</span>;
+
+<span class="comment">// Clear value</span>
+input.value = <span class="string">""</span>;</div>
+
+                <h3>Real Examples</h3>
+
+                <div class="example">
+                    <strong>Toggle Dark Mode</strong>
+                    <div class="code-block" style="margin-top: 10px;"><span class="keyword">function</span> <span class="function">toggleDarkMode</span>() {
+  <span class="keyword">let</span> body = document.<span class="function">querySelector</span>(<span class="string">'body'</span>);
+  body.classList.<span class="function">toggle</span>(<span class="string">'dark-mode'</span>);
+  
+  <span class="comment">// Save preference</span>
+  <span class="keyword">if</span> (body.classList.<span class="function">contains</span>(<span class="string">'dark-mode'</span>)) {
+    <span class="function">console.log</span>(<span class="string">"Dark mode ON"</span>);
+  } <span class="keyword">else</span> {
+    <span class="function">console.log</span>(<span class="string">"Dark mode OFF"</span>);
+  }
+}</div>
+                </div>
+
+                <div class="example">
+                    <strong>Image Gallery Changer</strong>
+                    <div class="code-block" style="margin-top: 10px;"><span class="keyword">let</span> images = [<span class="string">'img1.jpg'</span>, <span class="string">'img2.jpg'</span>, <span class="string">'img3.jpg'</span>];
+<span class="keyword">let</span> currentIndex = <span class="number">0</span>;
+
+<span class="keyword">function</span> <span class="function">nextImage</span>() {
+  currentIndex++;
+  <span class="keyword">if</span> (currentIndex >= images.length) {
+    currentIndex = <span class="number">0</span>;
+  }
+  
+  <span class="keyword">let</span> img = document.<span class="function">querySelector</span>(<span class="string">'#gallery-img'</span>);
+  img.src = images[currentIndex];
+}</div>
+                </div>
+
+                <div class="example">
+                    <strong>Character Counter</strong>
+                    <div class="code-block" style="margin-top: 10px;"><span class="keyword">let</span> textarea = document.<span class="function">querySelector</span>(<span class="string">'#message'</span>);
+<span class="keyword">let</span> counter = document.<span class="function">querySelector</span>(<span class="string">'#counter'</span>);
+
+<span class="keyword">function</span> <span class="function">updateCounter</span>() {
+  <span class="keyword">let</span> length = textarea.value.length;
+  <span class="keyword">let</span> maxLength = <span class="number">200</span>;
+  counter.textContent = <span class="string">`</span>${length}<span class="string"> / </span>${maxLength}<span class="string">`</span>;
+  
+  <span class="keyword">if</span> (length > maxLength) {
+    counter.style.color = <span class="string">'red'</span>;
+  } <span class="keyword">else</span> {
+    counter.style.color = <span class="string">'black'</span>;
+  }
+}</div>
+                </div>
+            </div>
+
+            <!-- Events Tab -->
+            <div id="events" class="tab-content">
+                <h2>Handling Events</h2>
+                <p>Events are things that happen on the page: clicks, typing, mouse movement, scrolling, etc. JavaScript can "listen" for these events and respond!</p>
+
+                <h3>What Are Events?</h3>
+                <div class="example">
+                    <strong>Common Events:</strong><br>
+                    • <code>click</code> - User clicks on element<br>
+                    • <code>dblclick</code> - User double-clicks<br>
+                    • <code>mouseenter</code> - Mouse enters element<br>
+                    • <code>mouseleave</code> - Mouse leaves element<br>
+                    • <code>keydown</code> - User presses a key<br>
+                    • <code>keyup</code> - User releases a key<br>
+                    • <code>input</code> - Input value changes<br>
+                    • <code>submit</code> - Form is submitted<br>
+                    • <code>load</code> - Page finishes loading
+                </div>
+
+                <h3>Adding Event Listeners</h3>
+                <p>Use <code>addEventListener()</code> to listen for events:</p>
+
+                <div class="code-block"><span class="comment">// HTML: &lt;button id="myBtn"&gt;Click Me&lt;/button&gt;</span>
+
+<span class="keyword">let</span> button = document.<span class="function">querySelector</span>(<span class="string">'#myBtn'</span>);
+
+<span class="comment">// Listen for click event</span>
+button.<span class="function">addEventListener</span>(<span class="string">'click'</span>, <span class="keyword">function</span>() {
+  <span class="function">console.log</span>(<span class="string">"Button was clicked!"</span>);
+});
+
+<span class="comment">// Or with arrow function</span>
+button.<span class="function">addEventListener</span>(<span class="string">'click'</span>, () => {
+  <span class="function">console.log</span>(<span class="string">"Button clicked!"</span>);
+});</div>
+
+                <h3>The Event Object</h3>
+                <p>Event listeners receive an event object with useful information:</p>
+
+                <div class="code-block">button.<span class="function">addEventListener</span>(<span class="string">'click'</span>, <span class="keyword">function</span>(event) {
+  <span class="function">console.log</span>(event);              <span class="comment">// The event object</span>
+  <span class="function">console.log</span>(event.target);       <span class="comment">// Element that was clicked</span>
+  <span class="function">console.log</span>(event.type);         <span class="comment">// Type of event (click)</span>
+});</div>
+
+                <h3>Common Event Patterns</h3>
+
+                <div class="step">
+                    <span class="step-number">1</span>
+                    <strong>Click Events</strong>
+                    <div class="code-block" style="margin-top: 10px;"><span class="keyword">let</span> button = document.<span class="function">querySelector</span>(<span class="string">'#btn'</span>);
+
+button.<span class="function">addEventListener</span>(<span class="string">'click'</span>, () => {
+  <span class="function">alert</span>(<span class="string">"Button clicked!"</span>);
+});</div>
+                </div>
+
+                <div class="step">
+                    <span class="step-number">2</span>
+                    <strong>Input Events (typing)</strong>
+                    <div class="code-block" style="margin-top: 10px;"><span class="keyword">let</span> input = document.<span class="function">querySelector</span>(<span class="string">'#search'</span>);
+
+input.<span class="function">addEventListener</span>(<span class="string">'input'</span>, () => {
+  <span class="function">console.log</span>(<span class="string">"User typed:"</span>, input.value);
+});</div>
+                </div>
+
+                <div class="step">
+                    <span class="step-number">3</span>
+                    <strong>Mouse Hover</strong>
+                    <div class="code-block" style="margin-top: 10px;"><span class="keyword">let</span> box = document.<span class="function">querySelector</span>(<span class="string">'.box'</span>);
+
+box.<span class="function">addEventListener</span>(<span class="string">'mouseenter'</span>, () => {
+  box.style.backgroundColor = <span class="string">'yellow'</span>;
+});
+
+box.<span class="function">addEventListener</span>(<span class="string">'mouseleave'</span>, () => {
+  box.style.backgroundColor = <span class="string">'white'</span>;
+});</div>
+                </div>
+
+                <div class="step">
+                    <span class="step-number">4</span>
+                    <strong>Keyboard Events</strong>
+                    <div class="code-block" style="margin-top: 10px;">document.<span class="function">addEventListener</span>(<span class="string">'keydown'</span>, (event) => {
+  <span class="function">console.log</span>(<span class="string">"Key pressed:"</span>, event.key);
+  
+  <span class="keyword">if</span> (event.key === <span class="string">'Enter'</span>) {
+    <span class="function">console.log</span>(<span class="string">"Enter key pressed!"</span>);
+  }
+});</div>
+                </div>
+
+                <div class="step">
+                    <span class="step-number">5</span>
+                    <strong>Form Submit</strong>
+                    <div class="code-block" style="margin-top: 10px;"><span class="keyword">let</span> form = document.<span class="function">querySelector</span>(<span class="string">'#myForm'</span>);
+
+form.<span class="function">addEventListener</span>(<span class="string">'submit'</span>, (event) => {
+  event.<span class="function">preventDefault</span>();  <span class="comment">// Stop form from submitting</span>
+  
+  <span class="function">console.log</span>(<span class="string">"Form submitted!"</span>);
+  <span class="comment">// Handle form data here</span>
+});</div>
+                </div>
+
+                <div class="tip">
+                    <strong>💡 event.preventDefault():</strong> This stops the default action. Use it to:<br>
+                    • Prevent forms from submitting and reloading the page<br>
+                    • Prevent links from navigating<br>
+                    • Handle the action with JavaScript instead
+                </div>
+
+                <h3>Multiple Event Listeners</h3>
+                <p>You can add multiple listeners to the same element:</p>
+
+                <div class="code-block"><span class="keyword">let</span> button = document.<span class="function">querySelector</span>(<span class="string">'button'</span>);
+
+button.<span class="function">addEventListener</span>(<span class="string">'click'</span>, () => {
+  <span class="function">console.log</span>(<span class="string">"First listener"</span>);
+});
+
+button.<span class="function">addEventListener</span>(<span class="string">'click'</span>, () => {
+  <span class="function">console.log</span>(<span class="string">"Second listener"</span>);
+});
+
+<span class="comment">// Both will run when button is clicked!</span></div>
+
+                <h3>Event Delegation</h3>
+                <p>Listen on a parent element for events from children:</p>
+
+                <div class="code-block"><span class="comment">// HTML: &lt;ul id="list"&gt;
+//         &lt;li&gt;Item 1&lt;/li&gt;
+//         &lt;li&gt;Item 2&lt;/li&gt;
+//       &lt;/ul&gt;</span>
+
+<span class="keyword">let</span> list = document.<span class="function">querySelector</span>(<span class="string">'#list'</span>);
+
+<span class="comment">// Listen on the list, but check what was clicked</span>
+list.<span class="function">addEventListener</span>(<span class="string">'click'</span>, (event) => {
+  <span class="keyword">if</span> (event.target.tagName === <span class="string">'LI'</span>) {
+    <span class="function">console.log</span>(<span class="string">"Clicked:"</span>, event.target.textContent);
+  }
+});</div>
+
+                <div class="example">
+                    <strong>Why use event delegation?</strong><br>
+                    • More efficient than adding listeners to every child<br>
+                    • Works for elements added dynamically later<br>
+                    • Less memory usage
+                </div>
+
+                <h3>Real-World Examples</h3>
+
+                <div class="example">
+                    <strong>Like Button</strong>
+                    <div class="code-block" style="margin-top: 10px;"><span class="keyword">let</span> likeBtn = document.<span class="function">querySelector</span>(<span class="string">'.like-btn'</span>);
+<span class="keyword">let</span> likeCount = <span class="number">0</span>;
+
+likeBtn.<span class="function">addEventListener</span>(<span class="string">'click'</span>, () => {
+  likeCount++;
+  likeBtn.textContent = <span class="string">`❤️ </span>${likeCount}<span class="string">`</span>;
+  likeBtn.classList.<span class="function">add</span>(<span class="string">'liked'</span>);
+});</div>
+                </div>
+
+                <div class="example">
+                    <strong>Show/Hide Password</strong>
+                    <div class="code-block" style="margin-top: 10px;"><span class="keyword">let</span> toggleBtn = document.<span class="function">querySelector</span>(<span class="string">'.toggle-password'</span>);
+<span class="keyword">let</span> passwordInput = document.<span class="function">querySelector</span>(<span class="string">'#password'</span>);
+
+toggleBtn.<span class="function">addEventListener</span>(<span class="string">'click'</span>, () => {
+  <span class="keyword">if</span> (passwordInput.type === <span class="string">'password'</span>) {
+    passwordInput.type = <span class="string">'text'</span>;
+    toggleBtn.textContent = <span class="string">'Hide'</span>;
+  } <span class="keyword">else</span> {
+    passwordInput.type = <span class="string">'password'</span>;
+    toggleBtn.textContent = <span class="string">'Show'</span>;
+  }
+});</div>
+                </div>
+            </div>
+
+            <!-- Creating Tab -->
+            <div id="creating" class="tab-content">
+                <h2>Creating Elements Dynamically</h2>
+                <p>JavaScript can create new HTML elements and add them to the page!</p>
+
+                <h3>1. Creating Elements</h3>
+                <p>Use <code>createElement()</code> to make new elements:</p>
+
+                <div class="code-block"><span class="comment">// Create a new paragraph</span>
+<span class="keyword">let</span> newPara = document.<span class="function">createElement</span>(<span class="string">'p'</span>);
+
+<span class="comment">// Set its text</span>
+newPara.textContent = <span class="string">"This is a new paragraph!"</span>;
+
+<span class="comment">// Add a class</span>
+newPara.classList.<span class="function">add</span>(<span class="string">'highlight'</span>);
+
+<span class="comment">// Add it to the page</span>
+document.body.<span class="function">appendChild</span>(newPara);</div>
+
+                <h3>2. Adding Elements to the DOM</h3>
+
+                <div class="step">
+                    <span class="step-number">1</span>
+                    <strong>appendChild()</strong> - Add to end
+                    <div class="code-block" style="margin-top: 10px;"><span class="keyword">let</span> container = document.<span class="function">querySelector</span>(<span class="string">'.container'</span>);
+<span class="keyword">let</span> newDiv = document.<span class="function">createElement</span>(<span class="string">'div'</span>);
+newDiv.textContent = <span class="string">"New content"</span>;
+
+container.<span class="function">appendChild</span>(newDiv);  <span class="comment">// Adds to end of container</span></div>
+                </div>
+
+                <div class="step">
+                    <span class="step-number">2</span>
+                    <strong>insertBefore()</strong> - Add before specific element
+                    <div class="code-block" style="margin-top: 10px;"><span class="keyword">let</span> parent = document.<span class="function">querySelector</span>(<span class="string">'.parent'</span>);
+<span class="keyword">let</span> referenceNode = document.<span class="function">querySelector</span>(<span class="string">'.reference'</span>);
+<span class="keyword">let</span> newElement = document.<span class="function">createElement</span>(<span class="string">'div'</span>);
+
+parent.<span class="function">insertBefore</span>(newElement, referenceNode);</div>
+                </div>
+
+                <div class="step">
+                    <span class="step-number">3</span>
+                    <strong>prepend()</strong> - Add to beginning (modern)
+                    <div class="code-block" style="margin-top: 10px;"><span class="keyword">let</span> container = document.<span class="function">querySelector</span>(<span class="string">'.container'</span>);
+<span class="keyword">let</span> newElement = document.<span class="function">createElement</span>(<span class="string">'p'</span>);
+
+container.<span class="function">prepend</span>(newElement);  <span class="comment">// Adds to beginning</span></div>
+                </div>
+
+                <h3>3. Removing Elements</h3>
+
+                <div class="code-block"><span class="comment">// Modern way</span>
+<span class="keyword">let</span> element = document.<span class="function">querySelector</span>(<span class="string">'.to-remove'</span>);
+element.<span class="function">remove</span>();
+
+<span class="comment">// Old way (still works)</span>
+<span class="keyword">let</span> parent = element.parentNode;
+parent.<span class="function">removeChild</span>(element);</div>
+
+                <h3>Real-World Examples</h3>
+
+                <div class="example">
+                    <strong>To-Do List</strong>
+                    <div class="code-block" style="margin-top: 10px;"><span class="keyword">function</span> <span class="function">addTodo</span>(text) {
+  <span class="comment">// Create elements</span>
+  <span class="keyword">let</span> li = document.<span class="function">createElement</span>(<span class="string">'li'</span>);
+  <span class="keyword">let</span> span = document.<span class="function">createElement</span>(<span class="string">'span'</span>);
+  <span class="keyword">let</span> deleteBtn = document.<span class="function">createElement</span>(<span class="string">'button'</span>);
+  
+  <span class="comment">// Set content</span>
+  span.textContent = text;
+  deleteBtn.textContent = <span class="string">'Delete'</span>;
+  
+  <span class="comment">// Add delete functionality</span>
+  deleteBtn.<span class="function">addEventListener</span>(<span class="string">'click'</span>, () => {
+    li.<span class="function">remove</span>();
+  });
+  
+  <span class="comment">// Assemble and add to page</span>
+  li.<span class="function">appendChild</span>(span);
+  li.<span class="function">appendChild</span>(deleteBtn);
+  
+  <span class="keyword">let</span> list = document.<span class="function">querySelector</span>(<span class="string">'#todo-list'</span>);
+  list.<span class="function">appendChild</span>(li);
+}</div>
+                </div>
+
+                <div class="example">
+                    <strong>Dynamic Card Generator</strong>
+                    <div class="code-block" style="margin-top: 10px;"><span class="keyword">function</span> <span class="function">createCard</span>(title, description) {
+  <span class="comment">// Create card structure</span>
+  <span class="keyword">let</span> card = document.<span class="function">createElement</span>(<span class="string">'div'</span>);
+  card.className = <span class="string">'card'</span>;
+  
+  <span class="keyword">let</span> heading = document.<span class="function">createElement</span>(<span class="string">'h3'</span>);
+  heading.textContent = title;
+  
+  <span class="keyword">let</span> para = document.<span class="function">createElement</span>(<span class="string">'p'</span>);
+  para.textContent = description;
+  
+  <span class="comment">// Assemble</span>
+  card.<span class="function">appendChild</span>(heading);
+  card.<span class="function">appendChild</span>(para);
+  
+  <span class="comment">// Add to page</span>
+  <span class="keyword">let</span> container = document.<span class="function">querySelector</span>(<span class="string">'.cards'</span>);
+  container.<span class="function">appendChild</span>(card);
+}</span>
+
+<span class="comment">// Usage</span>
+<span class="function">createCard</span>(<span class="string">'Card Title'</span>, <span class="string">'Card description here'</span>);</div>
+                </div>
+
+                <div class="example">
+                    <strong>Shopping Cart</strong>
+                    <div class="code-block" style="margin-top: 10px;"><span class="keyword">function</span> <span class="function">addToCart</span>(itemName, price) {
+  <span class="keyword">let</span> cartItem = document.<span class="function">createElement</span>(<span class="string">'div'</span>);
+  cartItem.className = <span class="string">'cart-item'</span>;
+  cartItem.innerHTML = <span class="string">`
+    &lt;span class="item-name"&gt;</span>${itemName}<span class="string">&lt;/span&gt;
+    &lt;span class="item-price"&gt;$</span>${price}<span class="string">&lt;/span&gt;
+    &lt;button class="remove-btn"&gt;Remove&lt;/button&gt;
+  `</span>;
+  
+  <span class="comment">// Add remove functionality</span>
+  <span class="keyword">let</span> removeBtn = cartItem.<span class="function">querySelector</span>(<span class="string">'.remove-btn'</span>);
+  removeBtn.<span class="function">addEventListener</span>(<span class="string">'click'</span>, () => {
+    cartItem.<span class="function">remove</span>();
+    <span class="function">updateTotal</span>();
+  });
+  
+  document.<span class="function">querySelector</span>(<span class="string">'.cart'</span>).<span class="function">appendChild</span>(cartItem);
+  <span class="function">updateTotal</span>();
+}</div>
+                </div>
+
+                <div class="tip">
+                    <strong>💡 innerHTML vs createElement:</strong><br>
+                    • <code>createElement()</code> is safer and faster for simple elements<br>
+                    • <code>innerHTML</code> is easier for complex HTML structures<br>
+                    • Combine both: create element with createElement, set innerHTML for content
+                </div>
+            </div>
+
+            <!-- Build Tab -->
+            <div id="build" class="tab-content">
+                <h2>Let's Build a To-Do List App!</h2>
+                <p>Put everything together to create a fully functional to-do list with add, delete, and complete functionality!</p>
+
+                <div class="step">
+                    <span class="step-number">1</span>
+                    <strong>Create the HTML Structure</strong>
+                    <div class="code-block" style="margin-top: 10px;"><span class="keyword">&lt;!DOCTYPE html&gt;</span>
+<span class="keyword">&lt;html&gt;</span>
+<span class="keyword">&lt;head&gt;</span>
+  <span class="keyword">&lt;title&gt;</span>To-Do List<span class="keyword">&lt;/title&gt;</span>
+  <span class="keyword">&lt;style&gt;</span>
+    <span class="comment">/* CSS will go here */</span>
+  <span class="keyword">&lt;/style&gt;</span>
+<span class="keyword">&lt;/head&gt;</span>
+<span class="keyword">&lt;body&gt;</span>
+  <span class="keyword">&lt;div</span> <span class="function">class</span>=<span class="string">"container"</span><span class="keyword">&gt;</span>
+    <span class="keyword">&lt;h1&gt;</span>My To-Do List<span class="keyword">&lt;/h1&gt;</span>
+    
+    <span class="keyword">&lt;div</span> <span class="function">class</span>=<span class="string">"input-section"</span><span class="keyword">&gt;</span>
+      <span class="keyword">&lt;input</span> <span class="function">type</span>=<span class="string">"text"</span> <span class="function">id</span>=<span class="string">"taskInput"</span> 
+             <span class="function">placeholder</span>=<span class="string">"Add a new task..."</span><span class="keyword">&gt;</span>
+      <span class="keyword">&lt;button</span> <span class="function">id</span>=<span class="string">"addBtn"</span><span class="keyword">&gt;</span>Add<span class="keyword">&lt;/button&gt;</span>
+    <span class="keyword">&lt;/div&gt;</span>
+    
+    <span class="keyword">&lt;ul</span> <span class="function">id</span>=<span class="string">"taskList"</span><span class="keyword">&gt;&lt;/ul&gt;</span>
+  <span class="keyword">&lt;/div&gt;</span>
+  
+  <span class="keyword">&lt;script&gt;</span>
+    <span class="comment">// JavaScript will go here</span>
+  <span class="keyword">&lt;/script&gt;</span>
+<span class="keyword">&lt;/body&gt;</span>
+<span class="keyword">&lt;/html&gt;</span></div>
+                </div>
+
+                <div class="step">
+                    <span class="step-number">2</span>
+                    <strong>Add CSS Styling</strong>
+                    <div class="code-block" style="margin-top: 10px;"><span class="function">.container</span> {
+  <span class="keyword">max-width</span>: <span class="number">600px</span>;
+  <span class="keyword">margin</span>: <span class="number">50px</span> <span class="keyword">auto</span>;
+  <span class="keyword">padding</span>: <span class="number">30px</span>;
+  <span class="keyword">background</span>: <span class="string">white</span>;
+  <span class="keyword">border-radius</span>: <span class="number">10px</span>;
+  <span class="keyword">box-shadow</span>: <span class="number">0</span> <span class="number">5px</span> <span class="number">20px</span> <span class="function">rgba</span>(<span class="number">0</span>,<span class="number">0</span>,<span class="number">0</span>,<span class="number">0.1</span>);
+}
+
+<span class="function">.input-section</span> {
+  <span class="keyword">display</span>: <span class="keyword">flex</span>;
+  <span class="keyword">gap</span>: <span class="number">10px</span>;
+  <span class="keyword">margin-bottom</span>: <span class="number">20px</span>;
+}
+
+<span class="function">#taskInput</span> {
+  <span class="keyword">flex</span>: <span class="number">1</span>;
+  <span class="keyword">padding</span>: <span class="number">12px</span>;
+  <span class="keyword">border</span>: <span class="number">2px</span> <span class="keyword">solid</span> <span class="string">#ddd</span>;
+  <span class="keyword">border-radius</span>: <span class="number">5px</span>;
+  <span class="keyword">font-size</span>: <span class="number">16px</span>;
+}
+
+<span class="function">#addBtn</span> {
+  <span class="keyword">padding</span>: <span class="number">12px</span> <span class="number">30px</span>;
+  <span class="keyword">background</span>: <span class="string">#06a77d</span>;
+  <span class="keyword">color</span>: <span class="string">white</span>;
+  <span class="keyword">border</span>: <span class="keyword">none</span>;
+  <span class="keyword">border-radius</span>: <span class="number">5px</span>;
+  <span class="keyword">cursor</span>: <span class="keyword">pointer</span>;
+}
+
+<span class="function">#taskList</span> {
+  <span class="keyword">list-style</span>: <span class="keyword">none</span>;
+  <span class="keyword">padding</span>: <span class="number">0</span>;
+}
+
+<span class="function">.task-item</span> {
+  <span class="keyword">display</span>: <span class="keyword">flex</span>;
+  <span class="keyword">align-items</span>: <span class="keyword">center</span>;
+  <span class="keyword">padding</span>: <span class="number">15px</span>;
+  <span class="keyword">background</span>: <span class="string">#f8f9fa</span>;
+  <span class="keyword">margin-bottom</span>: <span class="number">10px</span>;
+  <span class="keyword">border-radius</span>: <span class="number">5px</span>;
+}
+
+<span class="function">.task-item.completed</span> {
+  <span class="keyword">opacity</span>: <span class="number">0.6</span>;
+  <span class="keyword">text-decoration</span>: <span class="keyword">line-through</span>;
+}
+
+<span class="function">.task-text</span> {
+  <span class="keyword">flex</span>: <span class="number">1</span>;
+  <span class="keyword">cursor</span>: <span class="keyword">pointer</span>;
+}
+
+<span class="function">.delete-btn</span> {
+  <span class="keyword">background</span>: <span class="string">#dc3545</span>;
+  <span class="keyword">color</span>: <span class="string">white</span>;
+  <span class="keyword">border</span>: <span class="keyword">none</span>;
+  <span class="keyword">padding</span>: <span class="number">5px</span> <span class="number">15px</span>;
+  <span class="keyword">border-radius</span>: <span class="number">3px</span>;
+  <span class="keyword">cursor</span>: <span class="keyword">pointer</span>;
+}</div>
+                </div>
+
+                <div class="step">
+                    <span class="step-number">3</span>
+                    <strong>Write the JavaScript</strong>
+                    <div class="code-block" style="margin-top: 10px;"><span class="comment">// Get elements</span>
+<span class="keyword">const</span> taskInput = document.<span class="function">querySelector</span>(<span class="string">'#taskInput'</span>);
+<span class="keyword">const</span> addBtn = document.<span class="function">querySelector</span>(<span class="string">'#addBtn'</span>);
+<span class="keyword">const</span> taskList = document.<span class="function">querySelector</span>(<span class="string">'#taskList'</span>);
+
+<span class="comment">// Add task function</span>
+<span class="keyword">function</span> <span class="function">addTask</span>() {
+  <span class="keyword">const</span> taskText = taskInput.value.<span class="function">trim</span>();
+  
+  <span class="comment">// Check if input is empty</span>
+  <span class="keyword">if</span> (taskText === <span class="string">''</span>) {
+    <span class="function">alert</span>(<span class="string">'Please enter a task!'</span>);
+    <span class="keyword">return</span>;
+  }
+  
+  <span class="comment">// Create task item</span>
+  <span class="keyword">const</span> li = document.<span class="function">createElement</span>(<span class="string">'li'</span>);
+  li.className = <span class="string">'task-item'</span>;
+  
+  <span class="comment">// Create task text</span>
+  <span class="keyword">const</span> span = document.<span class="function">createElement</span>(<span class="string">'span'</span>);
+  span.className = <span class="string">'task-text'</span>;
+  span.textContent = taskText;
+  
+  <span class="comment">// Toggle complete on click</span>
+  span.<span class="function">addEventListener</span>(<span class="string">'click'</span>, () => {
+    li.classList.<span class="function">toggle</span>(<span class="string">'completed'</span>);
+  });
+  
+  <span class="comment">// Create delete button</span>
+  <span class="keyword">const</span> deleteBtn = document.<span class="function">createElement</span>(<span class="string">'button'</span>);
+  deleteBtn.className = <span class="string">'delete-btn'</span>;
+  deleteBtn.textContent = <span class="string">'Delete'</span>;
+  
+  <span class="comment">// Delete task on click</span>
+  deleteBtn.<span class="function">addEventListener</span>(<span class="string">'click'</span>, () => {
+    li.<span class="function">remove</span>();
+  });
+  
+  <span class="comment">// Assemble and add to list</span>
+  li.<span class="function">appendChild</span>(span);
+  li.<span class="function">appendChild</span>(deleteBtn);
+  taskList.<span class="function">appendChild</span>(li);
+  
+  <span class="comment">// Clear input</span>
+  taskInput.value = <span class="string">''</span>;
+  taskInput.<span class="function">focus</span>();
+}
+
+<span class="comment">// Event listeners</span>
+addBtn.<span class="function">addEventListener</span>(<span class="string">'click'</span>, addTask);
+
+<span class="comment">// Allow Enter key to add task</span>
+taskInput.<span class="function">addEventListener</span>(<span class="string">'keypress'</span>, (event) => {
+  <span class="keyword">if</span> (event.key === <span class="string">'Enter'</span>) {
+    <span class="function">addTask</span>();
+  }
+});</div>
+                </div>
+
+                <div class="tip">
+                    <strong>💡 How It Works:</strong><br>
+                    1. User types a task and clicks Add (or presses Enter)<br>
+                    2. JavaScript creates new HTML elements dynamically<br>
+                    3. Click task text to mark complete (toggles class)<br>
+                    4. Click Delete button to remove task<br>
+                    5. All happens without page reload!
+                </div>
+
+                <h3>Testing Your To-Do List</h3>
+                <ol style="padding-left: 20px; margin: 15px 0; line-height: 1.8;">
+                    <li>Type a task and click Add</li>
+                    <li>Add several tasks</li>
+                    <li>Click on a task to mark it complete</li>
+                    <li>Click again to uncomplete it</li>
+                    <li>Click Delete to remove tasks</li>
+                    <li>Try pressing Enter instead of clicking Add</li>
+                    <li>Try adding an empty task (should show alert)</li>
+                </ol>
+            </div>
+
+            <!-- Challenge Tab -->
+            <div id="challenge" class="tab-content">
+                <h2>🚀 Week 5 Challenges!</h2>
+                <p>You've mastered DOM manipulation! Now take it further:</p>
+
+                <h3>To-Do List Enhancements</h3>
+                <ul class="checklist">
+                    <li>Add a "Clear All" button to remove all tasks</li>
+                    <li>Add a counter showing total tasks and completed tasks</li>
+                    <li>Save tasks to localStorage so they persist after refresh</li>
+                    <li>Add "Edit" button to modify existing tasks</li>
+                    <li>Add priority levels (high, medium, low) with colors</li>
+                    <li>Add filter buttons: All / Active / Completed</li>
+                    <li>Add due dates with date picker</li>
+                </ul>
+
+                <h3>Alternative Projects</h3>
+
+                <div class="example">
+                    <strong>Image Gallery with Lightbox</strong>
+                    <div class="code-block" style="margin-top: 10px;"><span class="comment">// Click thumbnail to show large version</span>
+<span class="keyword">let</span> thumbnails = document.<span class="function">querySelectorAll</span>(<span class="string">'.thumbnail'</span>);
+
+thumbnails.<span class="function">forEach</span>(thumb => {
+  thumb.<span class="function">addEventListener</span>(<span class="string">'click'</span>, () => {
+    <span class="keyword">let</span> lightbox = document.<span class="function">createElement</span>(<span class="string">'div'</span>);
+    lightbox.className = <span class="string">'lightbox'</span>;
+    
+    <span class="keyword">let</span> img = document.<span class="function">createElement</span>(<span class="string">'img'</span>);
+    img.src = thumb.<span class="function">getAttribute</span>(<span class="string">'data-full'</span>);
+    
+    lightbox.<span class="function">appendChild</span>(img);
+    document.body.<span class="function">appendChild</span>(lightbox);
+    
+    lightbox.<span class="function">addEventListener</span>(<span class="string">'click'</span>, () => {
+      lightbox.<span class="function">remove</span>();
+    });
+  });
+});</div>
+                </div>
+
+                <div class="example">
+                    <strong>Accordion / FAQ</strong>
+                    <div class="code-block" style="margin-top: 10px;"><span class="keyword">let</span> questions = document.<span class="function">querySelectorAll</span>(<span class="string">'.question'</span>);
+
+questions.<span class="function">forEach</span>(question => {
+  question.<span class="function">addEventListener</span>(<span class="string">'click'</span>, () => {
+    <span class="keyword">let</span> answer = question.nextElementSibling;
+    answer.classList.<span class="function">toggle</span>(<span class="string">'show'</span>);
+  });
+});</div>
+                </div>
+
+                <div class="example">
+                    <strong>Modal / Popup</strong>
+                    <div class="code-block" style="margin-top: 10px;"><span class="keyword">let</span> openBtn = document.<span class="function">querySelector</span>(<span class="string">'.open-modal'</span>);
+<span class="keyword">let</span> modal = document.<span class="function">querySelector</span>(<span class="string">'.modal'</span>);
+<span class="keyword">let</span> closeBtn = document.<span class="function">querySelector</span>(<span class="string">'.close-modal'</span>);
+
+openBtn.<span class="function">addEventListener</span>(<span class="string">'click'</span>, () => {
+  modal.classList.<span class="function">add</span>(<span class="string">'show'</span>);
+});
+
+closeBtn.<span class="function">addEventListener</span>(<span class="string">'click'</span>, () => {
+  modal.classList.<span class="function">remove</span>(<span class="string">'show'</span>);
+});
+
+<span class="comment">// Close when clicking outside</span>
+modal.<span class="function">addEventListener</span>(<span class="string">'click'</span>, (e) => {
+  <span class="keyword">if</span> (e.target === modal) {
+    modal.classList.<span class="function">remove</span>(<span class="string">'show'</span>);
+  }
+});</div>
+                </div>
+
+                <h3>Real-World Project Ideas</h3>
+
+                <div class="demo-box">
+                    <ol style="padding-left: 20px; margin: 10px 0; line-height: 1.8;">
+                        <li><strong>Shopping Cart:</strong> Add items, update quantities, calculate total</li>
+                        <li><strong>Weather Dashboard:</strong> Show weather cards for different cities</li>
+                        <li><strong>Notes App:</strong> Create, edit, delete, and save notes</li>
+                        <li><strong>Quiz App:</strong> Multiple choice, score tracking, results page</li>
+                        <li><strong>Expense Tracker:</strong> Add expenses, categorize, show totals</li>
+                        <li><strong>Recipe Manager:</strong> Add recipes with ingredients and instructions</li>
+                        <li><strong>Bookmark Manager:</strong> Save and organize favorite links</li>
+                    </ol>
+                </div>
+
+                <h3>What You've Accomplished! 🎉</h3>
+                <ul style="padding-left: 20px; margin: 15px 0; line-height: 1.8;">
+                    <li>✅ Understand the DOM and how JavaScript interacts with HTML</li>
+                    <li>✅ Select elements using multiple methods</li>
+                    <li>✅ Change text, HTML, styles, and attributes dynamically</li>
+                    <li>✅ Handle user events like clicks, typing, and hovering</li>
+                    <li>✅ Create and remove elements dynamically</li>
+                    <li>✅ Built a complete interactive web application!</li>
+                </ul>
+
+                <p style="margin-top: 20px; padding: 15px; background: #e8f5e9; border-radius: 6px;">
+                    <strong>Next Steps:</strong> You now have all the core web development skills! You can build interactive websites, handle user input, and create dynamic content. Next, you'll learn about APIs, async JavaScript, and more advanced topics. But first, practice by building lots of small projects!
+                </p>
+
+                <div class="tip">
+                    <strong>💡 Practice Idea:</strong> Take any website feature you see and try to recreate it! Dropdown menus, image sliders, tabs, filters - practice makes perfect. Start simple and gradually add complexity.
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Panel: Code Editor and Preview -->
+        <div class="panel">
+            <h2>✏️ Your Code Editor</h2>
+            <textarea id="codeEditor" placeholder="Type your HTML + JavaScript here..."><!DOCTYPE html>
+<html>
+<head>
+  <title>DOM Practice</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+    }
+    
+    .box {
+      width: 200px;
+      height: 200px;
+      background: #06a77d;
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      border-radius: 10px;
+      margin: 20px 0;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <h1 id="title">DOM Manipulation Practice</h1>
+  <p>Click the button to change the title!</p>
+  
+  <button id="changeBtn">Change Title</button>
+  
+  <div class="box" id="colorBox">Click Me!</div>
+  
+  <script>
+    // Select elements
+    let title = document.querySelector('#title');
+    let button = document.querySelector('#changeBtn');
+    let box = document.querySelector('#colorBox');
+    
+    // Change title on button click
+    button.addEventListener('click', () => {
+      title.textContent = 'Title Changed!';
+      title.style.color = 'red';
+    });
+    
+    // Change box color on click
+    box.addEventListener('click', () => {
+      let colors = ['#06a77d', '#ff6b6b', '#4ecdc4', '#ffd93d'];
+      let randomColor = colors[Math.floor(Math.random() * colors.length)];
+      box.style.backgroundColor = randomColor;
+    });
+    
+    console.log('DOM is ready!');
+  </script>
+</body>
+</html></textarea>
+            
+            <button onclick="updatePreview()">🔄 Run Code</button>
+            
+            <h2 style="margin-top: 30px;">👀 Live Preview</h2>
+            <iframe id="preview" class="preview-frame"></iframe>
+
+            <div style="margin-top: 20px; padding: 15px; background: #fff9e6; border-radius: 6px; border-left: 4px solid #ffd700;">
+                <strong>💡 Try This:</strong><br>
+                Interact with the elements in the preview! Click the button and the box to see DOM manipulation in action. Open DevTools (F12) to see console messages!
+            </div>
+        </div>
+    </div>
+
+    <div style="position: fixed; bottom: 0; left: 0; right: 0; background: rgba(6, 167, 125, 0.95); color: white; padding: 10px 20px; text-align: center; font-size: 14px; backdrop-filter: blur(10px);">
+        <strong>Week 5: DOM Manipulation</strong> | Made with ❤️ for learning web development | <strong>Build interactive web pages!</strong>
+    </div>
+
+    <script>
+        function showTab(tabName) {
+            const contents = document.querySelectorAll('.tab-content');
+            contents.forEach(content => content.classList.remove('active'));
+            
+            const tabs = document.querySelectorAll('.tab');
+            tabs.forEach(tab => tab.classList.remove('active'));
+            
+            document.getElementById(tabName).classList.add('active');
+            event.target.classList.add('active');
+        }
+
+        function updatePreview() {
+            const code = document.getElementById('codeEditor').value;
+            const consoleOutput = document.getElementById('consoleOutput');
+            
+            // Get the iframe container
+            const previewContainer = document.getElementById('preview').parentNode;
+            const oldPreview = document.getElementById('preview');
+            
+            // Create a completely new iframe
+            const newPreview = document.createElement('iframe');
+            newPreview.id = 'preview';
+            newPreview.className = 'preview-frame';
+            
+            // Replace the old iframe with the new one
+            previewContainer.replaceChild(newPreview, oldPreview);
+            
+            // Write the code to the new iframe
+            const previewDoc = newPreview.contentDocument || newPreview.contentWindow.document;
+            
+            previewDoc.open();
+            previewDoc.write(code);
+            previewDoc.close();
+        }
+
+        // Initial preview update
+        window.onload = function() {
+            updatePreview();
+        }
+    </script>
+</body>
+</html>
