@@ -1,0 +1,2729 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Week 0: Files & Classes | Days 3-4</title>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg-dark: #0f0f1a;
+            --bg-card: #1a1a2e;
+            --bg-input: #252540;
+            --border: #3a3a5c;
+            --text-primary: #e8e8f0;
+            --text-secondary: #9090a8;
+            --text-muted: #6060780;
+            --accent-blue: #6e9eff;
+            --accent-green: #4ade80;
+            --accent-purple: #c084fc;
+            --accent-orange: #fb923c;
+            --accent-red: #f87171;
+            --accent-cyan: #22d3ee;
+            --accent-pink: #f472b6;
+            --accent-yellow: #facc15;
+            --gradient-start: #3b82f6;
+            --gradient-mid: #8b5cf6;
+            --gradient-end: #d946ef;
+        }
+
+        body {
+            font-family: 'Space Grotesk', sans-serif;
+            background: var(--bg-dark);
+            color: var(--text-primary);
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, var(--gradient-start) 0%, var(--gradient-mid) 50%, var(--gradient-end) 100%);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 4px 30px rgba(139, 92, 246, 0.3);
+        }
+
+        .header h1 {
+            font-size: 24px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .header h1 .icon {
+            font-size: 28px;
+        }
+
+        .header .week-badge {
+            background: rgba(255,255,255,0.2);
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 500;
+            backdrop-filter: blur(10px);
+        }
+
+        .progress-bar {
+            height: 4px;
+            background: rgba(255,255,255,0.1);
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent-green), var(--accent-cyan));
+            width: 0%;
+            transition: width 0.5s ease;
+        }
+
+        /* Main Layout */
+        .container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            height: calc(100vh - 80px);
+        }
+
+        @media (max-width: 1200px) {
+            .container {
+                grid-template-columns: 1fr;
+                height: auto;
+            }
+        }
+
+        /* Left Panel - Lessons */
+        .lesson-panel {
+            padding: 0;
+            overflow-y: auto;
+            border-right: 1px solid var(--border);
+        }
+
+        /* Tabs */
+        .tabs {
+            display: flex;
+            background: var(--bg-card);
+            border-bottom: 1px solid var(--border);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            overflow-x: auto;
+        }
+
+        .tab {
+            padding: 14px 18px;
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            transition: all 0.2s;
+            white-space: nowrap;
+        }
+
+        .tab:hover {
+            color: var(--text-primary);
+            background: var(--bg-input);
+        }
+
+        .tab.active {
+            color: var(--accent-purple);
+            border-bottom-color: var(--accent-purple);
+        }
+
+        /* Tab Content */
+        .tab-content {
+            display: none;
+            padding: 30px;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Typography */
+        .tab-content h2 {
+            color: var(--accent-purple);
+            font-size: 24px;
+            margin-bottom: 16px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .tab-content h3 {
+            color: var(--accent-cyan);
+            font-size: 18px;
+            margin-top: 28px;
+            margin-bottom: 12px;
+        }
+
+        .tab-content h4 {
+            color: var(--accent-orange);
+            font-size: 16px;
+            margin-top: 20px;
+            margin-bottom: 10px;
+        }
+
+        .tab-content p {
+            color: var(--text-secondary);
+            margin-bottom: 16px;
+        }
+
+        /* Info Boxes */
+        .info-box {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 16px 20px;
+            margin: 16px 0;
+        }
+
+        .info-box.tip {
+            border-left: 4px solid var(--accent-green);
+            background: linear-gradient(90deg, rgba(74, 222, 128, 0.1), transparent);
+        }
+
+        .info-box.warning {
+            border-left: 4px solid var(--accent-orange);
+            background: linear-gradient(90deg, rgba(251, 146, 60, 0.1), transparent);
+        }
+
+        .info-box.important {
+            border-left: 4px solid var(--accent-red);
+            background: linear-gradient(90deg, rgba(248, 113, 113, 0.1), transparent);
+        }
+
+        .info-box.concept {
+            border-left: 4px solid var(--accent-purple);
+            background: linear-gradient(90deg, rgba(192, 132, 252, 0.1), transparent);
+        }
+
+        .info-box.project {
+            border-left: 4px solid var(--accent-cyan);
+            background: linear-gradient(90deg, rgba(34, 211, 238, 0.1), transparent);
+        }
+
+        .info-box-title {
+            font-weight: 600;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .info-box.tip .info-box-title { color: var(--accent-green); }
+        .info-box.warning .info-box-title { color: var(--accent-orange); }
+        .info-box.important .info-box-title { color: var(--accent-red); }
+        .info-box.concept .info-box-title { color: var(--accent-purple); }
+        .info-box.project .info-box-title { color: var(--accent-cyan); }
+
+        /* Code Blocks in Lessons */
+        .code-block {
+            background: #0d0d14;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 16px;
+            margin: 16px 0;
+            overflow-x: auto;
+            position: relative;
+        }
+
+        .code-block pre {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 13px;
+            line-height: 1.6;
+            color: var(--text-primary);
+            margin: 0;
+        }
+
+        .code-block .copy-btn {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            color: var(--text-secondary);
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 12px;
+            cursor: pointer;
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+
+        .code-block:hover .copy-btn {
+            opacity: 1;
+        }
+
+        .code-block .copy-btn:hover {
+            background: var(--border);
+            color: var(--text-primary);
+        }
+
+        .code-block .filename {
+            position: absolute;
+            top: -10px;
+            left: 16px;
+            background: var(--bg-card);
+            padding: 2px 10px;
+            border-radius: 4px;
+            font-size: 12px;
+            color: var(--accent-cyan);
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        /* Syntax Highlighting */
+        .keyword { color: var(--accent-pink); }
+        .string { color: var(--accent-green); }
+        .number { color: var(--accent-orange); }
+        .comment { color: #6a6a8a; font-style: italic; }
+        .function { color: var(--accent-blue); }
+        .class-name { color: var(--accent-cyan); }
+        .builtin { color: var(--accent-purple); }
+        .operator { color: var(--accent-red); }
+        .decorator { color: var(--accent-yellow); }
+
+        /* Exercise Cards */
+        .exercise {
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.1) 0%, rgba(217, 70, 239, 0.1) 100%);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+
+        .exercise-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+
+        .exercise-number {
+            background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
+            color: white;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .exercise-title {
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .exercise-description {
+            color: var(--text-secondary);
+            margin-bottom: 12px;
+        }
+
+        .load-exercise-btn {
+            background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            font-family: 'Space Grotesk', sans-serif;
+            font-weight: 500;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .load-exercise-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 20px rgba(139, 92, 246, 0.4);
+        }
+
+        /* Topic Grid */
+        .topic-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 16px;
+            margin: 20px 0;
+        }
+
+        .topic-card {
+            background: var(--bg-input);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: center;
+        }
+
+        .topic-card:hover {
+            border-color: var(--accent-purple);
+            transform: translateY(-4px);
+            box-shadow: 0 8px 25px rgba(139, 92, 246, 0.2);
+        }
+
+        .topic-card .icon {
+            font-size: 32px;
+            margin-bottom: 12px;
+        }
+
+        .topic-card .title {
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 6px;
+        }
+
+        .topic-card .desc {
+            font-size: 13px;
+            color: var(--text-muted);
+        }
+
+        /* Comparison Table */
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 16px 0;
+            font-size: 14px;
+        }
+
+        .comparison-table th,
+        .comparison-table td {
+            padding: 12px;
+            text-align: left;
+            border: 1px solid var(--border);
+        }
+
+        .comparison-table th {
+            background: var(--bg-input);
+            color: var(--accent-cyan);
+            font-weight: 600;
+        }
+
+        .comparison-table td {
+            background: var(--bg-card);
+            color: var(--text-secondary);
+        }
+
+        .comparison-table code {
+            background: var(--bg-input);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12px;
+        }
+
+        /* Inline code */
+        code {
+            background: var(--bg-input);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 13px;
+            color: var(--accent-cyan);
+        }
+
+        /* File Tree */
+        .file-tree {
+            background: #0d0d14;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 16px 20px;
+            margin: 16px 0;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 13px;
+        }
+
+        .file-tree .folder {
+            color: var(--accent-yellow);
+        }
+
+        .file-tree .file {
+            color: var(--text-secondary);
+        }
+
+        .file-tree .file.python {
+            color: var(--accent-blue);
+        }
+
+        .file-tree .file.json {
+            color: var(--accent-orange);
+        }
+
+        .file-tree .file.yaml {
+            color: var(--accent-pink);
+        }
+
+        /* Right Panel - Code Editor */
+        .editor-panel {
+            display: flex;
+            flex-direction: column;
+            background: var(--bg-card);
+        }
+
+        .editor-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 16px;
+            background: var(--bg-input);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .editor-title {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 500;
+            font-size: 14px;
+        }
+
+        .editor-title .dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+
+        .editor-title .dot.blue { background: var(--accent-blue); }
+
+        .editor-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .editor-btn {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            color: var(--text-secondary);
+            padding: 6px 14px;
+            border-radius: 6px;
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .editor-btn:hover {
+            background: var(--border);
+            color: var(--text-primary);
+        }
+
+        .editor-btn.run {
+            background: linear-gradient(135deg, var(--accent-green), var(--accent-cyan));
+            border: none;
+            color: #0a0a0a;
+            font-weight: 600;
+        }
+
+        .editor-btn.run:hover {
+            opacity: 0.9;
+            transform: translateY(-1px);
+        }
+
+        /* Code Editor */
+        .code-editor-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            min-height: 0;
+        }
+
+        .code-editor-wrapper {
+            flex: 1;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .code-editor {
+            width: 100%;
+            height: 100%;
+            background: var(--bg-dark);
+            border: none;
+            color: var(--text-primary);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 14px;
+            line-height: 1.6;
+            padding: 16px;
+            resize: none;
+            outline: none;
+            tab-size: 4;
+        }
+
+        .code-editor::placeholder {
+            color: var(--text-muted);
+        }
+
+        /* Output Panel */
+        .output-panel {
+            border-top: 1px solid var(--border);
+            background: var(--bg-dark);
+        }
+
+        .output-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 16px;
+            background: var(--bg-input);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .output-title {
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .output-status {
+            font-size: 12px;
+            padding: 2px 8px;
+            border-radius: 4px;
+        }
+
+        .output-status.success {
+            background: rgba(74, 222, 128, 0.2);
+            color: var(--accent-green);
+        }
+
+        .output-status.error {
+            background: rgba(248, 113, 113, 0.2);
+            color: var(--accent-red);
+        }
+
+        .output-content {
+            padding: 16px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 13px;
+            line-height: 1.6;
+            min-height: 150px;
+            max-height: 250px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+        }
+
+        .output-content .output-line {
+            margin-bottom: 4px;
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--bg-dark);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--border);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--text-muted);
+        }
+
+        /* Diagram styles */
+        .diagram {
+            background: #0d0d14;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 24px;
+            margin: 16px 0;
+            text-align: center;
+        }
+
+        .diagram-row {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+            margin: 16px 0;
+        }
+
+        .diagram-box {
+            background: var(--bg-card);
+            border: 2px solid var(--accent-purple);
+            border-radius: 8px;
+            padding: 12px 20px;
+            color: var(--text-primary);
+            font-weight: 500;
+        }
+
+        .diagram-box.data {
+            border-color: var(--accent-cyan);
+        }
+
+        .diagram-box.method {
+            border-color: var(--accent-green);
+        }
+
+        .diagram-arrow {
+            color: var(--accent-orange);
+            font-size: 24px;
+        }
+
+        /* Day Separator */
+        .day-separator {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin: 30px 0;
+            color: var(--accent-purple);
+        }
+
+        .day-separator::before,
+        .day-separator::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--border), transparent);
+        }
+
+        .day-badge {
+            background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 14px;
+            color: white;
+        }
+
+        /* Checklist */
+        .checklist {
+            list-style: none;
+            margin: 16px 0;
+        }
+
+        .checklist li {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            padding: 8px 0;
+            color: var(--text-secondary);
+        }
+
+        .checklist li::before {
+            content: "○";
+            color: var(--accent-purple);
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <h1>
+            <span class="icon">📁</span>
+            Files & Classes
+        </h1>
+        <span class="week-badge">Week 0 · Days 3-4</span>
+    </header>
+    <div class="progress-bar">
+        <div class="progress-fill" id="progressFill"></div>
+    </div>
+
+    <div class="container">
+        <!-- Left Panel: Lesson Content -->
+        <div class="lesson-panel">
+            <div class="tabs">
+                <button class="tab active" onclick="showTab('overview')">📋 Overview</button>
+                <button class="tab" onclick="showTab('files')">📄 File I/O</button>
+                <button class="tab" onclick="showTab('json')">🔧 JSON & YAML</button>
+                <button class="tab" onclick="showTab('pathlib')">📂 Pathlib</button>
+                <button class="tab" onclick="showTab('classes')">🏗️ Classes</button>
+                <button class="tab" onclick="showTab('dataclasses')">📦 Dataclasses</button>
+                <button class="tab" onclick="showTab('exercises')">🎯 Exercises</button>
+                <button class="tab" onclick="showTab('challenge')">🚀 Challenge</button>
+            </div>
+
+            <!-- Overview Tab -->
+            <div id="overview" class="tab-content active">
+                <h2>Welcome to Days 3-4! 🎉</h2>
+                <p>Today we focus on two essential skills: working with files (reading, writing, parsing) and organizing code with classes. These are the backbone of any real project!</p>
+
+                <div class="topic-grid">
+                    <div class="topic-card" onclick="showTab('files')">
+                        <div class="icon">📄</div>
+                        <div class="title">File I/O</div>
+                        <div class="desc">Read & write files safely</div>
+                    </div>
+                    <div class="topic-card" onclick="showTab('json')">
+                        <div class="icon">🔧</div>
+                        <div class="title">JSON & YAML</div>
+                        <div class="desc">Parse config & data files</div>
+                    </div>
+                    <div class="topic-card" onclick="showTab('pathlib')">
+                        <div class="icon">📂</div>
+                        <div class="title">Pathlib</div>
+                        <div class="desc">Modern path handling</div>
+                    </div>
+                    <div class="topic-card" onclick="showTab('classes')">
+                        <div class="icon">🏗️</div>
+                        <div class="title">Classes</div>
+                        <div class="desc">OOP fundamentals</div>
+                    </div>
+                    <div class="topic-card" onclick="showTab('dataclasses')">
+                        <div class="icon">📦</div>
+                        <div class="title">Dataclasses</div>
+                        <div class="desc">Clean data containers</div>
+                    </div>
+                </div>
+
+                <h3>Project Connections</h3>
+                <div class="info-box project">
+                    <div class="info-box-title">🎯 Document Analysis Dashboard</div>
+                    <ul style="margin-left: 20px; margin-top: 10px; color: var(--text-secondary);">
+                        <li><strong>File I/O:</strong> Reading uploaded PDFs and documents</li>
+                        <li><strong>JSON:</strong> API responses, storing analysis results</li>
+                        <li><strong>Classes:</strong> DocumentAnalyzer, ResultStore, etc.</li>
+                    </ul>
+                </div>
+
+                <div class="info-box project">
+                    <div class="info-box-title">🎯 Content Aggregator</div>
+                    <ul style="margin-left: 20px; margin-top: 10px; color: var(--text-secondary);">
+                        <li><strong>YAML:</strong> Configuration files for sources and filters</li>
+                        <li><strong>JSON:</strong> Caching fetched content, export</li>
+                        <li><strong>Classes:</strong> ContentSource, RSSFeed, NewsAPI, Filter</li>
+                    </ul>
+                </div>
+
+                <h3>What You'll Build</h3>
+                <p>By the end of these two days, you'll create a complete <strong>ConfigurableDataStore</strong> class that can read/write multiple formats, handle errors gracefully, and serve as a foundation for your projects!</p>
+            </div>
+
+            <!-- Files Tab -->
+            <div id="files" class="tab-content">
+                <div class="day-separator">
+                    <span class="day-badge">Day 3</span>
+                </div>
+
+                <h2>File I/O Fundamentals 📄</h2>
+                <p>Reading and writing files is one of the most common operations in programming. Let's master it!</p>
+
+                <h3>The Context Manager Pattern</h3>
+                <div class="info-box concept">
+                    <div class="info-box-title">🧠 Why use <code>with</code>?</div>
+                    <p>The <code>with</code> statement automatically closes files when you're done, even if an error occurs. This prevents resource leaks and is considered the "Pythonic" way.</p>
+                </div>
+
+                <div class="code-block">
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    <pre><span class="comment"># ❌ Old way - easy to forget to close!</span>
+f = <span class="builtin">open</span>(<span class="string">"data.txt"</span>)
+content = f.read()
+f.close()  <span class="comment"># What if an error happened above?</span>
+
+<span class="comment"># ✅ Modern way - always use 'with'!</span>
+<span class="keyword">with</span> <span class="builtin">open</span>(<span class="string">"data.txt"</span>, <span class="string">"r"</span>, encoding=<span class="string">"utf-8"</span>) <span class="keyword">as</span> f:
+    content = f.read()
+<span class="comment"># File is automatically closed here!</span></pre>
+                </div>
+
+                <h3>Reading Files</h3>
+                <div class="code-block">
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    <pre><span class="comment"># Read entire file as string</span>
+<span class="keyword">with</span> <span class="builtin">open</span>(<span class="string">"data.txt"</span>, <span class="string">"r"</span>, encoding=<span class="string">"utf-8"</span>) <span class="keyword">as</span> f:
+    content = f.read()
+    <span class="builtin">print</span>(<span class="string">f"File has </span>{<span class="builtin">len</span>(content)}<span class="string"> characters"</span>)
+
+<span class="comment"># Read as list of lines</span>
+<span class="keyword">with</span> <span class="builtin">open</span>(<span class="string">"data.txt"</span>, <span class="string">"r"</span>, encoding=<span class="string">"utf-8"</span>) <span class="keyword">as</span> f:
+    lines = f.readlines()  <span class="comment"># Includes \n at end of each line</span>
+    <span class="builtin">print</span>(<span class="string">f"File has </span>{<span class="builtin">len</span>(lines)}<span class="string"> lines"</span>)
+
+<span class="comment"># Memory-efficient: iterate line by line</span>
+<span class="keyword">with</span> <span class="builtin">open</span>(<span class="string">"large_file.txt"</span>, <span class="string">"r"</span>, encoding=<span class="string">"utf-8"</span>) <span class="keyword">as</span> f:
+    <span class="keyword">for</span> line_number, line <span class="keyword">in</span> <span class="builtin">enumerate</span>(f, <span class="number">1</span>):
+        <span class="builtin">print</span>(<span class="string">f"Line </span>{line_number}<span class="string">: </span>{line.strip()}<span class="string">"</span>)
+        <span class="keyword">if</span> line_number >= <span class="number">5</span>:  <span class="comment"># Just show first 5</span>
+            <span class="keyword">break</span></pre>
+                </div>
+
+                <h3>Writing Files</h3>
+                <div class="code-block">
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    <pre><span class="comment"># Write (overwrites existing file!)</span>
+<span class="keyword">with</span> <span class="builtin">open</span>(<span class="string">"output.txt"</span>, <span class="string">"w"</span>, encoding=<span class="string">"utf-8"</span>) <span class="keyword">as</span> f:
+    f.write(<span class="string">"Hello, World!\n"</span>)
+    f.write(<span class="string">"Second line\n"</span>)
+
+<span class="comment"># Append to existing file</span>
+<span class="keyword">with</span> <span class="builtin">open</span>(<span class="string">"output.txt"</span>, <span class="string">"a"</span>, encoding=<span class="string">"utf-8"</span>) <span class="keyword">as</span> f:
+    f.write(<span class="string">"This is appended!\n"</span>)
+
+<span class="comment"># Write multiple lines at once</span>
+lines = [<span class="string">"Line 1"</span>, <span class="string">"Line 2"</span>, <span class="string">"Line 3"</span>]
+<span class="keyword">with</span> <span class="builtin">open</span>(<span class="string">"output.txt"</span>, <span class="string">"w"</span>, encoding=<span class="string">"utf-8"</span>) <span class="keyword">as</span> f:
+    f.writelines(line + <span class="string">"\n"</span> <span class="keyword">for</span> line <span class="keyword">in</span> lines)</pre>
+                </div>
+
+                <h3>File Modes</h3>
+                <table class="comparison-table">
+                    <tr>
+                        <th>Mode</th>
+                        <th>Description</th>
+                        <th>Creates?</th>
+                        <th>Truncates?</th>
+                    </tr>
+                    <tr>
+                        <td><code>"r"</code></td>
+                        <td>Read (default)</td>
+                        <td>No</td>
+                        <td>No</td>
+                    </tr>
+                    <tr>
+                        <td><code>"w"</code></td>
+                        <td>Write</td>
+                        <td>Yes</td>
+                        <td>Yes ⚠️</td>
+                    </tr>
+                    <tr>
+                        <td><code>"a"</code></td>
+                        <td>Append</td>
+                        <td>Yes</td>
+                        <td>No</td>
+                    </tr>
+                    <tr>
+                        <td><code>"r+"</code></td>
+                        <td>Read & Write</td>
+                        <td>No</td>
+                        <td>No</td>
+                    </tr>
+                    <tr>
+                        <td><code>"rb"</code></td>
+                        <td>Read binary</td>
+                        <td>No</td>
+                        <td>No</td>
+                    </tr>
+                    <tr>
+                        <td><code>"wb"</code></td>
+                        <td>Write binary</td>
+                        <td>Yes</td>
+                        <td>Yes</td>
+                    </tr>
+                </table>
+
+                <div class="info-box warning">
+                    <div class="info-box-title">⚠️ Always Specify Encoding!</div>
+                    <p>Without <code>encoding="utf-8"</code>, Python uses system default which varies. This causes bugs when moving code between computers. Always be explicit!</p>
+                </div>
+
+                <h3>Binary Files</h3>
+                <p>For PDFs, images, and other non-text files, use binary mode:</p>
+
+                <div class="code-block">
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    <pre><span class="comment"># Reading binary (e.g., PDF for your Document Analyzer!)</span>
+<span class="keyword">with</span> <span class="builtin">open</span>(<span class="string">"document.pdf"</span>, <span class="string">"rb"</span>) <span class="keyword">as</span> f:
+    pdf_bytes = f.read()
+    <span class="builtin">print</span>(<span class="string">f"PDF size: </span>{<span class="builtin">len</span>(pdf_bytes)}<span class="string"> bytes"</span>)
+
+<span class="comment"># Writing binary</span>
+<span class="keyword">with</span> <span class="builtin">open</span>(<span class="string">"copy.pdf"</span>, <span class="string">"wb"</span>) <span class="keyword">as</span> f:
+    f.write(pdf_bytes)</pre>
+                </div>
+
+                <div class="exercise">
+                    <div class="exercise-header">
+                        <span class="exercise-number">1</span>
+                        <span class="exercise-title">Try It: File Statistics</span>
+                    </div>
+                    <div class="exercise-description">
+                        Write a function that reads a text file and returns a dict with: line count, word count, and character count (excluding whitespace).
+                    </div>
+                    <button class="load-exercise-btn" onclick="loadExercise('filestats')">Load in Editor →</button>
+                </div>
+            </div>
+
+            <!-- JSON & YAML Tab -->
+            <div id="json" class="tab-content">
+                <h2>JSON & YAML 🔧</h2>
+                <p>Structured data formats are essential for configs, API responses, and data storage. Let's master both!</p>
+
+                <h3>JSON - JavaScript Object Notation</h3>
+                <p>JSON is the universal language of APIs and data exchange. Python's <code>json</code> module makes it easy.</p>
+
+                <div class="code-block">
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    <pre><span class="keyword">import</span> json
+
+<span class="comment"># Python dict → JSON string</span>
+data = {
+    <span class="string">"name"</span>: <span class="string">"Alice"</span>,
+    <span class="string">"age"</span>: <span class="number">28</span>,
+    <span class="string">"skills"</span>: [<span class="string">"Python"</span>, <span class="string">"Data Analysis"</span>],
+    <span class="string">"active"</span>: <span class="keyword">True</span>
+}
+
+json_string = json.dumps(data)
+<span class="builtin">print</span>(json_string)
+<span class="comment"># {"name": "Alice", "age": 28, "skills": ["Python", "Data Analysis"], "active": true}</span>
+
+<span class="comment"># Pretty printing</span>
+pretty_json = json.dumps(data, indent=<span class="number">2</span>)
+<span class="builtin">print</span>(pretty_json)
+
+<span class="comment"># JSON string → Python dict</span>
+parsed = json.loads(json_string)
+<span class="builtin">print</span>(parsed[<span class="string">"name"</span>])  <span class="comment"># "Alice"</span></pre>
+                </div>
+
+                <h4>Reading & Writing JSON Files</h4>
+                <div class="code-block">
+                    <span class="filename">config.json</span>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    <pre><span class="keyword">import</span> json
+
+<span class="comment"># Writing JSON to file</span>
+config = {
+    <span class="string">"database"</span>: {
+        <span class="string">"host"</span>: <span class="string">"localhost"</span>,
+        <span class="string">"port"</span>: <span class="number">5432</span>
+    },
+    <span class="string">"debug"</span>: <span class="keyword">True</span>
+}
+
+<span class="keyword">with</span> <span class="builtin">open</span>(<span class="string">"config.json"</span>, <span class="string">"w"</span>) <span class="keyword">as</span> f:
+    json.dump(config, f, indent=<span class="number">2</span>)
+
+<span class="comment"># Reading JSON from file</span>
+<span class="keyword">with</span> <span class="builtin">open</span>(<span class="string">"config.json"</span>, <span class="string">"r"</span>) <span class="keyword">as</span> f:
+    loaded_config = json.load(f)
+
+<span class="builtin">print</span>(loaded_config[<span class="string">"database"</span>][<span class="string">"host"</span>])  <span class="comment"># "localhost"</span></pre>
+                </div>
+
+                <div class="info-box tip">
+                    <div class="info-box-title">💡 Remember the Difference</div>
+                    <ul style="margin-left: 20px; margin-top: 10px; color: var(--text-secondary);">
+                        <li><code>json.dumps()</code> / <code>json.loads()</code> → Work with <strong>strings</strong></li>
+                        <li><code>json.dump()</code> / <code>json.load()</code> → Work with <strong>files</strong></li>
+                    </ul>
+                </div>
+
+                <h3>YAML - Human-Friendly Config</h3>
+                <p>YAML is more readable than JSON, making it perfect for configuration files. Your Content Aggregator will use it!</p>
+
+                <div class="code-block">
+                    <span class="filename">config.yaml</span>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    <pre><span class="comment"># Install: pip install pyyaml</span>
+<span class="keyword">import</span> yaml
+
+<span class="comment"># Reading YAML</span>
+yaml_content = <span class="string">"""
+sources:
+  - name: TechCrunch
+    type: rss
+    url: https://techcrunch.com/feed/
+  
+  - name: Reddit ML
+    type: reddit
+    subreddit: MachineLearning
+
+filters:
+  keywords:
+    include:
+      - python
+      - AI
+      - machine learning
+    exclude:
+      - crypto
+  
+  max_items: 50
+"""</span>
+
+config = yaml.safe_load(yaml_content)
+<span class="builtin">print</span>(config[<span class="string">"sources"</span>][<span class="number">0</span>][<span class="string">"name"</span>])  <span class="comment"># "TechCrunch"</span>
+<span class="builtin">print</span>(config[<span class="string">"filters"</span>][<span class="string">"keywords"</span>][<span class="string">"include"</span>])  <span class="comment"># ["python", "AI", "machine learning"]</span>
+
+<span class="comment"># Reading from file</span>
+<span class="keyword">with</span> <span class="builtin">open</span>(<span class="string">"config.yaml"</span>, <span class="string">"r"</span>) <span class="keyword">as</span> f:
+    config = yaml.safe_load(f)
+
+<span class="comment"># Writing YAML</span>
+<span class="keyword">with</span> <span class="builtin">open</span>(<span class="string">"output.yaml"</span>, <span class="string">"w"</span>) <span class="keyword">as</span> f:
+    yaml.dump(config, f, default_flow_style=<span class="keyword">False</span>)</pre>
+                </div>
+
+                <div class="info-box important">
+                    <div class="info-box-title">⚠️ Always use safe_load!</div>
+                    <p>Never use <code>yaml.load()</code> without a Loader - it can execute arbitrary code! Always use <code>yaml.safe_load()</code> for untrusted data.</p>
+                </div>
+
+                <h3>JSON vs YAML</h3>
+                <table class="comparison-table">
+                    <tr>
+                        <th>Feature</th>
+                        <th>JSON</th>
+                        <th>YAML</th>
+                    </tr>
+                    <tr>
+                        <td>Readability</td>
+                        <td>Good</td>
+                        <td>Excellent</td>
+                    </tr>
+                    <tr>
+                        <td>Comments</td>
+                        <td>❌ Not allowed</td>
+                        <td>✅ Allowed (#)</td>
+                    </tr>
+                    <tr>
+                        <td>Use Case</td>
+                        <td>APIs, data exchange</td>
+                        <td>Config files</td>
+                    </tr>
+                    <tr>
+                        <td>Built-in</td>
+                        <td>✅ Yes</td>
+                        <td>❌ pip install pyyaml</td>
+                    </tr>
+                </table>
+
+                <div class="exercise">
+                    <div class="exercise-header">
+                        <span class="exercise-number">2</span>
+                        <span class="exercise-title">Try It: Config Loader</span>
+                    </div>
+                    <div class="exercise-description">
+                        Create a <code>load_config(filepath)</code> function that automatically detects JSON or YAML based on file extension and returns the parsed config with proper error handling.
+                    </div>
+                    <button class="load-exercise-btn" onclick="loadExercise('configloader')">Load in Editor →</button>
+                </div>
+            </div>
+
+            <!-- Pathlib Tab -->
+            <div id="pathlib" class="tab-content">
+                <h2>Modern Path Handling with Pathlib 📂</h2>
+                <p>The <code>pathlib</code> module is the modern way to work with file paths. It's cleaner and more intuitive than <code>os.path</code>.</p>
+
+                <h3>Creating Paths</h3>
+                <div class="code-block">
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    <pre><span class="keyword">from</span> pathlib <span class="keyword">import</span> Path
+
+<span class="comment"># Create path objects</span>
+home = Path.home()  <span class="comment"># User's home directory</span>
+cwd = Path.cwd()    <span class="comment"># Current working directory</span>
+
+<span class="comment"># From string</span>
+data_dir = Path(<span class="string">"data"</span>)
+config_file = Path(<span class="string">"config/settings.json"</span>)
+
+<span class="comment"># Joining paths with / operator (works on all OS!)</span>
+project = Path(<span class="string">"my_project"</span>)
+output = project / <span class="string">"output"</span> / <span class="string">"results.json"</span>
+<span class="builtin">print</span>(output)  <span class="comment"># my_project/output/results.json</span></pre>
+                </div>
+
+                <h3>Path Properties</h3>
+                <div class="code-block">
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    <pre><span class="keyword">from</span> pathlib <span class="keyword">import</span> Path
+
+path = Path(<span class="string">"/home/user/projects/report.pdf"</span>)
+
+<span class="builtin">print</span>(path.name)       <span class="comment"># "report.pdf"</span>
+<span class="builtin">print</span>(path.stem)       <span class="comment"># "report" (name without extension)</span>
+<span class="builtin">print</span>(path.suffix)     <span class="comment"># ".pdf"</span>
+<span class="builtin">print</span>(path.parent)     <span class="comment"># "/home/user/projects"</span>
+<span class="builtin">print</span>(path.parts)      <span class="comment"># ("/", "home", "user", "projects", "report.pdf")</span>
+
+<span class="comment"># Check if exists</span>
+<span class="builtin">print</span>(path.exists())   <span class="comment"># True/False</span>
+<span class="builtin">print</span>(path.is_file())  <span class="comment"># True/False</span>
+<span class="builtin">print</span>(path.is_dir())   <span class="comment"># True/False</span>
+
+<span class="comment"># Get file info</span>
+<span class="keyword">if</span> path.exists():
+    stats = path.stat()
+    <span class="builtin">print</span>(<span class="string">f"Size: </span>{stats.st_size}<span class="string"> bytes"</span>)
+    <span class="builtin">print</span>(<span class="string">f"Modified: </span>{stats.st_mtime}<span class="string">"</span>)</pre>
+                </div>
+
+                <h3>Creating Directories</h3>
+                <div class="code-block">
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    <pre><span class="keyword">from</span> pathlib <span class="keyword">import</span> Path
+
+<span class="comment"># Create a directory</span>
+output_dir = Path(<span class="string">"output"</span>)
+output_dir.mkdir(exist_ok=<span class="keyword">True</span>)  <span class="comment"># No error if exists</span>
+
+<span class="comment"># Create nested directories</span>
+nested = Path(<span class="string">"data/processed/2024/january"</span>)
+nested.mkdir(parents=<span class="keyword">True</span>, exist_ok=<span class="keyword">True</span>)
+<span class="comment"># parents=True creates all intermediate directories</span></pre>
+                </div>
+
+                <h3>Finding Files</h3>
+                <div class="code-block">
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    <pre><span class="keyword">from</span> pathlib <span class="keyword">import</span> Path
+
+project = Path(<span class="string">"my_project"</span>)
+
+<span class="comment"># List directory contents</span>
+<span class="keyword">for</span> item <span class="keyword">in</span> project.iterdir():
+    <span class="builtin">print</span>(item)
+
+<span class="comment"># Find files by pattern (glob)</span>
+<span class="keyword">for</span> py_file <span class="keyword">in</span> project.glob(<span class="string">"*.py"</span>):
+    <span class="builtin">print</span>(<span class="string">f"Python file: </span>{py_file}<span class="string">"</span>)
+
+<span class="comment"># Recursive glob (** matches any depth)</span>
+<span class="keyword">for</span> py_file <span class="keyword">in</span> project.glob(<span class="string">"**/*.py"</span>):
+    <span class="builtin">print</span>(<span class="string">f"Found: </span>{py_file}<span class="string">"</span>)
+
+<span class="comment"># Find all JSON files</span>
+json_files = <span class="builtin">list</span>(project.glob(<span class="string">"**/*.json"</span>))
+<span class="builtin">print</span>(<span class="string">f"Found </span>{<span class="builtin">len</span>(json_files)}<span class="string"> JSON files"</span>)</pre>
+                </div>
+
+                <h3>Reading & Writing with Pathlib</h3>
+                <div class="code-block">
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    <pre><span class="keyword">from</span> pathlib <span class="keyword">import</span> Path
+
+file_path = Path(<span class="string">"data.txt"</span>)
+
+<span class="comment"># Quick read (for small files)</span>
+content = file_path.read_text(encoding=<span class="string">"utf-8"</span>)
+bytes_content = file_path.read_bytes()  <span class="comment"># For binary</span>
+
+<span class="comment"># Quick write</span>
+file_path.write_text(<span class="string">"Hello, World!"</span>, encoding=<span class="string">"utf-8"</span>)
+file_path.write_bytes(b<span class="string">"binary data"</span>)
+
+<span class="comment"># Still works with open() too</span>
+<span class="keyword">with</span> <span class="builtin">open</span>(file_path, <span class="string">"r"</span>, encoding=<span class="string">"utf-8"</span>) <span class="keyword">as</span> f:
+    content = f.read()</pre>
+                </div>
+
+                <div class="info-box tip">
+                    <div class="info-box-title">💡 Pathlib + JSON Pattern</div>
+                    <p>Combine pathlib with JSON for a clean config loading pattern:</p>
+                    <div class="code-block">
+                        <pre><span class="keyword">import</span> json
+<span class="keyword">from</span> pathlib <span class="keyword">import</span> Path
+
+<span class="keyword">def</span> <span class="function">load_json_config</span>(filepath: str | Path) -> <span class="builtin">dict</span>:
+    path = Path(filepath)
+    <span class="keyword">return</span> json.loads(path.read_text(encoding=<span class="string">"utf-8"</span>))
+
+<span class="keyword">def</span> <span class="function">save_json_config</span>(data: <span class="builtin">dict</span>, filepath: str | Path) -> <span class="keyword">None</span>:
+    path = Path(filepath)
+    path.parent.mkdir(parents=<span class="keyword">True</span>, exist_ok=<span class="keyword">True</span>)
+    path.write_text(json.dumps(data, indent=<span class="number">2</span>), encoding=<span class="string">"utf-8"</span>)</pre>
+                    </div>
+                </div>
+
+                <div class="exercise">
+                    <div class="exercise-header">
+                        <span class="exercise-number">3</span>
+                        <span class="exercise-title">Try It: Project Scanner</span>
+                    </div>
+                    <div class="exercise-description">
+                        Create a function that scans a directory and returns a summary: total files, files by extension, and total size in bytes.
+                    </div>
+                    <button class="load-exercise-btn" onclick="loadExercise('scanner')">Load in Editor →</button>
+                </div>
+            </div>
+
+            <!-- Classes Tab -->
+            <div id="classes" class="tab-content">
+                <div class="day-separator">
+                    <span class="day-badge">Day 4</span>
+                </div>
+
+                <h2>Object-Oriented Programming 🏗️</h2>
+                <p>Classes help organize code by bundling data and behavior together. Let's learn when and how to use them effectively!</p>
+
+                <h3>When to Use Classes</h3>
+                <div class="info-box concept">
+                    <div class="info-box-title">🧠 Classes vs Functions</div>
+                    <p><strong>Use a class when:</strong></p>
+                    <ul style="margin-left: 20px; margin-top: 10px; color: var(--text-secondary);">
+                        <li>You have data that belongs together (state)</li>
+                        <li>You have functions that operate on that data (behavior)</li>
+                        <li>You need multiple instances with the same structure</li>
+                    </ul>
+                    <p style="margin-top: 10px;"><strong>Use functions when:</strong></p>
+                    <ul style="margin-left: 20px; margin-top: 10px; color: var(--text-secondary);">
+                        <li>The operation is stateless (input → output)</li>
+                        <li>You don't need to track data between calls</li>
+                    </ul>
+                </div>
+
+                <h3>Basic Class Structure</h3>
+                <div class="code-block">
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    <pre><span class="keyword">class</span> <span class="class-name">Article</span>:
+    <span class="string">"""Represents a content article."""</span>
+    
+    <span class="keyword">def</span> <span class="function">__init__</span>(self, title: <span class="builtin">str</span>, url: <span class="builtin">str</span>, source: <span class="builtin">str</span>):
+        <span class="string">"""Initialize a new Article."""</span>
+        self.title = title
+        self.url = url
+        self.source = source
+        self.read = <span class="keyword">False</span>  <span class="comment"># Default value</span>
+    
+    <span class="keyword">def</span> <span class="function">mark_as_read</span>(self) -> <span class="keyword">None</span>:
+        <span class="string">"""Mark the article as read."""</span>
+        self.read = <span class="keyword">True</span>
+    
+    <span class="keyword">def</span> <span class="function">summary</span>(self) -> <span class="builtin">str</span>:
+        <span class="string">"""Return a one-line summary."""</span>
+        status = <span class="string">"✓"</span> <span class="keyword">if</span> self.read <span class="keyword">else</span> <span class="string">"○"</span>
+        <span class="keyword">return</span> <span class="string">f"</span>{status}<span class="string"> [</span>{self.source}<span class="string">] </span>{self.title}<span class="string">"</span>
+
+<span class="comment"># Creating instances</span>
+article = Article(
+    title=<span class="string">"Python 3.12 Released"</span>,
+    url=<span class="string">"https://python.org/news"</span>,
+    source=<span class="string">"Python.org"</span>
+)
+
+<span class="builtin">print</span>(article.summary())   <span class="comment"># ○ [Python.org] Python 3.12 Released</span>
+article.mark_as_read()
+<span class="builtin">print</span>(article.summary())   <span class="comment"># ✓ [Python.org] Python 3.12 Released</span></pre>
+                </div>
+
+                <h3>Special Methods (Dunder Methods)</h3>
+                <div class="code-block">
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    <pre><span class="keyword">class</span> <span class="class-name">Article</span>:
+    <span class="keyword">def</span> <span class="function">__init__</span>(self, title: <span class="builtin">str</span>, url: <span class="builtin">str</span>):
+        self.title = title
+        self.url = url
+    
+    <span class="keyword">def</span> <span class="function">__str__</span>(self) -> <span class="builtin">str</span>:
+        <span class="string">"""Human-readable string (for print)."""</span>
+        <span class="keyword">return</span> <span class="string">f"Article: </span>{self.title}<span class="string">"</span>
+    
+    <span class="keyword">def</span> <span class="function">__repr__</span>(self) -> <span class="builtin">str</span>:
+        <span class="string">"""Developer-friendly string (for debugging)."""</span>
+        <span class="keyword">return</span> <span class="string">f"Article(title=</span>{self.title!r}<span class="string">, url=</span>{self.url!r}<span class="string">)"</span>
+    
+    <span class="keyword">def</span> <span class="function">__eq__</span>(self, other) -> <span class="builtin">bool</span>:
+        <span class="string">"""Compare articles by URL."""</span>
+        <span class="keyword">if</span> <span class="keyword">not</span> <span class="builtin">isinstance</span>(other, Article):
+            <span class="keyword">return</span> <span class="keyword">False</span>
+        <span class="keyword">return</span> self.url == other.url
+    
+    <span class="keyword">def</span> <span class="function">__hash__</span>(self) -> <span class="builtin">int</span>:
+        <span class="string">"""Make hashable (for sets/dicts)."""</span>
+        <span class="keyword">return</span> <span class="builtin">hash</span>(self.url)
+
+<span class="comment"># Usage</span>
+article = Article(<span class="string">"News"</span>, <span class="string">"https://example.com"</span>)
+<span class="builtin">print</span>(article)        <span class="comment"># Article: News</span>
+<span class="builtin">print</span>(<span class="builtin">repr</span>(article))  <span class="comment"># Article(title='News', url='https://example.com')</span>
+
+<span class="comment"># Now works in sets!</span>
+articles = {article}  <span class="comment"># Because we defined __hash__</span></pre>
+                </div>
+
+                <h3>Inheritance</h3>
+                <p>Create specialized classes based on a common parent:</p>
+
+                <div class="code-block">
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    <pre><span class="keyword">class</span> <span class="class-name">ContentSource</span>:
+    <span class="string">"""Base class for content sources."""</span>
+    
+    <span class="keyword">def</span> <span class="function">__init__</span>(self, name: <span class="builtin">str</span>):
+        self.name = name
+    
+    <span class="keyword">def</span> <span class="function">fetch</span>(self) -> <span class="builtin">list</span>[<span class="builtin">dict</span>]:
+        <span class="string">"""Fetch content from source. Override in subclasses."""</span>
+        <span class="keyword">raise</span> <span class="class-name">NotImplementedError</span>(<span class="string">"Subclasses must implement fetch()"</span>)
+
+
+<span class="keyword">class</span> <span class="class-name">RSSSource</span>(<span class="class-name">ContentSource</span>):
+    <span class="string">"""Fetches content from RSS feeds."""</span>
+    
+    <span class="keyword">def</span> <span class="function">__init__</span>(self, name: <span class="builtin">str</span>, feed_url: <span class="builtin">str</span>):
+        <span class="builtin">super</span>().__init__(name)  <span class="comment"># Call parent __init__</span>
+        self.feed_url = feed_url
+    
+    <span class="keyword">def</span> <span class="function">fetch</span>(self) -> <span class="builtin">list</span>[<span class="builtin">dict</span>]:
+        <span class="comment"># Implementation for RSS</span>
+        <span class="builtin">print</span>(<span class="string">f"Fetching RSS from </span>{self.feed_url}<span class="string">"</span>)
+        <span class="keyword">return</span> [{<span class="string">"title"</span>: <span class="string">"Article"</span>, <span class="string">"source"</span>: self.name}]
+
+
+<span class="keyword">class</span> <span class="class-name">RedditSource</span>(<span class="class-name">ContentSource</span>):
+    <span class="string">"""Fetches content from Reddit."""</span>
+    
+    <span class="keyword">def</span> <span class="function">__init__</span>(self, name: <span class="builtin">str</span>, subreddit: <span class="builtin">str</span>):
+        <span class="builtin">super</span>().__init__(name)
+        self.subreddit = subreddit
+    
+    <span class="keyword">def</span> <span class="function">fetch</span>(self) -> <span class="builtin">list</span>[<span class="builtin">dict</span>]:
+        <span class="comment"># Implementation for Reddit</span>
+        <span class="builtin">print</span>(<span class="string">f"Fetching from r/</span>{self.subreddit}<span class="string">"</span>)
+        <span class="keyword">return</span> [{<span class="string">"title"</span>: <span class="string">"Post"</span>, <span class="string">"source"</span>: self.name}]
+
+
+<span class="comment"># Polymorphism: treat all sources the same way!</span>
+sources = [
+    RSSSource(<span class="string">"TechCrunch"</span>, <span class="string">"https://techcrunch.com/feed/"</span>),
+    RedditSource(<span class="string">"ML"</span>, <span class="string">"MachineLearning"</span>),
+]
+
+<span class="keyword">for</span> source <span class="keyword">in</span> sources:
+    items = source.fetch()  <span class="comment"># Same interface, different behavior!</span>
+    <span class="builtin">print</span>(<span class="string">f"Got </span>{<span class="builtin">len</span>(items)}<span class="string"> items from </span>{source.name}<span class="string">"</span>)</pre>
+                </div>
+
+                <div class="info-box project">
+                    <div class="info-box-title">🎯 This Pattern in Your Project</div>
+                    <p>The Content Aggregator will use exactly this pattern! A base <code>ContentSource</code> class with subclasses for RSS, Reddit, NewsAPI, etc. Each implements <code>fetch()</code> differently, but you can loop through all sources the same way.</p>
+                </div>
+
+                <div class="exercise">
+                    <div class="exercise-header">
+                        <span class="exercise-number">4</span>
+                        <span class="exercise-title">Try It: Document Analyzer Class</span>
+                    </div>
+                    <div class="exercise-description">
+                        Create a <code>DocumentAnalyzer</code> class that takes text content and provides methods like <code>word_count()</code>, <code>sentence_count()</code>, and <code>get_keywords(n)</code>.
+                    </div>
+                    <button class="load-exercise-btn" onclick="loadExercise('analyzer')">Load in Editor →</button>
+                </div>
+            </div>
+
+            <!-- Dataclasses Tab -->
+            <div id="dataclasses" class="tab-content">
+                <h2>Dataclasses - Clean Data Containers 📦</h2>
+                <p>When you need a class mainly to hold data, dataclasses remove all the boilerplate!</p>
+
+                <h3>The Problem with Regular Classes</h3>
+                <div class="code-block">
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    <pre><span class="comment"># Lots of repetitive code! 😫</span>
+<span class="keyword">class</span> <span class="class-name">Article</span>:
+    <span class="keyword">def</span> <span class="function">__init__</span>(self, title, url, source, published, score=<span class="number">0</span>):
+        self.title = title
+        self.url = url
+        self.source = source
+        self.published = published
+        self.score = score
+    
+    <span class="keyword">def</span> <span class="function">__repr__</span>(self):
+        <span class="keyword">return</span> <span class="string">f"Article(title=</span>{self.title!r}<span class="string">, url=</span>{self.url!r}<span class="string">, ...)"</span>
+    
+    <span class="keyword">def</span> <span class="function">__eq__</span>(self, other):
+        <span class="keyword">if</span> <span class="keyword">not</span> <span class="builtin">isinstance</span>(other, Article):
+            <span class="keyword">return</span> <span class="keyword">False</span>
+        <span class="keyword">return</span> (self.title == other.title <span class="keyword">and</span> 
+                self.url == other.url <span class="keyword">and</span> ...)</pre>
+                </div>
+
+                <h3>The Dataclass Solution</h3>
+                <div class="code-block">
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    <pre><span class="keyword">from</span> dataclasses <span class="keyword">import</span> dataclass
+<span class="keyword">from</span> datetime <span class="keyword">import</span> datetime
+
+<span class="decorator">@dataclass</span>
+<span class="keyword">class</span> <span class="class-name">Article</span>:
+    <span class="string">"""A content article."""</span>
+    title: <span class="builtin">str</span>
+    url: <span class="builtin">str</span>
+    source: <span class="builtin">str</span>
+    published: datetime
+    score: <span class="builtin">float</span> = <span class="number">0.0</span>  <span class="comment"># Default value</span>
+
+<span class="comment"># That's it! You get __init__, __repr__, __eq__ for free!</span>
+
+article = Article(
+    title=<span class="string">"Python News"</span>,
+    url=<span class="string">"https://example.com"</span>,
+    source=<span class="string">"Tech Blog"</span>,
+    published=datetime.now()
+)
+
+<span class="builtin">print</span>(article)
+<span class="comment"># Article(title='Python News', url='https://example.com', ...)</span>
+
+<span class="builtin">print</span>(article.title)  <span class="comment"># "Python News"</span>
+article.score = <span class="number">4.5</span>   <span class="comment"># Can modify</span></pre>
+                </div>
+
+                <h3>Dataclass Options</h3>
+                <div class="code-block">
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    <pre><span class="keyword">from</span> dataclasses <span class="keyword">import</span> dataclass, field
+<span class="keyword">from</span> typing <span class="keyword">import</span> Optional
+
+<span class="decorator">@dataclass</span>(frozen=<span class="keyword">True</span>)  <span class="comment"># Immutable - can't change after creation</span>
+<span class="keyword">class</span> <span class="class-name">Config</span>:
+    host: <span class="builtin">str</span>
+    port: <span class="builtin">int</span>
+    debug: <span class="builtin">bool</span> = <span class="keyword">False</span>
+
+
+<span class="decorator">@dataclass</span>(order=<span class="keyword">True</span>)  <span class="comment"># Enable comparison (<, >, etc.)</span>
+<span class="keyword">class</span> <span class="class-name">ScoredItem</span>:
+    score: <span class="builtin">float</span>
+    name: <span class="builtin">str</span>
+
+<span class="comment"># Now you can sort!</span>
+items = [ScoredItem(<span class="number">3.5</span>, <span class="string">"A"</span>), ScoredItem(<span class="number">1.2</span>, <span class="string">"B"</span>), ScoredItem(<span class="number">4.8</span>, <span class="string">"C"</span>)]
+<span class="builtin">print</span>(<span class="builtin">sorted</span>(items))  <span class="comment"># Sorted by score!</span>
+
+
+<span class="decorator">@dataclass</span>
+<span class="keyword">class</span> <span class="class-name">Article</span>:
+    title: <span class="builtin">str</span>
+    url: <span class="builtin">str</span>
+    tags: <span class="builtin">list</span>[<span class="builtin">str</span>] = field(default_factory=<span class="builtin">list</span>)  <span class="comment"># Mutable default</span>
+    metadata: <span class="builtin">dict</span> = field(default_factory=<span class="builtin">dict</span>, repr=<span class="keyword">False</span>)  <span class="comment"># Hidden from repr</span></pre>
+                </div>
+
+                <div class="info-box warning">
+                    <div class="info-box-title">⚠️ Mutable Defaults</div>
+                    <p>Never use <code>tags: list = []</code> directly! All instances would share the same list. Always use <code>field(default_factory=list)</code> for mutable defaults.</p>
+                </div>
+
+                <h3>Adding Methods to Dataclasses</h3>
+                <div class="code-block">
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    <pre><span class="keyword">from</span> dataclasses <span class="keyword">import</span> dataclass
+<span class="keyword">from</span> datetime <span class="keyword">import</span> datetime
+
+<span class="decorator">@dataclass</span>
+<span class="keyword">class</span> <span class="class-name">Article</span>:
+    title: <span class="builtin">str</span>
+    url: <span class="builtin">str</span>
+    source: <span class="builtin">str</span>
+    published: datetime
+    score: <span class="builtin">float</span> = <span class="number">0.0</span>
+    
+    <span class="comment"># You can still add methods!</span>
+    <span class="keyword">def</span> <span class="function">age_hours</span>(self) -> <span class="builtin">float</span>:
+        <span class="string">"""Return article age in hours."""</span>
+        delta = datetime.now() - self.published
+        <span class="keyword">return</span> delta.total_seconds() / <span class="number">3600</span>
+    
+    <span class="keyword">def</span> <span class="function">is_recent</span>(self, hours: <span class="builtin">int</span> = <span class="number">24</span>) -> <span class="builtin">bool</span>:
+        <span class="string">"""Check if article is recent."""</span>
+        <span class="keyword">return</span> self.age_hours() < hours
+    
+    <span class="decorator">@classmethod</span>
+    <span class="keyword">def</span> <span class="function">from_dict</span>(cls, data: <span class="builtin">dict</span>) -> <span class="string">"Article"</span>:
+        <span class="string">"""Create Article from dictionary."""</span>
+        <span class="keyword">return</span> cls(
+            title=data[<span class="string">"title"</span>],
+            url=data[<span class="string">"url"</span>],
+            source=data.get(<span class="string">"source"</span>, <span class="string">"Unknown"</span>),
+            published=datetime.fromisoformat(data[<span class="string">"published"</span>]),
+            score=data.get(<span class="string">"score"</span>, <span class="number">0.0</span>)
+        )
+    
+    <span class="keyword">def</span> <span class="function">to_dict</span>(self) -> <span class="builtin">dict</span>:
+        <span class="string">"""Convert to dictionary for JSON serialization."""</span>
+        <span class="keyword">return</span> {
+            <span class="string">"title"</span>: self.title,
+            <span class="string">"url"</span>: self.url,
+            <span class="string">"source"</span>: self.source,
+            <span class="string">"published"</span>: self.published.isoformat(),
+            <span class="string">"score"</span>: self.score
+        }</pre>
+                </div>
+
+                <h3>When to Use What</h3>
+                <table class="comparison-table">
+                    <tr>
+                        <th>Use Case</th>
+                        <th>Best Choice</th>
+                    </tr>
+                    <tr>
+                        <td>Simple data container</td>
+                        <td><code>@dataclass</code></td>
+                    </tr>
+                    <tr>
+                        <td>Immutable config</td>
+                        <td><code>@dataclass(frozen=True)</code></td>
+                    </tr>
+                    <tr>
+                        <td>Complex behavior + state</td>
+                        <td>Regular class</td>
+                    </tr>
+                    <tr>
+                        <td>API response data</td>
+                        <td><code>@dataclass</code></td>
+                    </tr>
+                    <tr>
+                        <td>Quick one-off dict</td>
+                        <td>Just use a dict</td>
+                    </tr>
+                </table>
+
+                <div class="exercise">
+                    <div class="exercise-header">
+                        <span class="exercise-number">5</span>
+                        <span class="exercise-title">Try It: Content Item Dataclass</span>
+                    </div>
+                    <div class="exercise-description">
+                        Create a <code>ContentItem</code> dataclass for your Content Aggregator with fields for title, url, source, published date, score, and tags. Add <code>from_dict()</code> and <code>to_dict()</code> methods.
+                    </div>
+                    <button class="load-exercise-btn" onclick="loadExercise('contentitem')">Load in Editor →</button>
+                </div>
+            </div>
+
+            <!-- Exercises Tab -->
+            <div id="exercises" class="tab-content">
+                <h2>Practice Exercises 🎯</h2>
+                <p>Put your file handling and OOP skills to the test!</p>
+
+                <div class="exercise">
+                    <div class="exercise-header">
+                        <span class="exercise-number">1</span>
+                        <span class="exercise-title">Multi-Format Data Loader</span>
+                    </div>
+                    <div class="exercise-description">
+                        Create a class that can load data from JSON, YAML, and CSV files based on file extension. Include error handling for missing files and parse errors.
+                    </div>
+                    <button class="load-exercise-btn" onclick="loadExercise('multiloader')">Load in Editor →</button>
+                </div>
+
+                <div class="exercise">
+                    <div class="exercise-header">
+                        <span class="exercise-number">2</span>
+                        <span class="exercise-title">File Cache System</span>
+                    </div>
+                    <div class="exercise-description">
+                        Build a <code>FileCache</code> class that stores data to JSON files with expiration times. Methods: <code>set(key, value, ttl_seconds)</code>, <code>get(key)</code>, <code>clear_expired()</code>.
+                    </div>
+                    <button class="load-exercise-btn" onclick="loadExercise('filecache')">Load in Editor →</button>
+                </div>
+
+                <div class="exercise">
+                    <div class="exercise-header">
+                        <span class="exercise-number">3</span>
+                        <span class="exercise-title">Results Store</span>
+                    </div>
+                    <div class="exercise-description">
+                        Create a <code>ResultsStore</code> class for the Document Analyzer that saves analysis results to JSON, supports listing all results, and can retrieve by document ID.
+                    </div>
+                    <button class="load-exercise-btn" onclick="loadExercise('resultsstore')">Load in Editor →</button>
+                </div>
+
+                <div class="exercise">
+                    <div class="exercise-header">
+                        <span class="exercise-number">4</span>
+                        <span class="exercise-title">Source Factory</span>
+                    </div>
+                    <div class="exercise-description">
+                        Implement a factory pattern that creates the right ContentSource subclass based on configuration. Given a dict like <code>{"type": "rss", "url": "..."}</code>, return an RSSSource instance.
+                    </div>
+                    <button class="load-exercise-btn" onclick="loadExercise('sourcefactory')">Load in Editor →</button>
+                </div>
+            </div>
+
+            <!-- Challenge Tab -->
+            <div id="challenge" class="tab-content">
+                <h2>Final Challenge: ConfigurableDataStore 🚀</h2>
+                <p>Combine everything from Days 3-4 into a powerful, reusable component!</p>
+
+                <div class="info-box concept">
+                    <div class="info-box-title">🎯 The Mission</div>
+                    <p>Build a <code>DataStore</code> class that can persist and retrieve data using multiple formats. This will serve as a foundation for both of your projects!</p>
+                </div>
+
+                <h3>Requirements</h3>
+                <div class="code-block">
+                    <pre><span class="comment"># Your DataStore should support:</span>
+
+<span class="comment"># 1. Multiple formats</span>
+store = DataStore(<span class="string">"./data"</span>, format=<span class="string">"json"</span>)  <span class="comment"># or "yaml"</span>
+
+<span class="comment"># 2. CRUD operations</span>
+store.save(<span class="string">"articles"</span>, [article1, article2])  <span class="comment"># Save data</span>
+articles = store.load(<span class="string">"articles"</span>)              <span class="comment"># Load data</span>
+store.delete(<span class="string">"articles"</span>)                        <span class="comment"># Delete data</span>
+store.exists(<span class="string">"articles"</span>)                        <span class="comment"># Check if exists</span>
+
+<span class="comment"># 3. Automatic directory creation</span>
+store.save(<span class="string">"cache/api_responses"</span>, data)  <span class="comment"># Creates subdirs</span>
+
+<span class="comment"># 4. Listing stored items</span>
+items = store.list_all()  <span class="comment"># ["articles", "cache/api_responses"]</span>
+
+<span class="comment"># 5. Metadata tracking</span>
+meta = store.get_metadata(<span class="string">"articles"</span>)
+<span class="comment"># {"created_at": "...", "updated_at": "...", "size_bytes": 1234}</span></pre>
+                </div>
+
+                <h3>Bonus Features</h3>
+                <ul class="checklist">
+                    <li>Support for dataclass serialization (to_dict/from_dict)</li>
+                    <li>Compression option for large files (gzip)</li>
+                    <li>Atomic writes (write to temp file, then rename)</li>
+                    <li>Backup on overwrite</li>
+                    <li>Custom exceptions: <code>DataStoreError</code>, <code>ItemNotFoundError</code></li>
+                </ul>
+
+                <h3>Expected Usage</h3>
+                <div class="code-block">
+                    <pre><span class="keyword">from</span> dataclasses <span class="keyword">import</span> dataclass
+
+<span class="decorator">@dataclass</span>
+<span class="keyword">class</span> <span class="class-name">Article</span>:
+    title: <span class="builtin">str</span>
+    url: <span class="builtin">str</span>
+    
+    <span class="keyword">def</span> <span class="function">to_dict</span>(self): ...
+    
+    <span class="decorator">@classmethod</span>
+    <span class="keyword">def</span> <span class="function">from_dict</span>(cls, data): ...
+
+<span class="comment"># Initialize store</span>
+store = DataStore(<span class="string">"./data"</span>, format=<span class="string">"json"</span>)
+
+<span class="comment"># Save articles</span>
+articles = [
+    Article(<span class="string">"Python Tips"</span>, <span class="string">"https://example.com/1"</span>),
+    Article(<span class="string">"AI News"</span>, <span class="string">"https://example.com/2"</span>),
+]
+store.save(<span class="string">"articles"</span>, [a.to_dict() <span class="keyword">for</span> a <span class="keyword">in</span> articles])
+
+<span class="comment"># Load and reconstruct</span>
+loaded = store.load(<span class="string">"articles"</span>)
+articles = [Article.from_dict(d) <span class="keyword">for</span> d <span class="keyword">in</span> loaded]
+
+<span class="comment"># Check metadata</span>
+<span class="builtin">print</span>(store.get_metadata(<span class="string">"articles"</span>))
+<span class="comment"># {"created_at": "2024-01-15T10:30:00", "size_bytes": 256}</span></pre>
+                </div>
+
+                <button class="load-exercise-btn" onclick="loadExercise('challenge')">Load Challenge Template →</button>
+
+                <div class="info-box tip" style="margin-top: 30px;">
+                    <div class="info-box-title">🎉 You're Ready!</div>
+                    <p>After completing this challenge, you'll have mastered file I/O and OOP patterns. The DataStore you build here can be directly adapted for both the Document Analyzer (storing analysis results) and the Content Aggregator (caching fetched content)!</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Panel: Code Editor -->
+        <div class="editor-panel">
+            <div class="editor-header">
+                <div class="editor-title">
+                    <div class="dot blue"></div>
+                    <span>playground.py</span>
+                </div>
+                <div class="editor-actions">
+                    <button class="editor-btn" onclick="resetEditor()">
+                        ↺ Reset
+                    </button>
+                    <button class="editor-btn" onclick="copyEditorCode()">
+                        📋 Copy
+                    </button>
+                    <button class="editor-btn run" onclick="runCode()">
+                        ▶ Run
+                    </button>
+                </div>
+            </div>
+            <div class="code-editor-container">
+                <div class="code-editor-wrapper">
+                    <textarea class="code-editor" id="codeEditor" spellcheck="false">
+# Welcome to Days 3-4: Files & Classes! 📁🏗️
+
+# --- File Operations ---
+# Simulated file content (since we can't write real files here)
+file_content = """Line 1: Hello World
+Line 2: Python is great
+Line 3: Learning is fun"""
+
+# Process like a file
+lines = file_content.split("\n")
+print(f"Total lines: {len(lines)}")
+print(f"First line: {lines[0]}")
+
+# --- JSON Example ---
+import json
+
+data = {
+    "name": "Alice",
+    "skills": ["Python", "Data Analysis"],
+    "active": True
+}
+
+# Convert to JSON string
+json_str = json.dumps(data, indent=2)
+print("\nJSON output:")
+print(json_str)
+
+# Parse back
+parsed = json.loads(json_str)
+print(f"\nParsed name: {parsed['name']}")
+
+# --- Simple Class ---
+class Article:
+    def __init__(self, title, source):
+        self.title = title
+        self.source = source
+    
+    def summary(self):
+        return f"[{self.source}] {self.title}"
+
+article = Article("Python Tips", "TechBlog")
+print(f"\nArticle: {article.summary()}")</textarea>
+                </div>
+            </div>
+            <div class="output-panel">
+                <div class="output-header">
+                    <div class="output-title">
+                        <span>📤 Output</span>
+                    </div>
+                    <span class="output-status success" id="outputStatus">Ready</span>
+                </div>
+                <div class="output-content" id="outputContent">
+                    <span style="color: var(--text-muted);">Click "Run" to execute your code...</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Tab Navigation
+        function showTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+
+            document.getElementById(tabId).classList.add('active');
+            event.target.classList.add('active');
+            updateProgress(tabId);
+        }
+
+        const tabOrder = ['overview', 'files', 'json', 'pathlib', 'classes', 'dataclasses', 'exercises', 'challenge'];
+        function updateProgress(tabId) {
+            const index = tabOrder.indexOf(tabId);
+            const progress = ((index + 1) / tabOrder.length) * 100;
+            document.getElementById('progressFill').style.width = progress + '%';
+        }
+
+        // Simulated Python execution
+        function runCode() {
+            const code = document.getElementById('codeEditor').value;
+            const outputContent = document.getElementById('outputContent');
+            const outputStatus = document.getElementById('outputStatus');
+
+            try {
+                const output = simulatePython(code);
+                outputContent.innerHTML = output;
+                outputStatus.textContent = 'Success';
+                outputStatus.className = 'output-status success';
+            } catch (e) {
+                outputContent.innerHTML = `<span style="color: var(--accent-red);">Error: ${e.message}</span>`;
+                outputStatus.textContent = 'Error';
+                outputStatus.className = 'output-status error';
+            }
+        }
+
+        function simulatePython(code) {
+            let output = [];
+            const lines = code.split('\n');
+
+            for (let line of lines) {
+                line = line.trim();
+                if (line.startsWith('#') || line === '') continue;
+
+                if (line.startsWith('print(')) {
+                    const content = extractPrintContent(line);
+                    output.push(evaluateContent(content, code));
+                }
+            }
+
+            if (output.length === 0) {
+                return '<span style="color: var(--text-muted);">No output (add print() statements)</span>';
+            }
+
+            return output.map(line => `<div class="output-line">${escapeHtml(line)}</div>`).join('');
+        }
+
+        function extractPrintContent(line) {
+            const match = line.match(/print\((.*)\)$/);
+            return match ? match[1] : '';
+        }
+
+        function evaluateContent(content, fullCode) {
+            // Handle f-strings
+            if (content.startsWith('f"') || content.startsWith("f'")) {
+                return evaluateFString(content);
+            }
+            
+            // Handle simple strings
+            if ((content.startsWith('"') && content.endsWith('"')) ||
+                (content.startsWith("'") && content.endsWith("'"))) {
+                return content.slice(1, -1);
+            }
+
+            // Common patterns
+            const patterns = {
+                'json_str': '{\n  "name": "Alice",\n  "skills": ["Python", "Data Analysis"],\n  "active": true\n}',
+                'len(lines)': '3',
+                'lines[0]': 'Line 1: Hello World',
+                "parsed['name']": 'Alice',
+                'article.summary()': '[TechBlog] Python Tips',
+            };
+
+            if (patterns[content]) return patterns[content];
+            return `<${content}>`;
+        }
+
+        function evaluateFString(fstring) {
+            let content = fstring.slice(2, -1);
+            
+            const replacements = {
+                'len(lines)': '3',
+                'lines[0]': 'Line 1: Hello World',
+                "parsed['name']": 'Alice',
+                'article.summary()': '[TechBlog] Python Tips',
+            };
+
+            for (const [key, value] of Object.entries(replacements)) {
+                content = content.replace(`{${key}}`, value);
+            }
+
+            return content;
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        function resetEditor() {
+            document.getElementById('codeEditor').value = `# Welcome to Days 3-4: Files & Classes! 📁🏗️
+
+# --- File Operations ---
+# Simulated file content (since we can't write real files here)
+file_content = """Line 1: Hello World
+Line 2: Python is great
+Line 3: Learning is fun"""
+
+# Process like a file
+lines = file_content.split("\\n")
+print(f"Total lines: {len(lines)}")
+print(f"First line: {lines[0]}")
+
+# --- JSON Example ---
+import json
+
+data = {
+    "name": "Alice",
+    "skills": ["Python", "Data Analysis"],
+    "active": True
+}
+
+# Convert to JSON string
+json_str = json.dumps(data, indent=2)
+print("\\nJSON output:")
+print(json_str)
+
+# Parse back
+parsed = json.loads(json_str)
+print(f"\\nParsed name: {parsed['name']}")
+
+# --- Simple Class ---
+class Article:
+    def __init__(self, title, source):
+        self.title = title
+        self.source = source
+    
+    def summary(self):
+        return f"[{self.source}] {self.title}"
+
+article = Article("Python Tips", "TechBlog")
+print(f"\\nArticle: {article.summary()}")`;
+
+            document.getElementById('outputContent').innerHTML = 
+                '<span style="color: var(--text-muted);">Click "Run" to execute your code...</span>';
+            document.getElementById('outputStatus').textContent = 'Ready';
+            document.getElementById('outputStatus').className = 'output-status success';
+        }
+
+        function copyEditorCode() {
+            const code = document.getElementById('codeEditor').value;
+            navigator.clipboard.writeText(code).then(() => {
+                const btn = event.target;
+                const originalText = btn.innerHTML;
+                btn.innerHTML = '✓ Copied!';
+                setTimeout(() => btn.innerHTML = originalText, 2000);
+            });
+        }
+
+        function copyCode(btn) {
+            const codeBlock = btn.parentElement;
+            const code = codeBlock.querySelector('pre').textContent;
+            navigator.clipboard.writeText(code).then(() => {
+                btn.textContent = 'Copied!';
+                setTimeout(() => btn.textContent = 'Copy', 2000);
+            });
+        }
+
+        // Exercise templates
+        const exercises = {
+            filestats: `# Exercise 1: File Statistics
+# Create a function that analyzes text content
+
+def get_file_stats(content: str) -> dict:
+    """
+    Analyze text content and return statistics.
+    
+    Args:
+        content: The text content to analyze
+        
+    Returns:
+        Dict with line_count, word_count, char_count (no whitespace)
+    """
+    lines = content.split("\\n")
+    words = content.split()
+    chars = content.replace(" ", "").replace("\\n", "").replace("\\t", "")
+    
+    return {
+        "line_count": len(lines),
+        "word_count": len(words),
+        "char_count": len(chars)
+    }
+
+# Test it
+sample_text = """Hello World
+This is a test file.
+It has multiple lines.
+Python is great!"""
+
+stats = get_file_stats(sample_text)
+print("File Statistics:")
+print(f"  Lines: {stats['line_count']}")
+print(f"  Words: {stats['word_count']}")  
+print(f"  Characters: {stats['char_count']}")`,
+
+            configloader: `# Exercise 2: Config Loader
+# Auto-detect format based on extension
+
+import json
+# import yaml  # Would need: pip install pyyaml
+
+def load_config(filepath: str) -> dict:
+    """
+    Load configuration from JSON or YAML file.
+    
+    Args:
+        filepath: Path to config file (.json or .yaml/.yml)
+        
+    Returns:
+        Parsed configuration dictionary
+        
+    Raises:
+        ValueError: If file extension is not supported
+        FileNotFoundError: If file doesn't exist
+    """
+    # Get extension
+    ext = filepath.split(".")[-1].lower()
+    
+    # Simulate file reading (in real code, use open())
+    if ext == "json":
+        # Simulated JSON content
+        content = '{"host": "localhost", "port": 5432}'
+        return json.loads(content)
+    
+    elif ext in ("yaml", "yml"):
+        # Would use yaml.safe_load() in real code
+        return {"host": "localhost", "port": 5432}
+    
+    else:
+        raise ValueError(f"Unsupported format: {ext}")
+
+# Test
+try:
+    config = load_config("settings.json")
+    print(f"Loaded config: {config}")
+    
+    config2 = load_config("settings.yaml")
+    print(f"YAML config: {config2}")
+    
+    # This should raise an error
+    load_config("settings.txt")
+except ValueError as e:
+    print(f"Error: {e}")`,
+
+            scanner: `# Exercise 3: Project Scanner
+# Scan directory and summarize contents
+
+from pathlib import Path
+from collections import defaultdict
+
+def scan_directory(path: str) -> dict:
+    """
+    Scan a directory and return summary statistics.
+    
+    Returns:
+        Dict with total_files, files_by_extension, total_size_bytes
+    """
+    # Simulated directory structure
+    files = [
+        ("main.py", 1024),
+        ("utils.py", 2048),
+        ("config.json", 512),
+        ("README.md", 256),
+        ("data.csv", 4096),
+        ("test_main.py", 1536),
+    ]
+    
+    by_extension = defaultdict(int)
+    total_size = 0
+    
+    for filename, size in files:
+        ext = filename.split(".")[-1]
+        by_extension[ext] += 1
+        total_size += size
+    
+    return {
+        "total_files": len(files),
+        "files_by_extension": dict(by_extension),
+        "total_size_bytes": total_size
+    }
+
+# Test
+summary = scan_directory("my_project")
+print("Directory Summary:")
+print(f"  Total files: {summary['total_files']}")
+print(f"  By extension: {summary['files_by_extension']}")
+print(f"  Total size: {summary['total_size_bytes']} bytes")`,
+
+            analyzer: `# Exercise 4: Document Analyzer Class
+
+class DocumentAnalyzer:
+    """Analyzes text documents for statistics and keywords."""
+    
+    def __init__(self, content: str):
+        """Initialize with document content."""
+        self.content = content
+        self._words = None  # Cache
+    
+    @property
+    def words(self) -> list[str]:
+        """Get list of words (cached)."""
+        if self._words is None:
+            # Simple word extraction
+            self._words = self.content.lower().split()
+        return self._words
+    
+    def word_count(self) -> int:
+        """Return total word count."""
+        return len(self.words)
+    
+    def sentence_count(self) -> int:
+        """Return approximate sentence count."""
+        # Count sentence-ending punctuation
+        endings = ['.', '!', '?']
+        count = sum(self.content.count(e) for e in endings)
+        return max(1, count)  # At least 1 sentence
+    
+    def get_keywords(self, n: int = 5) -> list[tuple[str, int]]:
+        """Return top N most frequent words."""
+        # Count word frequencies
+        freq = {}
+        for word in self.words:
+            # Clean punctuation
+            word = word.strip('.,!?;:')
+            if len(word) > 3:  # Skip short words
+                freq[word] = freq.get(word, 0) + 1
+        
+        # Sort by frequency
+        sorted_words = sorted(freq.items(), key=lambda x: x[1], reverse=True)
+        return sorted_words[:n]
+    
+    def summary(self) -> dict:
+        """Return full analysis summary."""
+        return {
+            "word_count": self.word_count(),
+            "sentence_count": self.sentence_count(),
+            "keywords": self.get_keywords(5)
+        }
+
+# Test
+text = """
+Python is a great programming language. Python is used for web development,
+data science, and machine learning. Many developers love Python because
+it is easy to learn. Python has a great community and many libraries.
+"""
+
+analyzer = DocumentAnalyzer(text)
+print("Document Analysis:")
+print(f"  Words: {analyzer.word_count()}")
+print(f"  Sentences: {analyzer.sentence_count()}")
+print(f"  Keywords: {analyzer.get_keywords(3)}")`,
+
+            contentitem: `# Exercise 5: ContentItem Dataclass
+
+from dataclasses import dataclass, field
+from datetime import datetime
+from typing import Optional
+
+@dataclass
+class ContentItem:
+    """Represents a content item from any source."""
+    
+    title: str
+    url: str
+    source: str
+    published: datetime
+    score: float = 0.0
+    tags: list[str] = field(default_factory=list)
+    read: bool = False
+    
+    def age_hours(self) -> float:
+        """Return age in hours."""
+        delta = datetime.now() - self.published
+        return delta.total_seconds() / 3600
+    
+    def is_recent(self, hours: int = 24) -> bool:
+        """Check if item is recent."""
+        return self.age_hours() < hours
+    
+    @classmethod
+    def from_dict(cls, data: dict) -> "ContentItem":
+        """Create ContentItem from dictionary."""
+        return cls(
+            title=data["title"],
+            url=data["url"],
+            source=data.get("source", "Unknown"),
+            published=datetime.fromisoformat(data["published"]),
+            score=data.get("score", 0.0),
+            tags=data.get("tags", []),
+            read=data.get("read", False)
+        )
+    
+    def to_dict(self) -> dict:
+        """Convert to dictionary for serialization."""
+        return {
+            "title": self.title,
+            "url": self.url,
+            "source": self.source,
+            "published": self.published.isoformat(),
+            "score": self.score,
+            "tags": self.tags,
+            "read": self.read
+        }
+
+# Test
+item = ContentItem(
+    title="Python 3.12 Features",
+    url="https://python.org/news",
+    source="Python.org",
+    published=datetime.now(),
+    tags=["python", "release"]
+)
+
+print(f"Created: {item}")
+print(f"Age: {item.age_hours():.2f} hours")
+print(f"Recent: {item.is_recent()}")
+
+# Serialize and deserialize
+data = item.to_dict()
+print(f"\\nSerialized: {data}")
+
+restored = ContentItem.from_dict(data)
+print(f"Restored: {restored.title}")`,
+
+            multiloader: `# Exercise: Multi-Format Data Loader
+
+import json
+from pathlib import Path
+
+class DataLoader:
+    """Load data from multiple file formats."""
+    
+    SUPPORTED_FORMATS = ["json", "yaml", "yml", "csv"]
+    
+    def __init__(self):
+        self.loaded_files = []
+    
+    def load(self, filepath: str) -> any:
+        """
+        Load data from file, auto-detecting format.
+        
+        Raises:
+            ValueError: Unsupported format
+            FileNotFoundError: File doesn't exist
+        """
+        path = Path(filepath)
+        ext = path.suffix.lower().lstrip(".")
+        
+        if ext not in self.SUPPORTED_FORMATS:
+            raise ValueError(f"Unsupported format: {ext}")
+        
+        # Simulate file content based on extension
+        if ext == "json":
+            return self._load_json(path)
+        elif ext in ("yaml", "yml"):
+            return self._load_yaml(path)
+        elif ext == "csv":
+            return self._load_csv(path)
+    
+    def _load_json(self, path: Path) -> dict:
+        # Simulated
+        return {"format": "json", "data": [1, 2, 3]}
+    
+    def _load_yaml(self, path: Path) -> dict:
+        # Simulated (would use yaml.safe_load)
+        return {"format": "yaml", "data": [1, 2, 3]}
+    
+    def _load_csv(self, path: Path) -> list[dict]:
+        # Simulated
+        return [{"col1": "a", "col2": "b"}, {"col1": "c", "col2": "d"}]
+
+# Test
+loader = DataLoader()
+
+print("JSON:", loader.load("data.json"))
+print("YAML:", loader.load("config.yaml"))
+print("CSV:", loader.load("data.csv"))
+
+try:
+    loader.load("file.txt")
+except ValueError as e:
+    print(f"Error: {e}")`,
+
+            filecache: `# Exercise: File Cache System
+
+import json
+from datetime import datetime, timedelta
+from pathlib import Path
+from dataclasses import dataclass
+
+@dataclass
+class CacheEntry:
+    value: any
+    expires_at: datetime
+    
+    def is_expired(self) -> bool:
+        return datetime.now() > self.expires_at
+    
+    def to_dict(self) -> dict:
+        return {
+            "value": self.value,
+            "expires_at": self.expires_at.isoformat()
+        }
+    
+    @classmethod
+    def from_dict(cls, data: dict) -> "CacheEntry":
+        return cls(
+            value=data["value"],
+            expires_at=datetime.fromisoformat(data["expires_at"])
+        )
+
+class FileCache:
+    """Simple file-based cache with TTL."""
+    
+    def __init__(self, cache_dir: str = "./cache"):
+        self.cache_dir = Path(cache_dir)
+        self._cache = {}  # In-memory simulation
+    
+    def set(self, key: str, value: any, ttl_seconds: int = 3600) -> None:
+        """Store value with expiration."""
+        expires_at = datetime.now() + timedelta(seconds=ttl_seconds)
+        self._cache[key] = CacheEntry(value, expires_at)
+        print(f"Cached '{key}' (expires in {ttl_seconds}s)")
+    
+    def get(self, key: str) -> any:
+        """Get value if exists and not expired."""
+        if key not in self._cache:
+            return None
+        
+        entry = self._cache[key]
+        if entry.is_expired():
+            del self._cache[key]
+            return None
+        
+        return entry.value
+    
+    def clear_expired(self) -> int:
+        """Remove all expired entries. Returns count removed."""
+        expired_keys = [k for k, v in self._cache.items() if v.is_expired()]
+        for key in expired_keys:
+            del self._cache[key]
+        return len(expired_keys)
+
+# Test
+cache = FileCache()
+
+cache.set("user_123", {"name": "Alice", "score": 100}, ttl_seconds=3600)
+cache.set("temp_data", [1, 2, 3], ttl_seconds=60)
+
+print(f"\\nGet user_123: {cache.get('user_123')}")
+print(f"Get missing: {cache.get('nonexistent')}")`,
+
+            resultsstore: `# Exercise: Results Store for Document Analyzer
+
+import json
+from datetime import datetime
+from pathlib import Path
+from dataclasses import dataclass, field
+
+@dataclass
+class AnalysisResult:
+    doc_id: str
+    filename: str
+    word_count: int
+    keywords: list[str]
+    analyzed_at: datetime = field(default_factory=datetime.now)
+    
+    def to_dict(self) -> dict:
+        return {
+            "doc_id": self.doc_id,
+            "filename": self.filename,
+            "word_count": self.word_count,
+            "keywords": self.keywords,
+            "analyzed_at": self.analyzed_at.isoformat()
+        }
+
+class ResultsStore:
+    """Store and retrieve document analysis results."""
+    
+    def __init__(self, storage_path: str = "./results"):
+        self.storage_path = Path(storage_path)
+        self._results = {}  # Simulated storage
+    
+    def save(self, result: AnalysisResult) -> None:
+        """Save an analysis result."""
+        self._results[result.doc_id] = result.to_dict()
+        print(f"Saved result for: {result.filename}")
+    
+    def get(self, doc_id: str) -> dict | None:
+        """Retrieve result by document ID."""
+        return self._results.get(doc_id)
+    
+    def list_all(self) -> list[str]:
+        """List all stored document IDs."""
+        return list(self._results.keys())
+    
+    def search_by_keyword(self, keyword: str) -> list[dict]:
+        """Find results containing a keyword."""
+        matches = []
+        for doc_id, result in self._results.items():
+            if keyword.lower() in [k.lower() for k in result["keywords"]]:
+                matches.append(result)
+        return matches
+
+# Test
+store = ResultsStore()
+
+# Save some results
+store.save(AnalysisResult(
+    doc_id="doc_001",
+    filename="report.pdf",
+    word_count=1500,
+    keywords=["python", "analysis", "data"]
+))
+
+store.save(AnalysisResult(
+    doc_id="doc_002", 
+    filename="notes.txt",
+    word_count=500,
+    keywords=["meeting", "python", "project"]
+))
+
+print(f"\\nAll docs: {store.list_all()}")
+print(f"Get doc_001: {store.get('doc_001')}")
+print(f"Search 'python': {len(store.search_by_keyword('python'))} results")`,
+
+            sourcefactory: `# Exercise: Source Factory Pattern
+
+from dataclasses import dataclass
+from abc import ABC, abstractmethod
+
+# Base class
+class ContentSource(ABC):
+    def __init__(self, name: str):
+        self.name = name
+    
+    @abstractmethod
+    def fetch(self) -> list[dict]:
+        pass
+
+# Concrete implementations
+class RSSSource(ContentSource):
+    def __init__(self, name: str, feed_url: str):
+        super().__init__(name)
+        self.feed_url = feed_url
+    
+    def fetch(self) -> list[dict]:
+        print(f"Fetching RSS: {self.feed_url}")
+        return [{"title": "RSS Article", "source": self.name}]
+
+class RedditSource(ContentSource):
+    def __init__(self, name: str, subreddit: str):
+        super().__init__(name)
+        self.subreddit = subreddit
+    
+    def fetch(self) -> list[dict]:
+        print(f"Fetching Reddit: r/{self.subreddit}")
+        return [{"title": "Reddit Post", "source": self.name}]
+
+class NewsAPISource(ContentSource):
+    def __init__(self, name: str, query: str, api_key: str):
+        super().__init__(name)
+        self.query = query
+        self.api_key = api_key
+    
+    def fetch(self) -> list[dict]:
+        print(f"Fetching NewsAPI: {self.query}")
+        return [{"title": "News Article", "source": self.name}]
+
+# Factory
+class SourceFactory:
+    """Create ContentSource instances from config."""
+    
+    @staticmethod
+    def create(config: dict) -> ContentSource:
+        source_type = config.get("type")
+        name = config.get("name", "Unknown")
+        
+        if source_type == "rss":
+            return RSSSource(name, config["url"])
+        
+        elif source_type == "reddit":
+            return RedditSource(name, config["subreddit"])
+        
+        elif source_type == "newsapi":
+            return NewsAPISource(name, config["query"], config.get("api_key", ""))
+        
+        else:
+            raise ValueError(f"Unknown source type: {source_type}")
+
+# Test
+configs = [
+    {"type": "rss", "name": "TechCrunch", "url": "https://tc.com/feed"},
+    {"type": "reddit", "name": "ML", "subreddit": "MachineLearning"},
+    {"type": "newsapi", "name": "AI News", "query": "artificial intelligence"},
+]
+
+sources = [SourceFactory.create(c) for c in configs]
+
+print("Created sources:")
+for source in sources:
+    print(f"  - {source.name} ({type(source).__name__})")
+    items = source.fetch()`,
+
+            challenge: `# 🚀 FINAL CHALLENGE: ConfigurableDataStore
+
+import json
+from pathlib import Path
+from datetime import datetime
+from dataclasses import dataclass
+from typing import Any, Optional
+
+# Custom exceptions
+class DataStoreError(Exception):
+    """Base exception for DataStore errors."""
+    pass
+
+class ItemNotFoundError(DataStoreError):
+    """Raised when requested item doesn't exist."""
+    pass
+
+@dataclass
+class ItemMetadata:
+    created_at: datetime
+    updated_at: datetime
+    size_bytes: int
+    
+    def to_dict(self) -> dict:
+        return {
+            "created_at": self.created_at.isoformat(),
+            "updated_at": self.updated_at.isoformat(),
+            "size_bytes": self.size_bytes
+        }
+
+class DataStore:
+    """
+    Persistent data store supporting multiple formats.
+    
+    Features:
+    - JSON and YAML support
+    - Automatic directory creation
+    - Metadata tracking
+    - Error handling
+    """
+    
+    def __init__(self, base_path: str, format: str = "json"):
+        self.base_path = Path(base_path)
+        self.format = format
+        self._storage = {}  # Simulated file storage
+        self._metadata = {}
+        
+        if format not in ("json", "yaml"):
+            raise DataStoreError(f"Unsupported format: {format}")
+    
+    def _get_filepath(self, key: str) -> Path:
+        """Get full filepath for a key."""
+        return self.base_path / f"{key}.{self.format}"
+    
+    def save(self, key: str, data: Any) -> None:
+        """Save data to store."""
+        filepath = self._get_filepath(key)
+        
+        # Serialize
+        if self.format == "json":
+            content = json.dumps(data, indent=2)
+        else:
+            content = str(data)  # Simplified YAML
+        
+        # Store (simulated file write)
+        self._storage[key] = content
+        
+        # Update metadata
+        now = datetime.now()
+        if key in self._metadata:
+            self._metadata[key].updated_at = now
+        else:
+            self._metadata[key] = ItemMetadata(
+                created_at=now,
+                updated_at=now,
+                size_bytes=len(content)
+            )
+        
+        print(f"Saved: {key} ({len(content)} bytes)")
+    
+    def load(self, key: str) -> Any:
+        """Load data from store."""
+        if key not in self._storage:
+            raise ItemNotFoundError(f"Item not found: {key}")
+        
+        content = self._storage[key]
+        
+        if self.format == "json":
+            return json.loads(content)
+        return content
+    
+    def delete(self, key: str) -> None:
+        """Delete item from store."""
+        if key not in self._storage:
+            raise ItemNotFoundError(f"Item not found: {key}")
+        
+        del self._storage[key]
+        del self._metadata[key]
+        print(f"Deleted: {key}")
+    
+    def exists(self, key: str) -> bool:
+        """Check if item exists."""
+        return key in self._storage
+    
+    def list_all(self) -> list[str]:
+        """List all stored keys."""
+        return list(self._storage.keys())
+    
+    def get_metadata(self, key: str) -> dict:
+        """Get metadata for an item."""
+        if key not in self._metadata:
+            raise ItemNotFoundError(f"Item not found: {key}")
+        return self._metadata[key].to_dict()
+
+
+# ===== TEST THE DATASTORE =====
+
+print("=== DataStore Demo ===\\n")
+
+# Create store
+store = DataStore("./data", format="json")
+
+# Save some data
+store.save("articles", [
+    {"title": "Python Tips", "url": "https://example.com/1"},
+    {"title": "AI News", "url": "https://example.com/2"},
+])
+
+store.save("config", {
+    "max_items": 100,
+    "sources": ["rss", "reddit"]
+})
+
+# Load data
+print(f"\\nLoaded articles: {store.load('articles')}")
+
+# Check metadata
+print(f"\\nMetadata: {store.get_metadata('articles')}")
+
+# List all
+print(f"\\nAll keys: {store.list_all()}")
+
+# Check existence
+print(f"\\nExists 'articles': {store.exists('articles')}")
+print(f"Exists 'missing': {store.exists('missing')}")
+
+# Delete
+store.delete("config")
+print(f"\\nAfter delete: {store.list_all()}")
+
+# Error handling
+try:
+    store.load("nonexistent")
+except ItemNotFoundError as e:
+    print(f"\\nCaught error: {e}")
+
+print("\\n✅ Challenge complete!")`
+        };
+
+        function loadExercise(name) {
+            if (exercises[name]) {
+                document.getElementById('codeEditor').value = exercises[name];
+                document.getElementById('outputContent').innerHTML = 
+                    '<span style="color: var(--text-muted);">Exercise loaded! Click "Run" to execute...</span>';
+            }
+        }
+
+        // Handle tab key
+        document.getElementById('codeEditor').addEventListener('keydown', function(e) {
+            if (e.key === 'Tab') {
+                e.preventDefault();
+                const start = this.selectionStart;
+                const end = this.selectionEnd;
+                this.value = this.value.substring(0, start) + '    ' + this.value.substring(end);
+                this.selectionStart = this.selectionEnd = start + 4;
+            }
+            if (e.ctrlKey && e.key === 'Enter') {
+                runCode();
+            }
+        });
+
+        updateProgress('overview');
+    </script>
+</body>
+</html>
