@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Web Development Learning Journey</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 50px;
+        }
+
+        .header h1 {
+            font-size: 48px;
+            margin-bottom: 15px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .header p {
+            font-size: 20px;
+            opacity: 0.95;
+        }
+
+        .week-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+
+        .week-card {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            transition: transform 0.3s, box-shadow 0.3s;
+            text-decoration: none;
+            color: inherit;
+            display: block;
+        }
+
+        .week-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 50px rgba(0,0,0,0.3);
+        }
+
+        .week-number {
+            display: inline-block;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 14px;
+            margin-bottom: 15px;
+        }
+
+        .week-card h2 {
+            color: #2c3e50;
+            font-size: 24px;
+            margin-bottom: 12px;
+        }
+
+        .week-card p {
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+
+        .topics {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 15px;
+        }
+
+        .topic-tag {
+            background: #f0f8ff;
+            color: #667eea;
+            padding: 5px 12px;
+            border-radius: 15px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .footer {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            text-align: center;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            margin-top: 40px;
+        }
+
+        .footer h3 {
+            color: #667eea;
+            margin-bottom: 15px;
+            font-size: 24px;
+        }
+
+        .footer p {
+            color: #666;
+            line-height: 1.8;
+            margin-bottom: 20px;
+        }
+
+        .footer a {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .footer a:hover {
+            text-decoration: underline;
+        }
+
+        .progress-indicator {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            text-align: center;
+        }
+
+        .progress-indicator h3 {
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+
+        .progress-bar {
+            background: #e0e0e0;
+            height: 10px;
+            border-radius: 5px;
+            overflow: hidden;
+            margin-top: 10px;
+        }
+
+        .progress-fill {
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            height: 100%;
+            width: 0%;
+            transition: width 0.3s;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 36px;
+            }
+            
+            .week-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🚀 Web Development Learning Journey</h1>
+            <p>Master web development from HTML basics to TypeScript</p>
+        </div>
+
+        <div class="progress-indicator">
+            <h3>📊 Your Learning Progress</h3>
+            <p>Track your progress as you complete each week</p>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+            <p style="margin-top: 10px; font-size: 14px; color: #666;"><span id="progressText">0 of 7</span> lessons completed</p>
+        </div>
+
+        <div class="week-grid">
+            <a href="webapp/week1-html-css-interactive.html" class="week-card" data-week="1">
+                <span class="week-number">Week 1</span>
+                <h2>HTML & CSS Basics</h2>
+                <p>Learn the fundamentals of HTML structure and CSS styling. Build your first "About Me" webpage and deploy it live!</p>
+                <div class="topics">
+                    <span class="topic-tag">HTML Tags</span>
+                    <span class="topic-tag">CSS Styling</span>
+                    <span class="topic-tag">GitHub Pages</span>
+                </div>
+            </a>
+
+            <a href="webapp/week2-layouts-responsive.html" class="week-card" data-week="2">
+                <span class="week-number">Week 2</span>
+                <h2>Layouts & Responsive Design</h2>
+                <p>Master Flexbox, Grid, and responsive design techniques to create layouts that look great on any device.</p>
+                <div class="topics">
+                    <span class="topic-tag">Flexbox</span>
+                    <span class="topic-tag">CSS Grid</span>
+                    <span class="topic-tag">Responsive</span>
+                </div>
+            </a>
+
+            <a href="webapp/week3-forms-animations.html" class="week-card" data-week="3">
+                <span class="week-number">Week 3</span>
+                <h2>Forms & Animations</h2>
+                <p>Create interactive forms and add smooth animations to bring your websites to life.</p>
+                <div class="topics">
+                    <span class="topic-tag">HTML Forms</span>
+                    <span class="topic-tag">CSS Animations</span>
+                    <span class="topic-tag">Transitions</span>
+                </div>
+            </a>
+
+            <a href="webapp/week4-javascript-basics.html" class="week-card" data-week="4">
+                <span class="week-number">Week 4</span>
+                <h2>JavaScript Basics</h2>
+                <p>Dive into JavaScript programming! Learn variables, functions, loops, and how to make your pages interactive.</p>
+                <div class="topics">
+                    <span class="topic-tag">Variables</span>
+                    <span class="topic-tag">Functions</span>
+                    <span class="topic-tag">Logic</span>
+                </div>
+            </a>
+
+            <a href="webapp/week5-dom-manipulation.html" class="week-card" data-week="5">
+                <span class="week-number">Week 5</span>
+                <h2>DOM Manipulation</h2>
+                <p>Learn to dynamically modify webpage content using JavaScript. Create, update, and delete elements on the fly.</p>
+                <div class="topics">
+                    <span class="topic-tag">DOM API</span>
+                    <span class="topic-tag">Events</span>
+                    <span class="topic-tag">Dynamic Content</span>
+                </div>
+            </a>
+
+            <a href="webapp/week6-local-storage.html" class="week-card" data-week="6">
+                <span class="week-number">Week 6A</span>
+                <h2>Local Storage</h2>
+                <p>Save data in the browser to create persistent applications that remember user preferences and data.</p>
+                <div class="topics">
+                    <span class="topic-tag">localStorage</span>
+                    <span class="topic-tag">sessionStorage</span>
+                    <span class="topic-tag">Data Persistence</span>
+                </div>
+            </a>
+
+            <a href="webapp/week6-typescript.html" class="week-card" data-week="7">
+                <span class="week-number">Week 6B</span>
+                <h2>TypeScript Fundamentals</h2>
+                <p>Level up with TypeScript! Add type safety to your JavaScript code for better development experience.</p>
+                <div class="topics">
+                    <span class="topic-tag">TypeScript</span>
+                    <span class="topic-tag">Type Safety</span>
+                    <span class="topic-tag">Interfaces</span>
+                </div>
+            </a>
+        </div>
+
+        <div class="footer">
+            <h3>🎓 About This Course</h3>
+            <p>This is a comprehensive, self-paced web development course designed for complete beginners. Each week builds on the previous one, taking you from zero to building interactive web applications.</p>
+            <p><strong>Learning Tips:</strong></p>
+            <ul style="list-style: none; padding: 0; color: #666; line-height: 2;">
+                <li>✅ Complete lessons in order</li>
+                <li>✅ Practice with the interactive code editor</li>
+                <li>✅ Experiment and break things - that's how you learn!</li>
+                <li>✅ Build your own projects after each lesson</li>
+            </ul>
+            <p style="margin-top: 20px;">Made with ❤️ for learning | <a href="https://github.com/Rovlad/learning" target="_blank">View on GitHub</a></p>
+        </div>
+    </div>
+
+    <script>
+        // Progress tracking using localStorage
+        const totalLessons = 7;
+        let completedLessons = JSON.parse(localStorage.getItem('completedLessons')) || [];
+
+        function updateProgress() {
+            const progress = (completedLessons.length / totalLessons) * 100;
+            document.getElementById('progressFill').style.width = progress + '%';
+            document.getElementById('progressText').textContent = completedLessons.length + ' of ' + totalLessons;
+        }
+
+        // Mark completed lessons
+        document.querySelectorAll('.week-card').forEach(card => {
+            const week = card.getAttribute('data-week');
+            if (completedLessons.includes(week)) {
+                card.style.opacity = '0.7';
+                card.insertAdjacentHTML('afterbegin', '<div style="position: absolute; top: 10px; right: 10px; background: #2ecc71; color: white; padding: 5px 10px; border-radius: 15px; font-size: 12px; font-weight: bold;">✓ Completed</div>');
+                card.style.position = 'relative';
+            }
+
+            // Toggle completion on double-click
+            card.addEventListener('dblclick', (e) => {
+                e.preventDefault();
+                const index = completedLessons.indexOf(week);
+                if (index > -1) {
+                    completedLessons.splice(index, 1);
+                } else {
+                    completedLessons.push(week);
+                }
+                localStorage.setItem('completedLessons', JSON.stringify(completedLessons));
+                location.reload();
+            });
+        });
+
+        updateProgress();
+
+        // Add a helpful tooltip
+        const progressIndicator = document.querySelector('.progress-indicator');
+        const tooltip = document.createElement('p');
+        tooltip.style.fontSize = '12px';
+        tooltip.style.color = '#999';
+        tooltip.style.marginTop = '10px';
+        tooltip.textContent = '💡 Tip: Double-click any lesson card to mark it as completed';
+        progressIndicator.appendChild(tooltip);
+    </script>
+</body>
+</html>
