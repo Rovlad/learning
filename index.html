@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Full Stack Learning Journey</title>
+    <title>Learning Tracks</title>
     <style>
         * {
             margin: 0;
@@ -15,444 +15,263 @@
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
-            padding: 40px 20px;
+            padding: 20px;
         }
 
         .container {
             max-width: 1200px;
             margin: 0 auto;
-        }
-
-        .header {
-            text-align: center;
-            color: white;
-            margin-bottom: 50px;
-        }
-
-        .header h1 {
-            font-size: 48px;
-            margin-bottom: 15px;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
-        }
-
-        .header p {
-            font-size: 20px;
-            opacity: 0.95;
-        }
-
-        .section-header {
             background: white;
-            border-radius: 12px;
-            padding: 20px 30px;
-            margin-bottom: 25px;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-
-        .section-header.web-dev {
-            border-left: 6px solid #667eea;
-        }
-
-        .section-header.python {
-            border-left: 6px solid #10b981;
-        }
-
-        .section-header h2 {
-            color: #2c3e50;
-            font-size: 32px;
-            margin: 0;
-        }
-
-        .section-header .icon {
-            font-size: 36px;
-        }
-
-        .week-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 25px;
-            margin-bottom: 60px;
-        }
-
-        .week-card {
-            background: white;
-            border-radius: 12px;
-            padding: 30px;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
-            transition: transform 0.3s, box-shadow 0.3s;
-            text-decoration: none;
-            color: inherit;
-            display: block;
-            position: relative;
-        }
-
-        .week-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 15px 50px rgba(0,0,0,0.3);
-        }
-
-        .week-number {
-            display: inline-block;
-            color: white;
-            padding: 8px 20px;
             border-radius: 20px;
-            font-weight: bold;
-            font-size: 14px;
-            margin-bottom: 15px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
         }
 
-        .week-number.web-dev {
+        header {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        }
-
-        .week-number.python {
-            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-        }
-
-        .week-card h2 {
-            color: #2c3e50;
-            font-size: 24px;
-            margin-bottom: 12px;
-        }
-
-        .week-card p {
-            color: #666;
-            line-height: 1.6;
-            margin-bottom: 15px;
-        }
-
-        .topics {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-            margin-top: 15px;
-        }
-
-        .topic-tag {
-            padding: 5px 12px;
-            border-radius: 15px;
-            font-size: 12px;
-            font-weight: 600;
-        }
-
-        .topic-tag.web-dev {
-            background: #f0f8ff;
-            color: #667eea;
-        }
-
-        .topic-tag.python {
-            background: #ecfdf5;
-            color: #059669;
-        }
-
-        .footer {
-            background: white;
-            border-radius: 12px;
-            padding: 30px;
-            text-align: center;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
-            margin-top: 40px;
-        }
-
-        .footer h3 {
-            color: #667eea;
-            margin-bottom: 15px;
-            font-size: 24px;
-        }
-
-        .footer p {
-            color: #666;
-            line-height: 1.8;
-            margin-bottom: 20px;
-        }
-
-        .footer a {
-            color: #667eea;
-            text-decoration: none;
-            font-weight: bold;
-        }
-
-        .footer a:hover {
-            text-decoration: underline;
-        }
-
-        .progress-container {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 20px;
-            margin-bottom: 40px;
-        }
-
-        .progress-indicator {
-            background: white;
-            border-radius: 12px;
-            padding: 20px;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+            color: white;
+            padding: 40px;
             text-align: center;
         }
 
-        .progress-indicator h3 {
+        h1 {
+            font-size: 2.5em;
             margin-bottom: 10px;
         }
 
-        .progress-indicator.web-dev h3 {
+        .subtitle {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        .track-switcher {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            padding: 30px;
+            background: #f8f9fa;
+            border-bottom: 2px solid #e9ecef;
+        }
+
+        .track-btn {
+            padding: 15px 40px;
+            font-size: 1.1em;
+            font-weight: 600;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: white;
             color: #667eea;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
         }
 
-        .progress-indicator.python h3 {
-            color: #10b981;
+        .track-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
         }
 
-        .progress-bar {
-            background: #e0e0e0;
-            height: 10px;
-            border-radius: 5px;
-            overflow: hidden;
-            margin-top: 10px;
-        }
-
-        .progress-fill.web-dev {
-            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
-            height: 100%;
-            width: 0%;
-            transition: width 0.3s;
-        }
-
-        .progress-fill.python {
-            background: linear-gradient(90deg, #10b981 0%, #059669 100%);
-            height: 100%;
-            width: 0%;
-            transition: width 0.3s;
-        }
-
-        .completed-badge {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            background: #2ecc71;
+        .track-btn.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
-            padding: 5px 10px;
-            border-radius: 15px;
-            font-size: 12px;
-            font-weight: bold;
+            box-shadow: 0 6px 25px rgba(102, 126, 234, 0.4);
         }
 
-        @media (max-width: 768px) {
-            .header h1 {
-                font-size: 36px;
-            }
-            
-            .week-grid {
-                grid-template-columns: 1fr;
-            }
+        .track-content {
+            display: none;
+            padding: 40px;
+            animation: fadeIn 0.5s ease;
+        }
 
-            .progress-container {
-                grid-template-columns: 1fr;
+        .track-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
             }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .track-section {
+            margin-bottom: 40px;
+        }
+
+        .track-section h2 {
+            color: #667eea;
+            font-size: 2em;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 3px solid #667eea;
+        }
+
+        .topics-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .topic-card {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .topic-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        .topic-card h3 {
+            color: #764ba2;
+            margin-bottom: 10px;
+            font-size: 1.3em;
+        }
+
+        .topic-card p {
+            color: #555;
+            line-height: 1.6;
+        }
+
+        .description {
+            font-size: 1.1em;
+            line-height: 1.8;
+            color: #555;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            border-left: 4px solid #667eea;
+        }
+
+        footer {
+            text-align: center;
+            padding: 20px;
+            background: #f8f9fa;
+            color: #666;
+            font-size: 0.9em;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <div class="header">
-            <h1>🚀 Full Stack Learning Journey</h1>
-            <p>Master web development and Python backend programming</p>
+        <header>
+            <h1>🚀 My Learning Journey</h1>
+            <p class="subtitle">Choose your path and start learning!</p>
+        </header>
+
+        <div class="track-switcher">
+            <button class="track-btn active" onclick="switchTrack('web-dev')">
+                💻 Web Development
+            </button>
+            <button class="track-btn" onclick="switchTrack('python-backend')">
+                🐍 Python & Backend
+            </button>
         </div>
 
-        <div class="progress-container">
-            <div class="progress-indicator web-dev">
-                <h3>🌐 Web Development Progress</h3>
-                <p>Frontend Development Track</p>
-                <div class="progress-bar">
-                    <div class="progress-fill web-dev" id="progressFillWeb"></div>
+        <!-- Web Development Track -->
+        <div id="web-dev" class="track-content active">
+            <div class="track-section">
+                <h2>Web Development Track</h2>
+                <div class="description">
+                    Master the art of building modern, responsive, and interactive websites. 
+                    This track covers everything from HTML fundamentals to advanced JavaScript frameworks.
                 </div>
-                <p style="margin-top: 10px; font-size: 14px; color: #666;"><span id="progressTextWeb">0 of 7</span> lessons completed</p>
+                
+                <div class="topics-list">
+                    <div class="topic-card">
+                        <h3>HTML & CSS</h3>
+                        <p>Learn the building blocks of web pages, semantic HTML, modern CSS layouts, Flexbox, and Grid.</p>
+                    </div>
+                    <div class="topic-card">
+                        <h3>JavaScript</h3>
+                        <p>Master JavaScript fundamentals, ES6+ features, DOM manipulation, and asynchronous programming.</p>
+                    </div>
+                    <div class="topic-card">
+                        <h3>React.js</h3>
+                        <p>Build dynamic user interfaces with React, hooks, state management, and component architecture.</p>
+                    </div>
+                    <div class="topic-card">
+                        <h3>Responsive Design</h3>
+                        <p>Create mobile-first, responsive websites that work seamlessly across all devices.</p>
+                    </div>
+                    <div class="topic-card">
+                        <h3>Web APIs</h3>
+                        <p>Integrate with REST APIs, handle HTTP requests, and work with JSON data.</p>
+                    </div>
+                    <div class="topic-card">
+                        <h3>Version Control</h3>
+                        <p>Master Git and GitHub for collaborative development and code management.</p>
+                    </div>
+                </div>
             </div>
+        </div>
 
-            <div class="progress-indicator python">
-                <h3>🐍 Python & Backend Progress</h3>
-                <p>Backend Development Track</p>
-                <div class="progress-bar">
-                    <div class="progress-fill python" id="progressFillPython"></div>
+        <!-- Python & Backend Track -->
+        <div id="python-backend" class="track-content">
+            <div class="track-section">
+                <h2>Python & Backend Development Track</h2>
+                <div class="description">
+                    Dive into server-side programming with Python and build powerful backend systems. 
+                    Learn to create APIs, work with databases, and deploy scalable applications.
                 </div>
-                <p style="margin-top: 10px; font-size: 14px; color: #666;"><span id="progressTextPython">0 of 1</span> lessons completed</p>
+                
+                <div class="topics-list">
+                    <div class="topic-card">
+                        <h3>Python Fundamentals</h3>
+                        <p>Master Python syntax, data structures, OOP principles, and best practices.</p>
+                    </div>
+                    <div class="topic-card">
+                        <h3>Django</h3>
+                        <p>Build full-featured web applications with Django's powerful framework and ORM.</p>
+                    </div>
+                    <div class="topic-card">
+                        <h3>Flask</h3>
+                        <p>Create lightweight, flexible web applications and RESTful APIs with Flask.</p>
+                    </div>
+                    <div class="topic-card">
+                        <h3>Database Management</h3>
+                        <p>Work with SQL databases (PostgreSQL, MySQL) and NoSQL solutions (MongoDB).</p>
+                    </div>
+                    <div class="topic-card">
+                        <h3>API Development</h3>
+                        <p>Design and build RESTful APIs, authentication, and API documentation.</p>
+                    </div>
+                    <div class="topic-card">
+                        <h3>DevOps Basics</h3>
+                        <p>Learn deployment, Docker containers, CI/CD pipelines, and cloud platforms.</p>
+                    </div>
+                </div>
             </div>
         </div>
 
-        <!-- Web Development Section -->
-        <div class="section-header web-dev">
-            <span class="icon">🌐</span>
-            <h2>Web Development</h2>
-        </div>
-
-        <div class="week-grid">
-            <a href="webapp/week1-html-css-interactive.html" class="week-card" data-week="web-1" data-track="web">
-                <span class="week-number web-dev">Week 1</span>
-                <h2>HTML & CSS Basics</h2>
-                <p>Learn the fundamentals of HTML structure and CSS styling. Build your first "About Me" webpage and deploy it live!</p>
-                <div class="topics">
-                    <span class="topic-tag web-dev">HTML Tags</span>
-                    <span class="topic-tag web-dev">CSS Styling</span>
-                    <span class="topic-tag web-dev">GitHub Pages</span>
-                </div>
-            </a>
-
-            <a href="webapp/week2-layouts-responsive.html" class="week-card" data-week="web-2" data-track="web">
-                <span class="week-number web-dev">Week 2</span>
-                <h2>Layouts & Responsive Design</h2>
-                <p>Master Flexbox, Grid, and responsive design techniques to create layouts that look great on any device.</p>
-                <div class="topics">
-                    <span class="topic-tag web-dev">Flexbox</span>
-                    <span class="topic-tag web-dev">CSS Grid</span>
-                    <span class="topic-tag web-dev">Responsive</span>
-                </div>
-            </a>
-
-            <a href="webapp/week3-forms-animations.html" class="week-card" data-week="web-3" data-track="web">
-                <span class="week-number web-dev">Week 3</span>
-                <h2>Forms & Animations</h2>
-                <p>Create interactive forms and add smooth animations to bring your websites to life.</p>
-                <div class="topics">
-                    <span class="topic-tag web-dev">HTML Forms</span>
-                    <span class="topic-tag web-dev">CSS Animations</span>
-                    <span class="topic-tag web-dev">Transitions</span>
-                </div>
-            </a>
-
-            <a href="webapp/week4-javascript-basics.html" class="week-card" data-week="web-4" data-track="web">
-                <span class="week-number web-dev">Week 4</span>
-                <h2>JavaScript Basics</h2>
-                <p>Dive into JavaScript programming! Learn variables, functions, loops, and how to make your pages interactive.</p>
-                <div class="topics">
-                    <span class="topic-tag web-dev">Variables</span>
-                    <span class="topic-tag web-dev">Functions</span>
-                    <span class="topic-tag web-dev">Logic</span>
-                </div>
-            </a>
-
-            <a href="webapp/week5-dom-manipulation.html" class="week-card" data-week="web-5" data-track="web">
-                <span class="week-number web-dev">Week 5</span>
-                <h2>DOM Manipulation</h2>
-                <p>Learn to dynamically modify webpage content using JavaScript. Create, update, and delete elements on the fly.</p>
-                <div class="topics">
-                    <span class="topic-tag web-dev">DOM API</span>
-                    <span class="topic-tag web-dev">Events</span>
-                    <span class="topic-tag web-dev">Dynamic Content</span>
-                </div>
-            </a>
-
-            <a href="webapp/week6-local-storage.html" class="week-card" data-week="web-6" data-track="web">
-                <span class="week-number web-dev">Week 6A</span>
-                <h2>Local Storage</h2>
-                <p>Save data in the browser to create persistent applications that remember user preferences and data.</p>
-                <div class="topics">
-                    <span class="topic-tag web-dev">localStorage</span>
-                    <span class="topic-tag web-dev">sessionStorage</span>
-                    <span class="topic-tag web-dev">Data Persistence</span>
-                </div>
-            </a>
-
-            <a href="webapp/week6-typescript.html" class="week-card" data-week="web-7" data-track="web">
-                <span class="week-number web-dev">Week 6B</span>
-                <h2>TypeScript Fundamentals</h2>
-                <p>Level up with TypeScript! Add type safety to your JavaScript code for better development experience.</p>
-                <div class="topics">
-                    <span class="topic-tag web-dev">TypeScript</span>
-                    <span class="topic-tag web-dev">Type Safety</span>
-                    <span class="topic-tag web-dev">Interfaces</span>
-                </div>
-            </a>
-        </div>
-
-        <!-- Python & Backend Section -->
-        <div class="section-header python">
-            <span class="icon">🐍</span>
-            <h2>Python & Backend Development</h2>
-        </div>
-
-        <div class="week-grid">
-            <a href="python/week0-day3-4-files-and-classes.html" class="week-card" data-week="python-1" data-track="python">
-                <span class="week-number python">Week 0: Days 3-4</span>
-                <h2>Files & Classes</h2>
-                <p>Master Python file operations and object-oriented programming with classes. Learn to read, write files and create reusable code.</p>
-                <div class="topics">
-                    <span class="topic-tag python">File I/O</span>
-                    <span class="topic-tag python">OOP</span>
-                    <span class="topic-tag python">Classes</span>
-                </div>
-            </a>
-        </div>
-
-        <div class="footer">
-            <h3>🎓 About This Course</h3>
-            <p>This is a comprehensive, self-paced full-stack development course designed for complete beginners. Learn both frontend (Web Development) and backend (Python) skills to become a complete developer!</p>
-            <p><strong>Learning Tips:</strong></p>
-            <ul style="list-style: none; padding: 0; color: #666; line-height: 2;">
-                <li>✅ You can learn both tracks simultaneously or focus on one</li>
-                <li>✅ Practice with the interactive code editors</li>
-                <li>✅ Experiment and break things - that's how you learn!</li>
-                <li>✅ Build your own projects after each lesson</li>
-                <li>✅ Double-click lesson cards to mark as completed</li>
-            </ul>
-            <p style="margin-top: 20px;">Made with ❤️ for learning | <a href="https://github.com/Rovlad/learning" target="_blank">View on GitHub</a></p>
-        </div>
+        <footer>
+            <p>🎓 Keep learning, keep growing! | Last updated: January 2026</p>
+        </footer>
     </div>
 
     <script>
-        // Progress tracking using localStorage - separated by track
-        const totalWebLessons = 7;
-        const totalPythonLessons = 1;
-        let completedLessons = JSON.parse(localStorage.getItem('completedLessons')) || [];
-
-        function updateProgress() {
-            const webCompleted = completedLessons.filter(l => l.startsWith('web-')).length;
-            const pythonCompleted = completedLessons.filter(l => l.startsWith('python-')).length;
-            
-            const webProgress = (webCompleted / totalWebLessons) * 100;
-            const pythonProgress = (pythonCompleted / totalPythonLessons) * 100;
-            
-            document.getElementById('progressFillWeb').style.width = webProgress + '%';
-            document.getElementById('progressTextWeb').textContent = webCompleted + ' of ' + totalWebLessons;
-            
-            document.getElementById('progressFillPython').style.width = pythonProgress + '%';
-            document.getElementById('progressTextPython').textContent = pythonCompleted + ' of ' + totalPythonLessons;
-        }
-
-        // Mark completed lessons
-        document.querySelectorAll('.week-card').forEach(card => {
-            const week = card.getAttribute('data-week');
-            if (completedLessons.includes(week)) {
-                card.style.opacity = '0.7';
-                const badge = document.createElement('div');
-                badge.className = 'completed-badge';
-                badge.textContent = '✓ Done';
-                card.appendChild(badge);
-            }
-
-            // Toggle completion on double-click
-            card.addEventListener('dblclick', (e) => {
-                e.preventDefault();
-                const index = completedLessons.indexOf(week);
-                if (index > -1) {
-                    completedLessons.splice(index, 1);
-                } else {
-                    completedLessons.push(week);
-                }
-                localStorage.setItem('completedLessons', JSON.stringify(completedLessons));
-                location.reload();
+        function switchTrack(trackId) {
+            // Remove active class from all buttons and content
+            document.querySelectorAll('.track-btn').forEach(btn => {
+                btn.classList.remove('active');
             });
-        });
+            document.querySelectorAll('.track-content').forEach(content => {
+                content.classList.remove('active');
+            });
 
-        updateProgress();
-
-        // Add helpful tooltip
-        const container = document.querySelector('.container');
-        const tooltip = document.createElement('div');
-        tooltip.style.cssText = 'background: white; border-radius: 8px; padding: 15px; margin-bottom: 20px; text-align: center; box-shadow: 0 5px 20px rgba(0,0,0,0.15); color: #666; font-size: 14px;';
-        tooltip.innerHTML = '💡 <strong>Tip:</strong> Double-click any lesson card to mark it as completed and track your progress!';
-        container.insertBefore(tooltip, container.querySelector('.progress-container'));
+            // Add active class to selected button and content
+            event.target.classList.add('active');
+            document.getElementById(trackId).classList.add('active');
+        }
     </script>
 </body>
 </html>
