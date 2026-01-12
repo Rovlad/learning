@@ -1,0 +1,2504 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Week 0: Python Foundations | Days 1-2</title>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg-dark: #0d1117;
+            --bg-card: #161b22;
+            --bg-input: #21262d;
+            --border: #30363d;
+            --text-primary: #e6edf3;
+            --text-secondary: #8b949e;
+            --text-muted: #6e7681;
+            --accent-blue: #58a6ff;
+            --accent-green: #3fb950;
+            --accent-purple: #a371f7;
+            --accent-orange: #d29922;
+            --accent-red: #f85149;
+            --accent-cyan: #39c5cf;
+            --accent-pink: #db61a2;
+            --gradient-start: #667eea;
+            --gradient-end: #764ba2;
+        }
+
+        body {
+            font-family: 'Space Grotesk', sans-serif;
+            background: var(--bg-dark);
+            color: var(--text-primary);
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, var(--gradient-start) 0%, var(--gradient-end) 100%);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 4px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .header h1 {
+            font-size: 24px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .header h1 .python-icon {
+            font-size: 28px;
+        }
+
+        .header .week-badge {
+            background: rgba(255,255,255,0.2);
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .progress-bar {
+            height: 4px;
+            background: rgba(255,255,255,0.2);
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--accent-green);
+            width: 0%;
+            transition: width 0.5s ease;
+        }
+
+        /* Main Layout */
+        .container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            height: calc(100vh - 80px);
+        }
+
+        @media (max-width: 1200px) {
+            .container {
+                grid-template-columns: 1fr;
+                height: auto;
+            }
+        }
+
+        /* Left Panel - Lessons */
+        .lesson-panel {
+            padding: 0;
+            overflow-y: auto;
+            border-right: 1px solid var(--border);
+        }
+
+        /* Tabs */
+        .tabs {
+            display: flex;
+            background: var(--bg-card);
+            border-bottom: 1px solid var(--border);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            overflow-x: auto;
+        }
+
+        .tab {
+            padding: 14px 20px;
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            transition: all 0.2s;
+            white-space: nowrap;
+        }
+
+        .tab:hover {
+            color: var(--text-primary);
+            background: var(--bg-input);
+        }
+
+        .tab.active {
+            color: var(--accent-blue);
+            border-bottom-color: var(--accent-blue);
+        }
+
+        /* Tab Content */
+        .tab-content {
+            display: none;
+            padding: 30px;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Typography */
+        .tab-content h2 {
+            color: var(--accent-blue);
+            font-size: 24px;
+            margin-bottom: 16px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .tab-content h3 {
+            color: var(--accent-purple);
+            font-size: 18px;
+            margin-top: 28px;
+            margin-bottom: 12px;
+        }
+
+        .tab-content h4 {
+            color: var(--accent-cyan);
+            font-size: 16px;
+            margin-top: 20px;
+            margin-bottom: 10px;
+        }
+
+        .tab-content p {
+            color: var(--text-secondary);
+            margin-bottom: 16px;
+        }
+
+        /* Info Boxes */
+        .info-box {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 16px 20px;
+            margin: 16px 0;
+        }
+
+        .info-box.tip {
+            border-left: 4px solid var(--accent-green);
+        }
+
+        .info-box.warning {
+            border-left: 4px solid var(--accent-orange);
+        }
+
+        .info-box.important {
+            border-left: 4px solid var(--accent-red);
+        }
+
+        .info-box.concept {
+            border-left: 4px solid var(--accent-purple);
+        }
+
+        .info-box-title {
+            font-weight: 600;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .info-box.tip .info-box-title { color: var(--accent-green); }
+        .info-box.warning .info-box-title { color: var(--accent-orange); }
+        .info-box.important .info-box-title { color: var(--accent-red); }
+        .info-box.concept .info-box-title { color: var(--accent-purple); }
+
+        /* Code Blocks in Lessons */
+        .code-block {
+            background: var(--bg-input);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 16px;
+            margin: 16px 0;
+            overflow-x: auto;
+            position: relative;
+        }
+
+        .code-block pre {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 13px;
+            line-height: 1.6;
+            color: var(--text-primary);
+            margin: 0;
+        }
+
+        .code-block .copy-btn {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            color: var(--text-secondary);
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 12px;
+            cursor: pointer;
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+
+        .code-block:hover .copy-btn {
+            opacity: 1;
+        }
+
+        .code-block .copy-btn:hover {
+            background: var(--border);
+            color: var(--text-primary);
+        }
+
+        /* Syntax Highlighting */
+        .keyword { color: var(--accent-pink); }
+        .string { color: var(--accent-green); }
+        .number { color: var(--accent-orange); }
+        .comment { color: var(--text-muted); font-style: italic; }
+        .function { color: var(--accent-blue); }
+        .class-name { color: var(--accent-cyan); }
+        .builtin { color: var(--accent-purple); }
+        .operator { color: var(--accent-red); }
+
+        /* Exercise Cards */
+        .exercise {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+
+        .exercise-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+
+        .exercise-number {
+            background: var(--gradient-start);
+            color: white;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .exercise-title {
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .exercise-description {
+            color: var(--text-secondary);
+            margin-bottom: 12px;
+        }
+
+        .load-exercise-btn {
+            background: linear-gradient(135deg, var(--gradient-start), var(--gradient-end));
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            font-family: 'Space Grotesk', sans-serif;
+            font-weight: 500;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .load-exercise-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        /* Checklist */
+        .checklist {
+            list-style: none;
+            margin: 16px 0;
+        }
+
+        .checklist li {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            padding: 8px 0;
+            color: var(--text-secondary);
+        }
+
+        .checklist li::before {
+            content: "○";
+            color: var(--accent-blue);
+            font-weight: bold;
+        }
+
+        .checklist li.completed::before {
+            content: "✓";
+            color: var(--accent-green);
+        }
+
+        /* Right Panel - Code Editor */
+        .editor-panel {
+            display: flex;
+            flex-direction: column;
+            background: var(--bg-card);
+        }
+
+        .editor-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 16px;
+            background: var(--bg-input);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .editor-title {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 500;
+            font-size: 14px;
+        }
+
+        .editor-title .dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+
+        .editor-title .dot.green { background: var(--accent-green); }
+
+        .editor-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .editor-btn {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            color: var(--text-secondary);
+            padding: 6px 14px;
+            border-radius: 6px;
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .editor-btn:hover {
+            background: var(--border);
+            color: var(--text-primary);
+        }
+
+        .editor-btn.run {
+            background: var(--accent-green);
+            border-color: var(--accent-green);
+            color: white;
+        }
+
+        .editor-btn.run:hover {
+            background: #2ea043;
+        }
+
+        /* Code Editor */
+        .code-editor-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            min-height: 0;
+        }
+
+        .code-editor-wrapper {
+            flex: 1;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .code-editor {
+            width: 100%;
+            height: 100%;
+            background: var(--bg-dark);
+            border: none;
+            color: var(--text-primary);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 14px;
+            line-height: 1.6;
+            padding: 16px;
+            resize: none;
+            outline: none;
+            tab-size: 4;
+        }
+
+        .code-editor::placeholder {
+            color: var(--text-muted);
+        }
+
+        /* Output Panel */
+        .output-panel {
+            border-top: 1px solid var(--border);
+            background: var(--bg-dark);
+        }
+
+        .output-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 16px;
+            background: var(--bg-input);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .output-title {
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .output-status {
+            font-size: 12px;
+            padding: 2px 8px;
+            border-radius: 4px;
+        }
+
+        .output-status.success {
+            background: rgba(63, 185, 80, 0.2);
+            color: var(--accent-green);
+        }
+
+        .output-status.error {
+            background: rgba(248, 81, 73, 0.2);
+            color: var(--accent-red);
+        }
+
+        .output-content {
+            padding: 16px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 13px;
+            line-height: 1.6;
+            min-height: 150px;
+            max-height: 250px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+        }
+
+        .output-content.error {
+            color: var(--accent-red);
+        }
+
+        .output-content .output-line {
+            margin-bottom: 4px;
+        }
+
+        .output-content .prompt {
+            color: var(--accent-green);
+        }
+
+        /* Step Progress */
+        .step-progress {
+            display: flex;
+            gap: 8px;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+
+        .step-dot {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: var(--bg-input);
+            border: 2px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-muted);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .step-dot:hover {
+            border-color: var(--accent-blue);
+            color: var(--accent-blue);
+        }
+
+        .step-dot.active {
+            background: var(--accent-blue);
+            border-color: var(--accent-blue);
+            color: white;
+        }
+
+        .step-dot.completed {
+            background: var(--accent-green);
+            border-color: var(--accent-green);
+            color: white;
+        }
+
+        /* Topic Grid */
+        .topic-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin: 20px 0;
+        }
+
+        .topic-card {
+            background: var(--bg-input);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 16px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .topic-card:hover {
+            border-color: var(--accent-blue);
+            transform: translateY(-2px);
+        }
+
+        .topic-card .icon {
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+
+        .topic-card .title {
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 4px;
+        }
+
+        .topic-card .desc {
+            font-size: 13px;
+            color: var(--text-muted);
+        }
+
+        /* Comparison Table */
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 16px 0;
+            font-size: 14px;
+        }
+
+        .comparison-table th,
+        .comparison-table td {
+            padding: 12px;
+            text-align: left;
+            border: 1px solid var(--border);
+        }
+
+        .comparison-table th {
+            background: var(--bg-input);
+            color: var(--accent-blue);
+            font-weight: 600;
+        }
+
+        .comparison-table td {
+            background: var(--bg-card);
+            color: var(--text-secondary);
+        }
+
+        .comparison-table code {
+            background: var(--bg-input);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12px;
+        }
+
+        /* Inline code */
+        code {
+            background: var(--bg-input);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 13px;
+            color: var(--accent-cyan);
+        }
+
+        /* Terminal Simulation */
+        .terminal {
+            background: #000;
+            border-radius: 8px;
+            overflow: hidden;
+            margin: 16px 0;
+        }
+
+        .terminal-header {
+            background: #333;
+            padding: 8px 12px;
+            display: flex;
+            gap: 6px;
+        }
+
+        .terminal-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+
+        .terminal-dot.red { background: #ff5f56; }
+        .terminal-dot.yellow { background: #ffbd2e; }
+        .terminal-dot.green { background: #27ca40; }
+
+        .terminal-body {
+            padding: 16px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 13px;
+            color: #0f0;
+        }
+
+        .terminal-body .command::before {
+            content: "$ ";
+            color: var(--accent-cyan);
+        }
+
+        .terminal-body .output {
+            color: #ccc;
+            margin-left: 16px;
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--bg-dark);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--border);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--text-muted);
+        }
+
+        /* Animations */
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .typing-indicator {
+            display: inline-flex;
+            gap: 4px;
+        }
+
+        .typing-indicator span {
+            width: 6px;
+            height: 6px;
+            background: var(--accent-green);
+            border-radius: 50%;
+            animation: pulse 1s infinite;
+        }
+
+        .typing-indicator span:nth-child(2) { animation-delay: 0.2s; }
+        .typing-indicator span:nth-child(3) { animation-delay: 0.4s; }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <h1>
+            <span class="python-icon">🐍</span>
+            Python Foundations
+        </h1>
+        <span class="week-badge">Week 0 · Days 1-2</span>
+    </header>
+    <div class="progress-bar">
+        <div class="progress-fill" id="progressFill"></div>
+    </div>
+
+    <div class="container">
+        <!-- Left Panel: Lesson Content -->
+        <div class="lesson-panel">
+            <div class="tabs">
+                <button class="tab active" onclick="showTab('overview')">📋 Overview</button>
+                <button class="tab" onclick="showTab('environment')">🔧 Environment</button>
+                <button class="tab" onclick="showTab('datastructures')">📦 Data Structures</button>
+                <button class="tab" onclick="showTab('functions')">⚡ Functions</button>
+                <button class="tab" onclick="showTab('errors')">🛡️ Error Handling</button>
+                <button class="tab" onclick="showTab('exercises')">🎯 Exercises</button>
+                <button class="tab" onclick="showTab('challenge')">🚀 Challenge</button>
+            </div>
+
+            <!-- Overview Tab -->
+            <div id="overview" class="tab-content active">
+                <h2>Welcome to Python Foundations! 🎉</h2>
+                <p>These two days will refresh your Python skills and prepare you for building real projects. Even if you're already comfortable with Python, these exercises will reinforce patterns you'll use constantly.</p>
+
+                <h3>What We'll Cover</h3>
+                <div class="topic-grid">
+                    <div class="topic-card" onclick="showTab('environment')">
+                        <div class="icon">🔧</div>
+                        <div class="title">Environment Setup</div>
+                        <div class="desc">Virtual envs, pip, project structure</div>
+                    </div>
+                    <div class="topic-card" onclick="showTab('datastructures')">
+                        <div class="icon">📦</div>
+                        <div class="title">Data Structures</div>
+                        <div class="desc">Lists, dicts, sets, comprehensions</div>
+                    </div>
+                    <div class="topic-card" onclick="showTab('functions')">
+                        <div class="icon">⚡</div>
+                        <div class="title">Functions</div>
+                        <div class="desc">Args, kwargs, decorators</div>
+                    </div>
+                    <div class="topic-card" onclick="showTab('errors')">
+                        <div class="icon">🛡️</div>
+                        <div class="title">Error Handling</div>
+                        <div class="desc">Try/except, custom exceptions</div>
+                    </div>
+                </div>
+
+                <h3>Why This Matters for Your Projects</h3>
+                <div class="info-box concept">
+                    <div class="info-box-title">🎯 Project Connection</div>
+                    <p>Every skill here directly applies to your upcoming projects:</p>
+                    <ul style="margin-left: 20px; margin-top: 10px; color: var(--text-secondary);">
+                        <li><strong>Document Dashboard:</strong> Will use dicts for API responses, classes for analyzers, error handling for file operations</li>
+                        <li><strong>Content Aggregator:</strong> Will use lists for articles, sets for deduplication, decorators for retrying failed requests</li>
+                    </ul>
+                </div>
+
+                <h3>How to Use This Lesson</h3>
+                <ol style="margin-left: 20px; color: var(--text-secondary);">
+                    <li style="margin-bottom: 8px;">Read through each section in the tabs above</li>
+                    <li style="margin-bottom: 8px;">Try the code examples in the editor on the right →</li>
+                    <li style="margin-bottom: 8px;">Complete the exercises to test your understanding</li>
+                    <li style="margin-bottom: 8px;">Take on the final challenge to prove mastery!</li>
+                </ol>
+
+                <div class="info-box tip">
+                    <div class="info-box-title">💡 Pro Tip</div>
+                    <p>Don't just read the code—type it out yourself! Muscle memory matters, and you'll catch nuances you'd miss by just reading.</p>
+                </div>
+            </div>
+
+            <!-- Environment Tab -->
+            <div id="environment" class="tab-content">
+                <h2>Python Environment Setup 🔧</h2>
+                <p>Before writing any code, let's set up a proper development environment. This is crucial for keeping projects isolated and reproducible.</p>
+
+                <h3>Why Virtual Environments?</h3>
+                <div class="info-box concept">
+                    <div class="info-box-title">🧠 Key Concept</div>
+                    <p>A virtual environment is an isolated Python installation. Each project gets its own "bubble" with its own packages. This prevents conflicts like:</p>
+                    <ul style="margin-left: 20px; margin-top: 10px; color: var(--text-secondary);">
+                        <li>Project A needs requests 2.25</li>
+                        <li>Project B needs requests 2.28</li>
+                        <li>Without virtual envs = 💥 conflict!</li>
+                    </ul>
+                </div>
+
+                <h3>Creating a Virtual Environment</h3>
+                <div class="terminal">
+                    <div class="terminal-header">
+                        <div class="terminal-dot red"></div>
+                        <div class="terminal-dot yellow"></div>
+                        <div class="terminal-dot green"></div>
+                    </div>
+                    <div class="terminal-body">
+                        <div class="command">mkdir my_project</div>
+                        <div class="command">cd my_project</div>
+                        <div class="command">python -m venv venv</div>
+                        <div class="output"># This creates a 'venv' folder with Python inside</div>
+                    </div>
+                </div>
+
+                <h3>Activating the Environment</h3>
+                <table class="comparison-table">
+                    <tr>
+                        <th>Operating System</th>
+                        <th>Command</th>
+                    </tr>
+                    <tr>
+                        <td>macOS / Linux</td>
+                        <td><code>source venv/bin/activate</code></td>
+                    </tr>
+                    <tr>
+                        <td>Windows (cmd)</td>
+                        <td><code>venv\Scripts\activate.bat</code></td>
+                    </tr>
+                    <tr>
+                        <td>Windows (PowerShell)</td>
+                        <td><code>venv\Scripts\Activate.ps1</code></td>
+                    </tr>
+                </table>
+
+                <div class="info-box tip">
+                    <div class="info-box-title">💡 How to Know It's Active</div>
+                    <p>Your terminal prompt will show <code>(venv)</code> at the beginning when activated!</p>
+                </div>
+
+                <h3>Installing Packages</h3>
+                <div class="terminal">
+                    <div class="terminal-header">
+                        <div class="terminal-dot red"></div>
+                        <div class="terminal-dot yellow"></div>
+                        <div class="terminal-dot green"></div>
+                    </div>
+                    <div class="terminal-body">
+                        <div class="command">pip install requests flask pandas</div>
+                        <div class="output">Collecting requests...</div>
+                        <div class="output">Successfully installed requests-2.31.0</div>
+                        <div class="command">pip list</div>
+                        <div class="output">Package    Version</div>
+                        <div class="output">---------- -------</div>
+                        <div class="output">requests   2.31.0</div>
+                        <div class="output">flask      3.0.0</div>
+                        <div class="output">pandas     2.1.0</div>
+                    </div>
+                </div>
+
+                <h3>Saving Dependencies</h3>
+                <div class="terminal">
+                    <div class="terminal-header">
+                        <div class="terminal-dot red"></div>
+                        <div class="terminal-dot yellow"></div>
+                        <div class="terminal-dot green"></div>
+                    </div>
+                    <div class="terminal-body">
+                        <div class="command">pip freeze > requirements.txt</div>
+                        <div class="command">cat requirements.txt</div>
+                        <div class="output">flask==3.0.0</div>
+                        <div class="output">pandas==2.1.0</div>
+                        <div class="output">requests==2.31.0</div>
+                    </div>
+                </div>
+
+                <div class="info-box important">
+                    <div class="info-box-title">⚠️ Always Commit requirements.txt</div>
+                    <p>This file lets others (or future you!) recreate your exact environment:</p>
+                    <div class="code-block">
+                        <pre><span class="command">pip install -r requirements.txt</span></pre>
+                    </div>
+                </div>
+
+                <h3>Project Structure Best Practices</h3>
+                <div class="code-block">
+                    <pre>my_project/
+├── venv/                 <span class="comment"># Virtual environment (don't commit!)</span>
+├── src/                  <span class="comment"># Your source code</span>
+│   ├── __init__.py
+│   ├── main.py
+│   └── utils/
+│       ├── __init__.py
+│       └── helpers.py
+├── tests/                <span class="comment"># Test files</span>
+│   └── test_main.py
+├── data/                 <span class="comment"># Data files</span>
+├── .gitignore            <span class="comment"># Ignore venv, __pycache__, etc.</span>
+├── requirements.txt      <span class="comment"># Dependencies</span>
+└── README.md             <span class="comment"># Project documentation</span></pre>
+                </div>
+
+                <h3>.gitignore for Python</h3>
+                <div class="code-block">
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    <pre><span class="comment"># Virtual environment</span>
+venv/
+.venv/
+
+<span class="comment"># Python cache</span>
+__pycache__/
+*.py[cod]
+*.pyo
+
+<span class="comment"># IDE settings</span>
+.vscode/
+.idea/
+
+<span class="comment"># Environment variables</span>
+.env
+
+<span class="comment"># OS files</span>
+.DS_Store
+Thumbs.db</pre>
+                </div>
+
+                <div class="exercise">
+                    <div class="exercise-header">
+                        <span class="exercise-number">✓</span>
+                        <span class="exercise-title">Environment Checkpoint</span>
+                    </div>
+                    <div class="exercise-description">
+                        Before continuing, make sure you can:
+                    </div>
+                    <ul class="checklist">
+                        <li>Create a new virtual environment</li>
+                        <li>Activate it (see the (venv) prompt)</li>
+                        <li>Install a package with pip</li>
+                        <li>Create a requirements.txt file</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Data Structures Tab -->
+            <div id="datastructures" class="tab-content">
+                <h2>Python Data Structures 📦</h2>
+                <p>Data structures are the building blocks of every program. Let's master the ones you'll use most in your projects.</p>
+
+                <h3>Lists - Ordered Collections</h3>
+                <p>Lists are your go-to for storing sequences of items. They're ordered, mutable, and allow duplicates.</p>
+
+                <div class="code-block">
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    <pre><span class="comment"># Creating lists</span>
+fruits = [<span class="string">"apple"</span>, <span class="string">"banana"</span>, <span class="string">"cherry"</span>]
+numbers = [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>]
+mixed = [<span class="number">1</span>, <span class="string">"hello"</span>, <span class="number">3.14</span>, <span class="keyword">True</span>]
+
+<span class="comment"># Accessing elements</span>
+<span class="builtin">print</span>(fruits[<span class="number">0</span>])      <span class="comment"># "apple" (first item)</span>
+<span class="builtin">print</span>(fruits[<span class="number">-1</span>])     <span class="comment"># "cherry" (last item)</span>
+
+<span class="comment"># Slicing</span>
+<span class="builtin">print</span>(numbers[<span class="number">1</span>:<span class="number">4</span>])   <span class="comment"># [2, 3, 4]</span>
+<span class="builtin">print</span>(numbers[::<span class="number">2</span>])   <span class="comment"># [1, 3, 5] (every 2nd)</span>
+<span class="builtin">print</span>(numbers[::<span class="number">-1</span>])  <span class="comment"># [5, 4, 3, 2, 1] (reversed)</span></pre>
+                </div>
+
+                <h4>Essential List Methods</h4>
+                <div class="code-block">
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    <pre>items = [<span class="number">3</span>, <span class="number">1</span>, <span class="number">4</span>]
+
+<span class="comment"># Adding items</span>
+items.append(<span class="number">5</span>)           <span class="comment"># [3, 1, 4, 5]</span>
+items.insert(<span class="number">0</span>, <span class="number">9</span>)        <span class="comment"># [9, 3, 1, 4, 5]</span>
+items.extend([<span class="number">2</span>, <span class="number">6</span>])      <span class="comment"># [9, 3, 1, 4, 5, 2, 6]</span>
+
+<span class="comment"># Removing items</span>
+items.remove(<span class="number">3</span>)           <span class="comment"># Removes first 3</span>
+last = items.pop()        <span class="comment"># Removes & returns last</span>
+first = items.pop(<span class="number">0</span>)      <span class="comment"># Removes & returns first</span>
+
+<span class="comment"># Finding & counting</span>
+idx = items.index(<span class="number">4</span>)      <span class="comment"># Find position of 4</span>
+count = items.count(<span class="number">1</span>)    <span class="comment"># How many 1s?</span>
+
+<span class="comment"># Sorting</span>
+items.sort()              <span class="comment"># Sort in place</span>
+items.sort(reverse=<span class="keyword">True</span>) <span class="comment"># Descending</span></pre>
+                </div>
+
+                <div class="exercise">
+                    <div class="exercise-header">
+                        <span class="exercise-number">1</span>
+                        <span class="exercise-title">Try It: List Operations</span>
+                    </div>
+                    <div class="exercise-description">
+                        Create a list of your favorite movies, add one more, remove the first one, then print the list reversed.
+                    </div>
+                    <button class="load-exercise-btn" onclick="loadExercise('lists')">Load in Editor →</button>
+                </div>
+
+                <h3>List Comprehensions - Python Superpower 🦸</h3>
+                <p>Comprehensions let you create lists in a single, readable line. They're faster and more "Pythonic" than loops.</p>
+
+                <div class="code-block">
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    <pre><span class="comment"># Basic pattern: [expression for item in iterable]</span>
+
+<span class="comment"># Double each number</span>
+numbers = [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>]
+doubled = [n * <span class="number">2</span> <span class="keyword">for</span> n <span class="keyword">in</span> numbers]
+<span class="comment"># Result: [2, 4, 6, 8, 10]</span>
+
+<span class="comment"># With condition: [expr for item in iterable if condition]</span>
+evens = [n <span class="keyword">for</span> n <span class="keyword">in</span> numbers <span class="keyword">if</span> n % <span class="number">2</span> == <span class="number">0</span>]
+<span class="comment"># Result: [2, 4]</span>
+
+<span class="comment"># Transform strings</span>
+words = [<span class="string">"hello"</span>, <span class="string">"world"</span>]
+upper = [w.upper() <span class="keyword">for</span> w <span class="keyword">in</span> words]
+<span class="comment"># Result: ["HELLO", "WORLD"]</span>
+
+<span class="comment"># Nested comprehension (flatten)</span>
+matrix = [[<span class="number">1</span>, <span class="number">2</span>], [<span class="number">3</span>, <span class="number">4</span>], [<span class="number">5</span>, <span class="number">6</span>]]
+flat = [num <span class="keyword">for</span> row <span class="keyword">in</span> matrix <span class="keyword">for</span> num <span class="keyword">in</span> row]
+<span class="comment"># Result: [1, 2, 3, 4, 5, 6]</span></pre>
+                </div>
+
+                <h3>Dictionaries - Key-Value Storage</h3>
+                <p>Dicts are essential for structured data. You'll use them constantly for API responses, configs, and data processing.</p>
+
+                <div class="code-block">
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    <pre><span class="comment"># Creating dictionaries</span>
+person = {
+    <span class="string">"name"</span>: <span class="string">"Alice"</span>,
+    <span class="string">"age"</span>: <span class="number">28</span>,
+    <span class="string">"city"</span>: <span class="string">"London"</span>
+}
+
+<span class="comment"># Accessing values</span>
+<span class="builtin">print</span>(person[<span class="string">"name"</span>])        <span class="comment"># "Alice"</span>
+<span class="builtin">print</span>(person.get(<span class="string">"age"</span>))     <span class="comment"># 28</span>
+<span class="builtin">print</span>(person.get(<span class="string">"job"</span>, <span class="string">"N/A"</span>))  <span class="comment"># "N/A" (default)</span>
+
+<span class="comment"># Adding/updating</span>
+person[<span class="string">"email"</span>] = <span class="string">"alice@example.com"</span>
+person.update({<span class="string">"age"</span>: <span class="number">29</span>, <span class="string">"country"</span>: <span class="string">"UK"</span>})
+
+<span class="comment"># Removing</span>
+<span class="keyword">del</span> person[<span class="string">"city"</span>]
+email = person.pop(<span class="string">"email"</span>)  <span class="comment"># Remove & return</span></pre>
+                </div>
+
+                <h4>Iterating Over Dictionaries</h4>
+                <div class="code-block">
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    <pre>scores = {<span class="string">"Alice"</span>: <span class="number">95</span>, <span class="string">"Bob"</span>: <span class="number">87</span>, <span class="string">"Charlie"</span>: <span class="number">92</span>}
+
+<span class="comment"># Loop through keys</span>
+<span class="keyword">for</span> name <span class="keyword">in</span> scores:
+    <span class="builtin">print</span>(name)
+
+<span class="comment"># Loop through values</span>
+<span class="keyword">for</span> score <span class="keyword">in</span> scores.values():
+    <span class="builtin">print</span>(score)
+
+<span class="comment"># Loop through both (most common!)</span>
+<span class="keyword">for</span> name, score <span class="keyword">in</span> scores.items():
+    <span class="builtin">print</span>(<span class="string">f"</span>{name}<span class="string">: </span>{score}<span class="string">"</span>)
+
+<span class="comment"># Dict comprehension</span>
+passing = {name: score <span class="keyword">for</span> name, score <span class="keyword">in</span> scores.items() <span class="keyword">if</span> score >= <span class="number">90</span>}
+<span class="comment"># Result: {"Alice": 95, "Charlie": 92}</span></pre>
+                </div>
+
+                <div class="info-box concept">
+                    <div class="info-box-title">🎯 Real-World Pattern: API Response</div>
+                    <p>This is what API data typically looks like—nested dicts and lists:</p>
+                    <div class="code-block">
+                        <pre>response = {
+    <span class="string">"status"</span>: <span class="string">"success"</span>,
+    <span class="string">"data"</span>: {
+        <span class="string">"articles"</span>: [
+            {<span class="string">"title"</span>: <span class="string">"Article 1"</span>, <span class="string">"views"</span>: <span class="number">1200</span>},
+            {<span class="string">"title"</span>: <span class="string">"Article 2"</span>, <span class="string">"views"</span>: <span class="number">850</span>}
+        ],
+        <span class="string">"total"</span>: <span class="number">2</span>
+    }
+}
+
+<span class="comment"># Accessing nested data</span>
+articles = response[<span class="string">"data"</span>][<span class="string">"articles"</span>]
+first_title = articles[<span class="number">0</span>][<span class="string">"title"</span>]</pre>
+                    </div>
+                </div>
+
+                <h3>Sets - Unique Collections</h3>
+                <p>Sets automatically remove duplicates. Perfect for deduplication in your Content Aggregator!</p>
+
+                <div class="code-block">
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    <pre><span class="comment"># Creating sets</span>
+colors = {<span class="string">"red"</span>, <span class="string">"green"</span>, <span class="string">"blue"</span>}
+numbers = <span class="builtin">set</span>([<span class="number">1</span>, <span class="number">2</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">3</span>, <span class="number">3</span>])  <span class="comment"># {1, 2, 3}</span>
+
+<span class="comment"># Adding & removing</span>
+colors.add(<span class="string">"yellow"</span>)
+colors.discard(<span class="string">"red"</span>)  <span class="comment"># Safe remove (no error if missing)</span>
+
+<span class="comment"># Set operations</span>
+a = {<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>}
+b = {<span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>}
+
+<span class="builtin">print</span>(a | b)  <span class="comment"># Union: {1, 2, 3, 4}</span>
+<span class="builtin">print</span>(a & b)  <span class="comment"># Intersection: {2, 3}</span>
+<span class="builtin">print</span>(a - b)  <span class="comment"># Difference: {1}</span>
+
+<span class="comment"># Deduplication pattern</span>
+urls = [<span class="string">"url1"</span>, <span class="string">"url2"</span>, <span class="string">"url1"</span>, <span class="string">"url3"</span>, <span class="string">"url2"</span>]
+unique_urls = <span class="builtin">list</span>(<span class="builtin">set</span>(urls))
+<span class="comment"># Result: ["url1", "url2", "url3"]</span></pre>
+                </div>
+
+                <div class="exercise">
+                    <div class="exercise-header">
+                        <span class="exercise-number">2</span>
+                        <span class="exercise-title">Try It: Data Processing</span>
+                    </div>
+                    <div class="exercise-description">
+                        Given a list of articles (dicts with 'title' and 'source'), extract unique sources and create a summary dict with source counts.
+                    </div>
+                    <button class="load-exercise-btn" onclick="loadExercise('dataprocessing')">Load in Editor →</button>
+                </div>
+            </div>
+
+            <!-- Functions Tab -->
+            <div id="functions" class="tab-content">
+                <h2>Functions & Decorators ⚡</h2>
+                <p>Functions are the building blocks of clean, reusable code. Let's level up from basics to advanced patterns!</p>
+
+                <h3>Function Basics with Type Hints</h3>
+                <p>Type hints make your code self-documenting and catch bugs early. Modern Python projects use them everywhere.</p>
+
+                <div class="code-block">
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    <pre><span class="keyword">def</span> <span class="function">greet</span>(name: <span class="builtin">str</span>) -> <span class="builtin">str</span>:
+    <span class="string">"""Return a greeting message."""</span>
+    <span class="keyword">return</span> <span class="string">f"Hello, </span>{name}<span class="string">!"</span>
+
+<span class="keyword">def</span> <span class="function">process_items</span>(
+    items: <span class="builtin">list</span>[<span class="builtin">str</span>],
+    limit: <span class="builtin">int</span> = <span class="number">10</span>,
+    uppercase: <span class="builtin">bool</span> = <span class="keyword">False</span>
+) -> <span class="builtin">list</span>[<span class="builtin">str</span>]:
+    <span class="string">"""Process a list of items.
+    
+    Args:
+        items: List of strings to process
+        limit: Maximum items to return
+        uppercase: Whether to uppercase results
+        
+    Returns:
+        Processed list of strings
+    """</span>
+    result = items[:limit]
+    <span class="keyword">if</span> uppercase:
+        result = [item.upper() <span class="keyword">for</span> item <span class="keyword">in</span> result]
+    <span class="keyword">return</span> result</pre>
+                </div>
+
+                <h3>*args and **kwargs</h3>
+                <p>These let functions accept any number of arguments. You'll see this pattern in library code constantly.</p>
+
+                <div class="code-block">
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    <pre><span class="comment"># *args = tuple of positional arguments</span>
+<span class="keyword">def</span> <span class="function">sum_all</span>(*args):
+    <span class="string">"""Sum any number of numbers."""</span>
+    <span class="keyword">return</span> <span class="builtin">sum</span>(args)
+
+<span class="builtin">print</span>(sum_all(<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>))        <span class="comment"># 6</span>
+<span class="builtin">print</span>(sum_all(<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>))  <span class="comment"># 15</span>
+
+<span class="comment"># **kwargs = dict of keyword arguments</span>
+<span class="keyword">def</span> <span class="function">create_profile</span>(**kwargs):
+    <span class="string">"""Create a user profile from keyword args."""</span>
+    <span class="keyword">return</span> {
+        <span class="string">"name"</span>: kwargs.get(<span class="string">"name"</span>, <span class="string">"Unknown"</span>),
+        <span class="string">"age"</span>: kwargs.get(<span class="string">"age"</span>, <span class="number">0</span>),
+        <span class="string">"extra"</span>: {k: v <span class="keyword">for</span> k, v <span class="keyword">in</span> kwargs.items() 
+                  <span class="keyword">if</span> k <span class="keyword">not</span> <span class="keyword">in</span> [<span class="string">"name"</span>, <span class="string">"age"</span>]}
+    }
+
+profile = create_profile(name=<span class="string">"Alice"</span>, age=<span class="number">28</span>, city=<span class="string">"London"</span>)
+<span class="comment"># {"name": "Alice", "age": 28, "extra": {"city": "London"}}</span></pre>
+                </div>
+
+                <h4>Combining Both + Forwarding</h4>
+                <div class="code-block">
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    <pre><span class="keyword">def</span> <span class="function">wrapper_function</span>(*args, **kwargs):
+    <span class="string">"""A function that forwards all arguments."""</span>
+    <span class="builtin">print</span>(<span class="string">f"Args: </span>{args}<span class="string">"</span>)
+    <span class="builtin">print</span>(<span class="string">f"Kwargs: </span>{kwargs}<span class="string">"</span>)
+    <span class="comment"># Forward to another function</span>
+    <span class="keyword">return</span> some_other_function(*args, **kwargs)</pre>
+                </div>
+
+                <h3>Decorators - Functions That Wrap Functions</h3>
+                <p>Decorators add behavior to functions without modifying them. Flask and FastAPI use them for routes!</p>
+
+                <div class="info-box concept">
+                    <div class="info-box-title">🧠 What's a Decorator?</div>
+                    <p>A decorator is a function that takes a function as input and returns a new function with added behavior. The <code>@decorator</code> syntax is just shorthand.</p>
+                </div>
+
+                <div class="code-block">
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    <pre><span class="keyword">import</span> time
+
+<span class="comment"># A timing decorator</span>
+<span class="keyword">def</span> <span class="function">timer</span>(func):
+    <span class="string">"""Measure execution time of a function."""</span>
+    <span class="keyword">def</span> <span class="function">wrapper</span>(*args, **kwargs):
+        start = time.time()
+        result = func(*args, **kwargs)
+        end = time.time()
+        <span class="builtin">print</span>(<span class="string">f"</span>{func.__name__}<span class="string"> took </span>{end - start:.2f}<span class="string">s"</span>)
+        <span class="keyword">return</span> result
+    <span class="keyword">return</span> wrapper
+
+<span class="comment"># Using the decorator</span>
+<span class="keyword">@timer</span>
+<span class="keyword">def</span> <span class="function">slow_function</span>():
+    time.sleep(<span class="number">1</span>)
+    <span class="keyword">return</span> <span class="string">"Done!"</span>
+
+result = slow_function()
+<span class="comment"># Output: slow_function took 1.00s</span></pre>
+                </div>
+
+                <h4>Practical Decorator: Retry on Failure</h4>
+                <div class="code-block">
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    <pre><span class="keyword">import</span> time
+
+<span class="keyword">def</span> <span class="function">retry</span>(max_attempts: <span class="builtin">int</span> = <span class="number">3</span>, delay: <span class="builtin">float</span> = <span class="number">1.0</span>):
+    <span class="string">"""Retry a function if it fails."""</span>
+    <span class="keyword">def</span> <span class="function">decorator</span>(func):
+        <span class="keyword">def</span> <span class="function">wrapper</span>(*args, **kwargs):
+            <span class="keyword">for</span> attempt <span class="keyword">in</span> <span class="builtin">range</span>(max_attempts):
+                <span class="keyword">try</span>:
+                    <span class="keyword">return</span> func(*args, **kwargs)
+                <span class="keyword">except</span> <span class="class-name">Exception</span> <span class="keyword">as</span> e:
+                    <span class="keyword">if</span> attempt < max_attempts - <span class="number">1</span>:
+                        <span class="builtin">print</span>(<span class="string">f"Attempt </span>{attempt + <span class="number">1</span>}<span class="string"> failed, retrying..."</span>)
+                        time.sleep(delay)
+                    <span class="keyword">else</span>:
+                        <span class="keyword">raise</span> e
+        <span class="keyword">return</span> wrapper
+    <span class="keyword">return</span> decorator
+
+<span class="comment"># Usage: will retry up to 3 times</span>
+<span class="keyword">@retry</span>(max_attempts=<span class="number">3</span>, delay=<span class="number">0.5</span>)
+<span class="keyword">def</span> <span class="function">fetch_data</span>(url):
+    <span class="comment"># Might fail due to network issues</span>
+    <span class="keyword">pass</span></pre>
+                </div>
+
+                <div class="info-box tip">
+                    <div class="info-box-title">💡 Project Connection</div>
+                    <p>The <code>@retry</code> decorator is perfect for your Content Aggregator! RSS feeds and APIs sometimes fail temporarily.</p>
+                </div>
+
+                <div class="exercise">
+                    <div class="exercise-header">
+                        <span class="exercise-number">3</span>
+                        <span class="exercise-title">Try It: Create a Logging Decorator</span>
+                    </div>
+                    <div class="exercise-description">
+                        Create a decorator called <code>@log_calls</code> that prints the function name and arguments whenever a function is called.
+                    </div>
+                    <button class="load-exercise-btn" onclick="loadExercise('decorator')">Load in Editor →</button>
+                </div>
+            </div>
+
+            <!-- Error Handling Tab -->
+            <div id="errors" class="tab-content">
+                <h2>Error Handling 🛡️</h2>
+                <p>Good error handling is what separates hobby scripts from production code. Let's make your programs robust!</p>
+
+                <h3>The Basics: try/except</h3>
+                <div class="code-block">
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    <pre><span class="comment"># Basic pattern</span>
+<span class="keyword">try</span>:
+    result = <span class="number">10</span> / <span class="number">0</span>
+<span class="keyword">except</span> <span class="class-name">ZeroDivisionError</span>:
+    <span class="builtin">print</span>(<span class="string">"Can't divide by zero!"</span>)
+
+<span class="comment"># Catching multiple exceptions</span>
+<span class="keyword">try</span>:
+    value = <span class="builtin">int</span>(<span class="string">"not a number"</span>)
+<span class="keyword">except</span> (<span class="class-name">ValueError</span>, <span class="class-name">TypeError</span>) <span class="keyword">as</span> e:
+    <span class="builtin">print</span>(<span class="string">f"Conversion failed: </span>{e}<span class="string">"</span>)
+
+<span class="comment"># Full pattern with else and finally</span>
+<span class="keyword">try</span>:
+    file = <span class="builtin">open</span>(<span class="string">"data.txt"</span>)
+    content = file.read()
+<span class="keyword">except</span> <span class="class-name">FileNotFoundError</span>:
+    <span class="builtin">print</span>(<span class="string">"File not found!"</span>)
+    content = <span class="keyword">None</span>
+<span class="keyword">else</span>:
+    <span class="comment"># Only runs if no exception</span>
+    <span class="builtin">print</span>(<span class="string">"File read successfully!"</span>)
+<span class="keyword">finally</span>:
+    <span class="comment"># Always runs (cleanup)</span>
+    <span class="keyword">if</span> <span class="string">'file'</span> <span class="keyword">in</span> <span class="builtin">locals</span>():
+        file.close()</pre>
+                </div>
+
+                <h3>Common Exception Types</h3>
+                <table class="comparison-table">
+                    <tr>
+                        <th>Exception</th>
+                        <th>When It Happens</th>
+                    </tr>
+                    <tr>
+                        <td><code>ValueError</code></td>
+                        <td>Wrong value type (e.g., int("abc"))</td>
+                    </tr>
+                    <tr>
+                        <td><code>TypeError</code></td>
+                        <td>Wrong type for operation (e.g., "a" + 1)</td>
+                    </tr>
+                    <tr>
+                        <td><code>KeyError</code></td>
+                        <td>Dict key doesn't exist</td>
+                    </tr>
+                    <tr>
+                        <td><code>IndexError</code></td>
+                        <td>List index out of range</td>
+                    </tr>
+                    <tr>
+                        <td><code>FileNotFoundError</code></td>
+                        <td>File doesn't exist</td>
+                    </tr>
+                    <tr>
+                        <td><code>AttributeError</code></td>
+                        <td>Object doesn't have attribute</td>
+                    </tr>
+                    <tr>
+                        <td><code>ConnectionError</code></td>
+                        <td>Network request failed</td>
+                    </tr>
+                </table>
+
+                <h3>Raising Exceptions</h3>
+                <div class="code-block">
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    <pre><span class="keyword">def</span> <span class="function">validate_age</span>(age: <span class="builtin">int</span>) -> <span class="builtin">int</span>:
+    <span class="string">"""Validate that age is reasonable."""</span>
+    <span class="keyword">if</span> <span class="keyword">not</span> <span class="builtin">isinstance</span>(age, <span class="builtin">int</span>):
+        <span class="keyword">raise</span> <span class="class-name">TypeError</span>(<span class="string">f"Age must be int, got </span>{<span class="builtin">type</span>(age).__name__}<span class="string">"</span>)
+    <span class="keyword">if</span> age < <span class="number">0</span>:
+        <span class="keyword">raise</span> <span class="class-name">ValueError</span>(<span class="string">"Age cannot be negative"</span>)
+    <span class="keyword">if</span> age > <span class="number">150</span>:
+        <span class="keyword">raise</span> <span class="class-name">ValueError</span>(<span class="string">"Age seems unrealistic"</span>)
+    <span class="keyword">return</span> age
+
+<span class="comment"># Re-raising with context</span>
+<span class="keyword">try</span>:
+    process_data(data)
+<span class="keyword">except</span> <span class="class-name">ValueError</span> <span class="keyword">as</span> e:
+    <span class="keyword">raise</span> <span class="class-name">ValueError</span>(<span class="string">f"Failed to process: </span>{e}<span class="string">"</span>) <span class="keyword">from</span> e</pre>
+                </div>
+
+                <h3>Custom Exceptions</h3>
+                <p>Create your own exceptions for clearer error handling in your projects!</p>
+
+                <div class="code-block">
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    <pre><span class="comment"># Define custom exceptions</span>
+<span class="keyword">class</span> <span class="class-name">DocumentError</span>(<span class="class-name">Exception</span>):
+    <span class="string">"""Base exception for document processing."""</span>
+    <span class="keyword">pass</span>
+
+<span class="keyword">class</span> <span class="class-name">DocumentNotFoundError</span>(<span class="class-name">DocumentError</span>):
+    <span class="string">"""Document file not found."""</span>
+    <span class="keyword">pass</span>
+
+<span class="keyword">class</span> <span class="class-name">DocumentParseError</span>(<span class="class-name">DocumentError</span>):
+    <span class="string">"""Failed to parse document content."""</span>
+    <span class="keyword">def</span> <span class="function">__init__</span>(self, filename: <span class="builtin">str</span>, reason: <span class="builtin">str</span>):
+        self.filename = filename
+        self.reason = reason
+        <span class="builtin">super</span>().__init__(<span class="string">f"Failed to parse '</span>{filename}<span class="string">': </span>{reason}<span class="string">"</span>)
+
+<span class="comment"># Using custom exceptions</span>
+<span class="keyword">def</span> <span class="function">parse_document</span>(filepath: <span class="builtin">str</span>) -> <span class="builtin">dict</span>:
+    <span class="keyword">if</span> <span class="keyword">not</span> os.path.exists(filepath):
+        <span class="keyword">raise</span> <span class="class-name">DocumentNotFoundError</span>(<span class="string">f"File not found: </span>{filepath}<span class="string">"</span>)
+    
+    <span class="keyword">try</span>:
+        <span class="comment"># Parse logic here</span>
+        <span class="keyword">pass</span>
+    <span class="keyword">except</span> <span class="class-name">Exception</span> <span class="keyword">as</span> e:
+        <span class="keyword">raise</span> <span class="class-name">DocumentParseError</span>(filepath, <span class="builtin">str</span>(e))
+
+<span class="comment"># Clean handling at caller level</span>
+<span class="keyword">try</span>:
+    doc = parse_document(<span class="string">"report.pdf"</span>)
+<span class="keyword">except</span> <span class="class-name">DocumentNotFoundError</span>:
+    <span class="builtin">print</span>(<span class="string">"Please provide a valid file path"</span>)
+<span class="keyword">except</span> <span class="class-name">DocumentParseError</span> <span class="keyword">as</span> e:
+    <span class="builtin">print</span>(<span class="string">f"Parsing failed for </span>{e.filename}<span class="string">: </span>{e.reason}<span class="string">"</span>)</pre>
+                </div>
+
+                <div class="info-box tip">
+                    <div class="info-box-title">💡 Best Practices</div>
+                    <ul style="margin-left: 20px; margin-top: 10px; color: var(--text-secondary);">
+                        <li>Catch specific exceptions, not bare <code>except:</code></li>
+                        <li>Use <code>else</code> for code that should only run on success</li>
+                        <li>Use <code>finally</code> for cleanup (closing files, connections)</li>
+                        <li>Create custom exceptions for your domain</li>
+                        <li>Include helpful error messages</li>
+                    </ul>
+                </div>
+
+                <div class="exercise">
+                    <div class="exercise-header">
+                        <span class="exercise-number">4</span>
+                        <span class="exercise-title">Try It: Robust File Reader</span>
+                    </div>
+                    <div class="exercise-description">
+                        Create a function <code>safe_read_json(filepath)</code> that reads a JSON file and handles: file not found, invalid JSON, and permission errors. Return None with a printed message for each error type.
+                    </div>
+                    <button class="load-exercise-btn" onclick="loadExercise('errorhandling')">Load in Editor →</button>
+                </div>
+            </div>
+
+            <!-- Exercises Tab -->
+            <div id="exercises" class="tab-content">
+                <h2>Practice Exercises 🎯</h2>
+                <p>Put your skills to the test! Complete these exercises to solidify your understanding.</p>
+
+                <div class="exercise">
+                    <div class="exercise-header">
+                        <span class="exercise-number">1</span>
+                        <span class="exercise-title">List Processing Pipeline</span>
+                    </div>
+                    <div class="exercise-description">
+                        Given a list of numbers, write a function that:
+                        <ol style="margin-left: 20px; margin-top: 10px; color: var(--text-secondary);">
+                            <li>Filters out negative numbers</li>
+                            <li>Squares each remaining number</li>
+                            <li>Returns only numbers greater than 10</li>
+                        </ol>
+                        Use list comprehensions where possible!
+                    </div>
+                    <button class="load-exercise-btn" onclick="loadExercise('pipeline')">Load in Editor →</button>
+                </div>
+
+                <div class="exercise">
+                    <div class="exercise-header">
+                        <span class="exercise-number">2</span>
+                        <span class="exercise-title">Config Parser</span>
+                    </div>
+                    <div class="exercise-description">
+                        Create a function that parses a nested config dictionary and returns a flattened version. 
+                        <br><br>
+                        Example: <code>{"db": {"host": "localhost", "port": 5432}}</code>
+                        <br>
+                        Becomes: <code>{"db.host": "localhost", "db.port": 5432}</code>
+                    </div>
+                    <button class="load-exercise-btn" onclick="loadExercise('config')">Load in Editor →</button>
+                </div>
+
+                <div class="exercise">
+                    <div class="exercise-header">
+                        <span class="exercise-number">3</span>
+                        <span class="exercise-title">Article Deduplicator</span>
+                    </div>
+                    <div class="exercise-description">
+                        Write a function that takes a list of article dicts (with 'title' and 'url' keys) and removes duplicates based on URL, keeping the first occurrence.
+                    </div>
+                    <button class="load-exercise-btn" onclick="loadExercise('dedup')">Load in Editor →</button>
+                </div>
+
+                <div class="exercise">
+                    <div class="exercise-header">
+                        <span class="exercise-number">4</span>
+                        <span class="exercise-title">Caching Decorator</span>
+                    </div>
+                    <div class="exercise-description">
+                        Create a <code>@cache</code> decorator that stores function results and returns cached values for repeated calls with the same arguments.
+                    </div>
+                    <button class="load-exercise-btn" onclick="loadExercise('cache')">Load in Editor →</button>
+                </div>
+
+                <div class="exercise">
+                    <div class="exercise-header">
+                        <span class="exercise-number">5</span>
+                        <span class="exercise-title">Data Validator Class</span>
+                    </div>
+                    <div class="exercise-description">
+                        Create a <code>Validator</code> class that can validate data against rules. It should support: required fields, type checking, and min/max values. Raise custom exceptions for validation failures.
+                    </div>
+                    <button class="load-exercise-btn" onclick="loadExercise('validator')">Load in Editor →</button>
+                </div>
+            </div>
+
+            <!-- Challenge Tab -->
+            <div id="challenge" class="tab-content">
+                <h2>Final Challenge: Content Item Processor 🚀</h2>
+                <p>Combine everything you've learned into a mini-project that mimics your actual project requirements!</p>
+
+                <div class="info-box concept">
+                    <div class="info-box-title">🎯 The Mission</div>
+                    <p>Build a <code>ContentProcessor</code> class that processes content items (like articles) from different sources. This directly prepares you for the Content Aggregator project!</p>
+                </div>
+
+                <h3>Requirements</h3>
+                <div class="code-block">
+                    <pre><span class="comment"># Your ContentProcessor should:</span>
+
+<span class="comment"># 1. Accept a config dict with:</span>
+config = {
+    <span class="string">"sources"</span>: [<span class="string">"tech"</span>, <span class="string">"science"</span>],
+    <span class="string">"keywords"</span>: {
+        <span class="string">"include"</span>: [<span class="string">"python"</span>, <span class="string">"AI"</span>],
+        <span class="string">"exclude"</span>: [<span class="string">"crypto"</span>]
+    },
+    <span class="string">"max_items"</span>: <span class="number">100</span>
+}
+
+<span class="comment"># 2. Process items in this format:</span>
+items = [
+    {
+        <span class="string">"title"</span>: <span class="string">"Python 3.12 Released"</span>,
+        <span class="string">"url"</span>: <span class="string">"https://example.com/1"</span>,
+        <span class="string">"source"</span>: <span class="string">"tech"</span>,
+        <span class="string">"content"</span>: <span class="string">"Python 3.12 brings..."</span>
+    },
+    <span class="comment"># ...</span>
+]
+
+<span class="comment"># 3. Implement these methods:</span>
+processor = ContentProcessor(config)
+processor.add_items(items)          <span class="comment"># Add items to process</span>
+processor.filter_by_source()        <span class="comment"># Keep only allowed sources</span>
+processor.filter_by_keywords()      <span class="comment"># Apply keyword filters</span>
+processor.deduplicate()             <span class="comment"># Remove duplicate URLs</span>
+processor.get_results()             <span class="comment"># Return processed items</span>
+processor.get_stats()               <span class="comment"># Return processing statistics</span></pre>
+                </div>
+
+                <h3>Bonus Features</h3>
+                <ul class="checklist">
+                    <li>Add a <code>@timer</code> decorator to measure processing time</li>
+                    <li>Create custom exceptions: <code>ConfigError</code>, <code>ProcessingError</code></li>
+                    <li>Add type hints to all methods</li>
+                    <li>Write docstrings for all public methods</li>
+                    <li>Add a <code>save_results(filepath)</code> method that exports to JSON</li>
+                </ul>
+
+                <h3>Expected Output</h3>
+                <div class="code-block">
+                    <pre><span class="comment"># After processing:</span>
+stats = processor.get_stats()
+<span class="builtin">print</span>(stats)
+<span class="comment"># {</span>
+<span class="comment">#     "total_input": 150,</span>
+<span class="comment">#     "after_source_filter": 120,</span>
+<span class="comment">#     "after_keyword_filter": 45,</span>
+<span class="comment">#     "after_dedup": 42,</span>
+<span class="comment">#     "processing_time_ms": 23.5</span>
+<span class="comment"># }</span></pre>
+                </div>
+
+                <button class="load-exercise-btn" onclick="loadExercise('challenge')">Load Challenge Template →</button>
+
+                <div class="info-box tip" style="margin-top: 30px;">
+                    <div class="info-box-title">🎉 Congratulations!</div>
+                    <p>Once you complete this challenge, you'll have built a real component that you can adapt for your Content Aggregator project. The patterns you've practiced—data processing, filtering, deduplication, decorators, and error handling—are exactly what you'll use!</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Panel: Code Editor -->
+        <div class="editor-panel">
+            <div class="editor-header">
+                <div class="editor-title">
+                    <div class="dot green"></div>
+                    <span>playground.py</span>
+                </div>
+                <div class="editor-actions">
+                    <button class="editor-btn" onclick="resetEditor()">
+                        ↺ Reset
+                    </button>
+                    <button class="editor-btn" onclick="copyEditorCode()">
+                        📋 Copy
+                    </button>
+                    <button class="editor-btn run" onclick="runCode()">
+                        ▶ Run
+                    </button>
+                </div>
+            </div>
+            <div class="code-editor-container">
+                <div class="code-editor-wrapper">
+                    <textarea class="code-editor" id="codeEditor" spellcheck="false" placeholder="# Write your Python code here...
+# Click 'Run' to execute
+
+print('Hello, Python!')">
+# Welcome to Python Foundations! 🐍
+# Try running this code, then modify it.
+
+# --- Lists ---
+fruits = ["apple", "banana", "cherry"]
+print("Fruits:", fruits)
+
+# Add an item
+fruits.append("orange")
+print("After append:", fruits)
+
+# List comprehension
+upper_fruits = [f.upper() for f in fruits]
+print("Uppercase:", upper_fruits)
+
+# --- Dictionary ---
+person = {
+    "name": "Alice",
+    "age": 28,
+    "skills": ["Python", "Data Analysis"]
+}
+
+print(f"\nName: {person['name']}")
+print(f"Skills: {', '.join(person['skills'])}")
+
+# --- Try modifying the code! ---
+# 1. Add more fruits to the list
+# 2. Add a new key to the person dict
+# 3. Create a list comprehension that filters fruits with 'a' in the name</textarea>
+                </div>
+            </div>
+            <div class="output-panel">
+                <div class="output-header">
+                    <div class="output-title">
+                        <span>📤 Output</span>
+                    </div>
+                    <span class="output-status success" id="outputStatus">Ready</span>
+                </div>
+                <div class="output-content" id="outputContent">
+                    <span style="color: var(--text-muted);">Click "Run" to execute your code...</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Tab Navigation
+        function showTab(tabId) {
+            // Hide all tabs
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+
+            // Show selected tab
+            document.getElementById(tabId).classList.add('active');
+            event.target.classList.add('active');
+
+            // Update progress
+            updateProgress(tabId);
+        }
+
+        // Progress tracking
+        const tabOrder = ['overview', 'environment', 'datastructures', 'functions', 'errors', 'exercises', 'challenge'];
+        function updateProgress(tabId) {
+            const index = tabOrder.indexOf(tabId);
+            const progress = ((index + 1) / tabOrder.length) * 100;
+            document.getElementById('progressFill').style.width = progress + '%';
+        }
+
+        // Code Editor Functions
+        function runCode() {
+            const code = document.getElementById('codeEditor').value;
+            const outputContent = document.getElementById('outputContent');
+            const outputStatus = document.getElementById('outputStatus');
+
+            // Simulate Python execution
+            try {
+                const output = simulatePython(code);
+                outputContent.innerHTML = output;
+                outputContent.classList.remove('error');
+                outputStatus.textContent = 'Success';
+                outputStatus.className = 'output-status success';
+            } catch (e) {
+                outputContent.innerHTML = `<span style="color: var(--accent-red);">Error: ${e.message}</span>`;
+                outputContent.classList.add('error');
+                outputStatus.textContent = 'Error';
+                outputStatus.className = 'output-status error';
+            }
+        }
+
+        // Simple Python simulator
+        function simulatePython(code) {
+            let output = [];
+            let variables = {};
+
+            // Handle print statements
+            const printRegex = /print\s*\((.*)\)/g;
+            let match;
+
+            // Very basic simulation - extract print contents
+            const lines = code.split('\n');
+
+            for (let line of lines) {
+                line = line.trim();
+
+                // Skip comments and empty lines
+                if (line.startsWith('#') || line === '') continue;
+
+                // Handle print statements
+                if (line.startsWith('print(')) {
+                    const content = line.slice(6, -1);
+                    output.push(evaluatePrintContent(content, variables, code));
+                }
+
+                // Track simple variable assignments for context
+                const assignMatch = line.match(/^(\w+)\s*=\s*(.+)$/);
+                if (assignMatch) {
+                    variables[assignMatch[1]] = assignMatch[2];
+                }
+            }
+
+            if (output.length === 0) {
+                return '<span style="color: var(--text-muted);">No output (add print() statements to see results)</span>';
+            }
+
+            return output.map(line => `<div class="output-line">${escapeHtml(line)}</div>`).join('');
+        }
+
+        function evaluatePrintContent(content, variables, fullCode) {
+            // Handle f-strings
+            if (content.startsWith('f"') || content.startsWith("f'")) {
+                return evaluateFString(content, variables, fullCode);
+            }
+
+            // Handle simple strings
+            if ((content.startsWith('"') && content.endsWith('"')) ||
+                (content.startsWith("'") && content.endsWith("'"))) {
+                return content.slice(1, -1);
+            }
+
+            // Handle variables and expressions
+            return simulateExpression(content, variables, fullCode);
+        }
+
+        function evaluateFString(fstring, variables, fullCode) {
+            // Remove f" and closing "
+            let content = fstring.slice(2, -1);
+
+            // Replace {expressions} with values
+            content = content.replace(/\{([^}]+)\}/g, (match, expr) => {
+                return simulateExpression(expr.trim(), variables, fullCode);
+            });
+
+            return content;
+        }
+
+        function simulateExpression(expr, variables, fullCode) {
+            // Common patterns simulation
+            expr = expr.trim();
+
+            // Handle string literals
+            if ((expr.startsWith('"') && expr.endsWith('"')) ||
+                (expr.startsWith("'") && expr.endsWith("'"))) {
+                return expr.slice(1, -1);
+            }
+
+            // Specific patterns based on common exercises
+            const patterns = {
+                // Lists
+                'fruits': '["apple", "banana", "cherry"]',
+                'upper_fruits': '["APPLE", "BANANA", "CHERRY", "ORANGE"]',
+                'numbers': '[1, 2, 3, 4, 5]',
+                'doubled': '[2, 4, 6, 8, 10]',
+                'evens': '[2, 4]',
+                
+                // Dicts
+                "person['name']": 'Alice',
+                "person['age']": '28',
+                "person.get('name')": 'Alice',
+                
+                // Join operations
+                "', '.join(person['skills'])": 'Python, Data Analysis',
+                
+                // Common expressions
+                'len(fruits)': '4',
+                'len(items)': '3',
+                'sum(numbers)': '15',
+            };
+
+            // Check for exact match
+            if (patterns[expr]) {
+                return patterns[expr];
+            }
+
+            // Check for variable references
+            if (variables[expr]) {
+                return variables[expr];
+            }
+
+            // Handle concatenation with commas (multiple print args)
+            if (expr.includes(',')) {
+                const parts = expr.split(',').map(p => {
+                    p = p.trim();
+                    if ((p.startsWith('"') && p.endsWith('"')) ||
+                        (p.startsWith("'") && p.endsWith("'"))) {
+                        return p.slice(1, -1);
+                    }
+                    return simulateExpression(p, variables, fullCode);
+                });
+                return parts.join(' ');
+            }
+
+            // Default: return the expression as-is (simulated value)
+            return `<${expr}>`;
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        function resetEditor() {
+            document.getElementById('codeEditor').value = `# Welcome to Python Foundations! 🐍
+# Try running this code, then modify it.
+
+# --- Lists ---
+fruits = ["apple", "banana", "cherry"]
+print("Fruits:", fruits)
+
+# Add an item
+fruits.append("orange")
+print("After append:", fruits)
+
+# List comprehension
+upper_fruits = [f.upper() for f in fruits]
+print("Uppercase:", upper_fruits)
+
+# --- Dictionary ---
+person = {
+    "name": "Alice",
+    "age": 28,
+    "skills": ["Python", "Data Analysis"]
+}
+
+print(f"\\nName: {person['name']}")
+print(f"Skills: {', '.join(person['skills'])}")
+
+# --- Try modifying the code! ---
+# 1. Add more fruits to the list
+# 2. Add a new key to the person dict
+# 3. Create a list comprehension that filters fruits with 'a' in the name`;
+
+            document.getElementById('outputContent').innerHTML = 
+                '<span style="color: var(--text-muted);">Click "Run" to execute your code...</span>';
+            document.getElementById('outputStatus').textContent = 'Ready';
+            document.getElementById('outputStatus').className = 'output-status success';
+        }
+
+        function copyEditorCode() {
+            const code = document.getElementById('codeEditor').value;
+            navigator.clipboard.writeText(code).then(() => {
+                const btn = event.target;
+                const originalText = btn.innerHTML;
+                btn.innerHTML = '✓ Copied!';
+                setTimeout(() => {
+                    btn.innerHTML = originalText;
+                }, 2000);
+            });
+        }
+
+        function copyCode(btn) {
+            const codeBlock = btn.parentElement;
+            const code = codeBlock.querySelector('pre').textContent;
+            navigator.clipboard.writeText(code).then(() => {
+                btn.textContent = 'Copied!';
+                setTimeout(() => {
+                    btn.textContent = 'Copy';
+                }, 2000);
+            });
+        }
+
+        // Exercise loader
+        const exercises = {
+            lists: `# Exercise: List Operations
+# Create a list of your favorite movies, add one more,
+# remove the first one, then print the list reversed.
+
+# Your code here:
+movies = ["Inception", "The Matrix", "Interstellar"]
+
+# Add a movie
+movies.append("Arrival")
+print("After adding:", movies)
+
+# Remove the first movie
+movies.pop(0)
+print("After removing first:", movies)
+
+# Print reversed
+print("Reversed:", movies[::-1])`,
+
+            dataprocessing: `# Exercise: Data Processing
+# Given a list of articles, extract unique sources
+# and create a summary with source counts.
+
+articles = [
+    {"title": "AI News", "source": "TechCrunch"},
+    {"title": "Python Update", "source": "Reddit"},
+    {"title": "New Framework", "source": "TechCrunch"},
+    {"title": "Data Science Tips", "source": "Medium"},
+    {"title": "ML Tutorial", "source": "Reddit"},
+]
+
+# Your code here:
+
+# 1. Extract unique sources using a set
+sources = {article["source"] for article in articles}
+print("Unique sources:", sources)
+
+# 2. Count articles per source using a dict comprehension
+source_counts = {}
+for article in articles:
+    source = article["source"]
+    source_counts[source] = source_counts.get(source, 0) + 1
+
+print("Source counts:", source_counts)
+
+# Bonus: Do it with a single comprehension
+from collections import Counter
+counts = Counter(a["source"] for a in articles)
+print("Using Counter:", dict(counts))`,
+
+            decorator: `# Exercise: Create a Logging Decorator
+# Create a decorator that prints the function name
+# and arguments whenever a function is called.
+
+def log_calls(func):
+    """Decorator that logs function calls."""
+    def wrapper(*args, **kwargs):
+        # Print function name and arguments
+        args_str = ", ".join(repr(a) for a in args)
+        kwargs_str = ", ".join(f"{k}={v!r}" for k, v in kwargs.items())
+        all_args = ", ".join(filter(None, [args_str, kwargs_str]))
+        
+        print(f"Calling {func.__name__}({all_args})")
+        
+        result = func(*args, **kwargs)
+        
+        print(f"{func.__name__} returned {result!r}")
+        return result
+    return wrapper
+
+# Test your decorator
+@log_calls
+def add(a, b):
+    return a + b
+
+@log_calls
+def greet(name, greeting="Hello"):
+    return f"{greeting}, {name}!"
+
+# Try it out
+add(2, 3)
+greet("Alice")
+greet("Bob", greeting="Hi")`,
+
+            errorhandling: `# Exercise: Robust File Reader
+# Create a function that safely reads a JSON file
+# and handles various error cases gracefully.
+
+import json
+import os
+
+def safe_read_json(filepath):
+    """
+    Safely read a JSON file with comprehensive error handling.
+    
+    Returns:
+        dict or None: Parsed JSON data, or None if reading failed
+    """
+    try:
+        with open(filepath, 'r', encoding='utf-8') as f:
+            data = json.load(f)
+            return data
+            
+    except FileNotFoundError:
+        print(f"Error: File '{filepath}' not found")
+        return None
+        
+    except json.JSONDecodeError as e:
+        print(f"Error: Invalid JSON in '{filepath}': {e}")
+        return None
+        
+    except PermissionError:
+        print(f"Error: Permission denied reading '{filepath}'")
+        return None
+        
+    except Exception as e:
+        print(f"Error: Unexpected error reading '{filepath}': {e}")
+        return None
+
+# Test cases (these will show errors since files don't exist)
+print("Test 1: Non-existent file")
+result = safe_read_json("nonexistent.json")
+print(f"Result: {result}")
+
+print("\\nTest 2: Would work with valid JSON file")
+# In real usage:
+# data = safe_read_json("config.json")
+# if data:
+#     process_data(data)`,
+
+            pipeline: `# Exercise 1: List Processing Pipeline
+# Filter negatives, square remaining, keep only > 10
+
+def process_numbers(numbers):
+    """
+    Process numbers through a pipeline:
+    1. Filter out negatives
+    2. Square each number
+    3. Keep only values > 10
+    """
+    # Method 1: Step by step
+    positives = [n for n in numbers if n >= 0]
+    squared = [n ** 2 for n in positives]
+    result = [n for n in squared if n > 10]
+    return result
+
+    # Method 2: Combined (more advanced)
+    # return [n**2 for n in numbers if n >= 0 and n**2 > 10]
+
+# Test
+numbers = [-5, 2, -3, 4, 1, 6, -2, 3, 5]
+result = process_numbers(numbers)
+print(f"Input: {numbers}")
+print(f"Output: {result}")
+# Expected: [16, 36, 25] (4²=16, 6²=36, 5²=25)`,
+
+            config: `# Exercise 2: Config Parser (Flatten nested dict)
+# {"db": {"host": "localhost"}} → {"db.host": "localhost"}
+
+def flatten_config(config, prefix=""):
+    """
+    Flatten a nested configuration dictionary.
+    
+    Args:
+        config: Nested dictionary
+        prefix: Current key prefix (for recursion)
+        
+    Returns:
+        Flattened dictionary with dot-notation keys
+    """
+    result = {}
+    
+    for key, value in config.items():
+        # Build the new key
+        new_key = f"{prefix}.{key}" if prefix else key
+        
+        if isinstance(value, dict):
+            # Recurse into nested dict
+            nested = flatten_config(value, new_key)
+            result.update(nested)
+        else:
+            # Base case: add the value
+            result[new_key] = value
+    
+    return result
+
+# Test
+config = {
+    "db": {
+        "host": "localhost",
+        "port": 5432,
+        "credentials": {
+            "user": "admin",
+            "password": "secret"
+        }
+    },
+    "api": {
+        "timeout": 30
+    },
+    "debug": True
+}
+
+flat = flatten_config(config)
+for key, value in flat.items():
+    print(f"{key}: {value}")`,
+
+            dedup: `# Exercise 3: Article Deduplicator
+# Remove duplicates based on URL, keeping first occurrence
+
+def deduplicate_articles(articles):
+    """
+    Remove duplicate articles based on URL.
+    Keeps the first occurrence of each URL.
+    
+    Args:
+        articles: List of article dicts with 'title' and 'url'
+        
+    Returns:
+        List of unique articles
+    """
+    seen_urls = set()
+    unique_articles = []
+    
+    for article in articles:
+        url = article["url"]
+        if url not in seen_urls:
+            seen_urls.add(url)
+            unique_articles.append(article)
+    
+    return unique_articles
+
+# Test
+articles = [
+    {"title": "Python Tips", "url": "https://example.com/1"},
+    {"title": "AI News", "url": "https://example.com/2"},
+    {"title": "Python Tips (Updated)", "url": "https://example.com/1"},
+    {"title": "Web Dev Guide", "url": "https://example.com/3"},
+    {"title": "AI News Repost", "url": "https://example.com/2"},
+]
+
+unique = deduplicate_articles(articles)
+print(f"Original: {len(articles)} articles")
+print(f"After dedup: {len(unique)} articles")
+print("\\nUnique articles:")
+for a in unique:
+    print(f"  - {a['title']}")`,
+
+            cache: `# Exercise 4: Caching Decorator
+# Store and return cached results for repeated calls
+
+def cache(func):
+    """
+    Decorator that caches function results.
+    Returns cached value if called with same arguments.
+    """
+    cached_results = {}
+    
+    def wrapper(*args, **kwargs):
+        # Create a hashable key from arguments
+        # Note: This simple version only works with hashable args
+        key = (args, tuple(sorted(kwargs.items())))
+        
+        if key in cached_results:
+            print(f"Cache hit for {func.__name__}{args}")
+            return cached_results[key]
+        
+        print(f"Cache miss for {func.__name__}{args}")
+        result = func(*args, **kwargs)
+        cached_results[key] = result
+        return result
+    
+    # Expose cache for testing
+    wrapper.cache = cached_results
+    return wrapper
+
+# Test with a "slow" function
+@cache
+def expensive_calculation(n):
+    """Simulate an expensive calculation."""
+    # In real code, this might be a database query or API call
+    return n ** 2
+
+# First calls - cache misses
+print("First calls:")
+print(f"Result: {expensive_calculation(5)}")
+print(f"Result: {expensive_calculation(10)}")
+
+# Repeated calls - cache hits
+print("\\nRepeated calls:")
+print(f"Result: {expensive_calculation(5)}")
+print(f"Result: {expensive_calculation(10)}")`,
+
+            validator: `# Exercise 5: Data Validator Class
+
+class ValidationError(Exception):
+    """Custom exception for validation failures."""
+    pass
+
+class Validator:
+    """
+    Validate data against defined rules.
+    
+    Supports:
+    - Required fields
+    - Type checking
+    - Min/max values
+    """
+    
+    def __init__(self):
+        self.rules = {}
+    
+    def add_rule(self, field, required=False, field_type=None, 
+                 min_val=None, max_val=None):
+        """Add a validation rule for a field."""
+        self.rules[field] = {
+            "required": required,
+            "type": field_type,
+            "min": min_val,
+            "max": max_val
+        }
+        return self  # Allow chaining
+    
+    def validate(self, data):
+        """
+        Validate data against all rules.
+        
+        Raises:
+            ValidationError: If validation fails
+        """
+        errors = []
+        
+        for field, rule in self.rules.items():
+            value = data.get(field)
+            
+            # Check required
+            if rule["required"] and value is None:
+                errors.append(f"'{field}' is required")
+                continue
+            
+            if value is None:
+                continue
+                
+            # Check type
+            if rule["type"] and not isinstance(value, rule["type"]):
+                errors.append(
+                    f"'{field}' must be {rule['type'].__name__}, "
+                    f"got {type(value).__name__}"
+                )
+                continue
+            
+            # Check min/max
+            if rule["min"] is not None and value < rule["min"]:
+                errors.append(f"'{field}' must be >= {rule['min']}")
+            if rule["max"] is not None and value > rule["max"]:
+                errors.append(f"'{field}' must be <= {rule['max']}")
+        
+        if errors:
+            raise ValidationError("; ".join(errors))
+        
+        return True
+
+# Test the validator
+validator = Validator()
+validator.add_rule("name", required=True, field_type=str)
+validator.add_rule("age", required=True, field_type=int, min_val=0, max_val=150)
+validator.add_rule("email", required=False, field_type=str)
+
+# Test cases
+test_cases = [
+    {"name": "Alice", "age": 28},
+    {"name": "Bob", "age": -5},
+    {"age": 30},
+    {"name": "Charlie", "age": "thirty"},
+]
+
+for data in test_cases:
+    try:
+        validator.validate(data)
+        print(f"✓ Valid: {data}")
+    except ValidationError as e:
+        print(f"✗ Invalid: {data}")
+        print(f"  Error: {e}")`,
+
+            challenge: `# 🚀 FINAL CHALLENGE: Content Item Processor
+# Build a complete ContentProcessor class!
+
+import time
+from dataclasses import dataclass
+from typing import Optional
+
+# Custom Exceptions
+class ConfigError(Exception):
+    """Invalid configuration."""
+    pass
+
+class ProcessingError(Exception):
+    """Processing failed."""
+    pass
+
+# Timer decorator
+def timer(func):
+    def wrapper(*args, **kwargs):
+        start = time.time()
+        result = func(*args, **kwargs)
+        elapsed = (time.time() - start) * 1000
+        # Store timing on the instance
+        if args and hasattr(args[0], '_timing'):
+            args[0]._timing[func.__name__] = elapsed
+        return result
+    return wrapper
+
+class ContentProcessor:
+    """
+    Process content items from various sources.
+    
+    Supports filtering by source, keywords, and deduplication.
+    """
+    
+    def __init__(self, config: dict):
+        self._validate_config(config)
+        self.config = config
+        self.items = []
+        self.stats = {
+            "total_input": 0,
+            "after_source_filter": 0,
+            "after_keyword_filter": 0,
+            "after_dedup": 0,
+        }
+        self._timing = {}
+    
+    def _validate_config(self, config: dict) -> None:
+        """Validate configuration."""
+        required = ["sources", "keywords", "max_items"]
+        for key in required:
+            if key not in config:
+                raise ConfigError(f"Missing required config: {key}")
+        
+        if not isinstance(config["sources"], list):
+            raise ConfigError("'sources' must be a list")
+    
+    def add_items(self, items: list[dict]) -> "ContentProcessor":
+        """Add items to process."""
+        self.items.extend(items)
+        self.stats["total_input"] = len(self.items)
+        return self
+    
+    @timer
+    def filter_by_source(self) -> "ContentProcessor":
+        """Keep only items from allowed sources."""
+        allowed = set(self.config["sources"])
+        self.items = [
+            item for item in self.items 
+            if item.get("source") in allowed
+        ]
+        self.stats["after_source_filter"] = len(self.items)
+        return self
+    
+    @timer
+    def filter_by_keywords(self) -> "ContentProcessor":
+        """Apply keyword include/exclude filters."""
+        include = [kw.lower() for kw in self.config["keywords"].get("include", [])]
+        exclude = [kw.lower() for kw in self.config["keywords"].get("exclude", [])]
+        
+        def matches(item):
+            text = f"{item.get('title', '')} {item.get('content', '')}".lower()
+            
+            # Check excludes first
+            if any(kw in text for kw in exclude):
+                return False
+            
+            # Check includes (if any specified)
+            if include:
+                return any(kw in text for kw in include)
+            
+            return True
+        
+        self.items = [item for item in self.items if matches(item)]
+        self.stats["after_keyword_filter"] = len(self.items)
+        return self
+    
+    @timer
+    def deduplicate(self) -> "ContentProcessor":
+        """Remove duplicate URLs."""
+        seen = set()
+        unique = []
+        for item in self.items:
+            url = item.get("url")
+            if url and url not in seen:
+                seen.add(url)
+                unique.append(item)
+        self.items = unique
+        self.stats["after_dedup"] = len(self.items)
+        return self
+    
+    def get_results(self) -> list[dict]:
+        """Return processed items (limited by max_items)."""
+        return self.items[:self.config["max_items"]]
+    
+    def get_stats(self) -> dict:
+        """Return processing statistics."""
+        total_time = sum(self._timing.values())
+        return {
+            **self.stats,
+            "processing_time_ms": round(total_time, 2)
+        }
+
+# === TEST THE PROCESSOR ===
+
+# Sample config
+config = {
+    "sources": ["tech", "science"],
+    "keywords": {
+        "include": ["python", "ai", "machine learning"],
+        "exclude": ["crypto", "nft"]
+    },
+    "max_items": 10
+}
+
+# Sample items
+items = [
+    {"title": "Python 3.12 Released", "url": "https://ex.com/1", "source": "tech", "content": "New Python features..."},
+    {"title": "AI Breakthrough", "url": "https://ex.com/2", "source": "science", "content": "Machine learning advances..."},
+    {"title": "Crypto News", "url": "https://ex.com/3", "source": "tech", "content": "Bitcoin and NFT updates..."},
+    {"title": "Sports Update", "url": "https://ex.com/4", "source": "sports", "content": "Game results..."},
+    {"title": "Python AI Tutorial", "url": "https://ex.com/5", "source": "tech", "content": "Learn Python for AI..."},
+    {"title": "Python Tips", "url": "https://ex.com/1", "source": "tech", "content": "Duplicate URL test..."},
+]
+
+# Process!
+try:
+    processor = ContentProcessor(config)
+    results = (processor
+        .add_items(items)
+        .filter_by_source()
+        .filter_by_keywords()
+        .deduplicate()
+        .get_results())
+    
+    print("=== Processing Complete ===")
+    print(f"\\nStats: {processor.get_stats()}")
+    print(f"\\nResults ({len(results)} items):")
+    for item in results:
+        print(f"  • {item['title']}")
+        
+except ConfigError as e:
+    print(f"Config Error: {e}")
+except ProcessingError as e:
+    print(f"Processing Error: {e}")`
+        };
+
+        function loadExercise(exerciseName) {
+            if (exercises[exerciseName]) {
+                document.getElementById('codeEditor').value = exercises[exerciseName];
+                document.getElementById('outputContent').innerHTML = 
+                    '<span style="color: var(--text-muted);">Exercise loaded! Click "Run" to execute...</span>';
+            }
+        }
+
+        // Handle tab key in editor
+        document.getElementById('codeEditor').addEventListener('keydown', function(e) {
+            if (e.key === 'Tab') {
+                e.preventDefault();
+                const start = this.selectionStart;
+                const end = this.selectionEnd;
+                this.value = this.value.substring(0, start) + '    ' + this.value.substring(end);
+                this.selectionStart = this.selectionEnd = start + 4;
+            }
+        });
+
+        // Run code on Ctrl+Enter
+        document.getElementById('codeEditor').addEventListener('keydown', function(e) {
+            if (e.ctrlKey && e.key === 'Enter') {
+                runCode();
+            }
+        });
+
+        // Initial progress
+        updateProgress('overview');
+    </script>
+</body>
+</html>
