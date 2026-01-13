@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Learning Tracker</title>
+    <title>Learning Dashboard</title>
     <style>
         * {
             margin: 0;
@@ -12,252 +12,521 @@
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
             padding: 20px;
         }
 
         .container {
-            max-width: 1200px;
+            max-width: 900px;
             margin: 0 auto;
         }
 
-        h1 {
-            color: white;
+        .header {
             text-align: center;
+            color: white;
             margin-bottom: 30px;
+        }
+
+        .header h1 {
             font-size: 2.5em;
+            margin-bottom: 10px;
             text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
         }
 
-        .track {
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+
+        .track-switcher {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-bottom: 30px;
+        }
+
+        .track-btn {
+            padding: 12px 30px;
+            font-size: 1.1em;
+            font-weight: 600;
+            border: 3px solid white;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .track-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .track-btn.active {
             background: white;
-            border-radius: 15px;
-            padding: 25px;
-            margin-bottom: 25px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-            transition: transform 0.3s ease;
+            color: #667eea;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.3);
         }
 
-        .track:hover {
-            transform: translateY(-5px);
+        .dashboard {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
         }
 
-        .track h2 {
+        .track-content {
+            display: none;
+        }
+
+        .track-content.active {
+            display: block;
+        }
+
+        .track-title {
+            font-size: 2em;
             color: #667eea;
             margin-bottom: 20px;
-            font-size: 1.8em;
-            border-bottom: 3px solid #667eea;
-            padding-bottom: 10px;
+            text-align: center;
         }
 
-        .progress-container {
-            background: #f0f0f0;
-            border-radius: 10px;
-            height: 30px;
-            margin-bottom: 20px;
-            overflow: hidden;
+        .progress-section {
+            margin-bottom: 30px;
+            padding: 20px;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            border-radius: 15px;
+        }
+
+        .progress-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .progress-label {
+            font-weight: 600;
+            color: #333;
+        }
+
+        .progress-percentage {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #667eea;
         }
 
         .progress-bar {
-            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            width: 100%;
+            height: 25px;
+            background: #e0e0e0;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .progress-fill {
             height: 100%;
-            border-radius: 10px;
-            transition: width 0.3s ease;
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            border-radius: 15px;
+            transition: width 0.5s ease;
             display: flex;
             align-items: center;
-            justify-content: center;
+            justify-content: flex-end;
+            padding-right: 10px;
             color: white;
             font-weight: bold;
+            font-size: 0.9em;
         }
 
-        .lessons {
-            list-style: none;
+        .lessons-grid {
+            display: grid;
+            gap: 15px;
         }
 
-        .lesson {
+        .lesson-card {
             background: #f8f9fa;
-            margin-bottom: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            padding: 20px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .lesson-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            border-color: #667eea;
+        }
+
+        .lesson-card.completed {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-color: #667eea;
+            color: white;
+        }
+
+        .lesson-card.completed .lesson-title {
+            color: white;
+        }
+
+        .lesson-card.completed .lesson-number {
+            background: rgba(255, 255, 255, 0.3);
+            color: white;
+        }
+
+        .lesson-number {
+            display: inline-block;
+            background: #667eea;
+            color: white;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .lesson-title {
+            font-size: 1.2em;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        .lesson-status {
+            font-size: 0.9em;
+            color: #666;
+            margin-top: 10px;
+        }
+
+        .lesson-card.completed .lesson-status {
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .checkmark {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            font-size: 1.5em;
+            display: none;
+        }
+
+        .lesson-card.completed .checkmark {
+            display: block;
+        }
+
+        .hint {
+            text-align: center;
+            margin-top: 20px;
             padding: 15px;
+            background: #fff3cd;
+            border: 1px solid #ffc107;
             border-radius: 10px;
-            display: flex;
-            align-items: center;
+            color: #856404;
+            font-size: 0.9em;
+        }
+
+        .reset-btn {
+            display: block;
+            margin: 20px auto 0;
+            padding: 10px 25px;
+            background: #dc3545;
+            color: white;
+            border: none;
+            border-radius: 25px;
+            font-size: 1em;
+            font-weight: 600;
+            cursor: pointer;
             transition: all 0.3s ease;
         }
 
-        .lesson:hover {
-            background: #e9ecef;
-            transform: translateX(5px);
-        }
-
-        .lesson.completed {
-            background: #d4edda;
-            border-left: 5px solid #28a745;
-        }
-
-        .lesson input[type="checkbox"] {
-            width: 20px;
-            height: 20px;
-            margin-right: 15px;
-            cursor: pointer;
-        }
-
-        .lesson a {
-            color: #495057;
-            text-decoration: none;
-            flex-grow: 1;
-            font-size: 1.1em;
-        }
-
-        .lesson a:hover {
-            color: #667eea;
-        }
-
-        .lesson.completed a {
-            color: #155724;
+        .reset-btn:hover {
+            background: #c82333;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(220, 53, 69, 0.3);
         }
 
         @media (max-width: 768px) {
-            h1 {
+            .header h1 {
                 font-size: 2em;
             }
 
-            .track h2 {
-                font-size: 1.5em;
+            .track-switcher {
+                flex-direction: column;
             }
 
-            .lesson a {
-                font-size: 1em;
+            .track-btn {
+                width: 100%;
+            }
+
+            .dashboard {
+                padding: 20px;
+            }
+
+            .track-title {
+                font-size: 1.5em;
             }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>🚀 My Learning Journey</h1>
-
-        <div class="track" id="web-dev">
-            <h2>Web Development Track</h2>
-            <div class="progress-container">
-                <div class="progress-bar" style="width: 0%">0%</div>
-            </div>
-            <ul class="lessons">
-                <li class="lesson">
-                    <input type="checkbox" data-lesson="web-1">
-                    <a href="webapp/week1-html-css-interactive.html">Week 1: HTML & CSS Interactive</a>
-                </li>
-                <li class="lesson">
-                    <input type="checkbox" data-lesson="web-2">
-                    <a href="webapp/week2-layouts-responsive.html">Week 2: Layouts & Responsive Design</a>
-                </li>
-                <li class="lesson">
-                    <input type="checkbox" data-lesson="web-3">
-                    <a href="webapp/week3-forms-animations.html">Week 3: Forms & Animations</a>
-                </li>
-                <li class="lesson">
-                    <input type="checkbox" data-lesson="web-4">
-                    <a href="webapp/week4-javascript-basics.html">Week 4: JavaScript Basics</a>
-                </li>
-                <li class="lesson">
-                    <input type="checkbox" data-lesson="web-5">
-                    <a href="webapp/week5-dom-manipulation.html">Week 5: DOM Manipulation</a>
-                </li>
-                <li class="lesson">
-                    <input type="checkbox" data-lesson="web-6">
-                    <a href="webapp/week6-local-storage.html">Week 6: Local Storage</a>
-                </li>
-                <li class="lesson">
-                    <input type="checkbox" data-lesson="web-7">
-                    <a href="webapp/week6-typescript.html">Week 7: TypeScript</a>
-                </li>
-            </ul>
+        <div class="header">
+            <h1>🚀 Learning Dashboard</h1>
+            <p>Track your progress across different learning paths</p>
         </div>
 
-        <div class="track" id="data-science">
-            <h2>Data Science Track</h2>
-            <div class="progress-container">
-                <div class="progress-bar" style="width: 0%">0%</div>
+        <div class="track-switcher">
+            <button class="track-btn active" onclick="switchTrack('webapp')">Web Development</button>
+            <button class="track-btn" onclick="switchTrack('python')">Python</button>
+        </div>
+
+        <div class="dashboard">
+            <!-- Web Development Track -->
+            <div id="webapp-track" class="track-content active">
+                <h2 class="track-title">💻 Web Development Track</h2>
+                
+                <div class="progress-section">
+                    <div class="progress-header">
+                        <span class="progress-label">Overall Progress</span>
+                        <span class="progress-percentage" id="webapp-percentage">0%</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="webapp-progress" style="width: 0%"></div>
+                    </div>
+                </div>
+
+                <div class="lessons-grid" id="webapp-lessons">
+                    <a href="webapp/week1-html-css-interactive.html" class="lesson-card" data-lesson="webapp-1">
+                        <span class="lesson-number">Lesson 1</span>
+                        <div class="lesson-title">Week 1: HTML & CSS Interactive</div>
+                        <div class="lesson-status">Click to start • Double-click to mark complete</div>
+                        <span class="checkmark">✓</span>
+                    </a>
+
+                    <a href="webapp/week2-layouts-responsive.html" class="lesson-card" data-lesson="webapp-2">
+                        <span class="lesson-number">Lesson 2</span>
+                        <div class="lesson-title">Week 2: Layouts & Responsive Design</div>
+                        <div class="lesson-status">Click to start • Double-click to mark complete</div>
+                        <span class="checkmark">✓</span>
+                    </a>
+
+                    <a href="webapp/week3-forms-animations.html" class="lesson-card" data-lesson="webapp-3">
+                        <span class="lesson-number">Lesson 3</span>
+                        <div class="lesson-title">Week 3: Forms & Animations</div>
+                        <div class="lesson-status">Click to start • Double-click to mark complete</div>
+                        <span class="checkmark">✓</span>
+                    </a>
+
+                    <a href="webapp/week4-javascript-basics.html" class="lesson-card" data-lesson="webapp-4">
+                        <span class="lesson-number">Lesson 4</span>
+                        <div class="lesson-title">Week 4: JavaScript Basics</div>
+                        <div class="lesson-status">Click to start • Double-click to mark complete</div>
+                        <span class="checkmark">✓</span>
+                    </a>
+
+                    <a href="webapp/week5-dom-manipulation.html" class="lesson-card" data-lesson="webapp-5">
+                        <span class="lesson-number">Lesson 5</span>
+                        <div class="lesson-title">Week 5: DOM Manipulation</div>
+                        <div class="lesson-status">Click to start • Double-click to mark complete</div>
+                        <span class="checkmark">✓</span>
+                    </a>
+
+                    <a href="webapp/week6-local-storage.html" class="lesson-card" data-lesson="webapp-6">
+                        <span class="lesson-number">Lesson 6</span>
+                        <div class="lesson-title">Week 6: Local Storage</div>
+                        <div class="lesson-status">Click to start • Double-click to mark complete</div>
+                        <span class="checkmark">✓</span>
+                    </a>
+
+                    <a href="webapp/week6-typescript.html" class="lesson-card" data-lesson="webapp-7">
+                        <span class="lesson-number">Lesson 7</span>
+                        <div class="lesson-title">Week 6: TypeScript</div>
+                        <div class="lesson-status">Click to start • Double-click to mark complete</div>
+                        <span class="checkmark">✓</span>
+                    </a>
+                </div>
+
+                <div class="hint">
+                    💡 <strong>Tip:</strong> Single-click to open lesson • Double-click to toggle completion status
+                </div>
+
+                <button class="reset-btn" onclick="resetProgress('webapp')">Reset Progress</button>
             </div>
-            <ul class="lessons">
-                <li class="lesson">
-                    <input type="checkbox" data-lesson="ds-1">
-                    <a href="#">Introduction to Python</a>
-                </li>
-                <li class="lesson">
-                    <input type="checkbox" data-lesson="ds-2">
-                    <a href="#">NumPy and Pandas</a>
-                </li>
-                <li class="lesson">
-                    <input type="checkbox" data-lesson="ds-3">
-                    <a href="#">Data Visualization</a>
-                </li>
-                <li class="lesson">
-                    <input type="checkbox" data-lesson="ds-4">
-                    <a href="#">Machine Learning Basics</a>
-                </li>
-            </ul>
+
+            <!-- Python Track -->
+            <div id="python-track" class="track-content">
+                <h2 class="track-title">🐍 Python Track</h2>
+                
+                <div class="progress-section">
+                    <div class="progress-header">
+                        <span class="progress-label">Overall Progress</span>
+                        <span class="progress-percentage" id="python-percentage">0%</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="python-progress" style="width: 0%"></div>
+                    </div>
+                </div>
+
+                <div class="lessons-grid" id="python-lessons">
+                    <a href="python/week0-day1-2-python-foundations.html" class="lesson-card" data-lesson="python-1">
+                        <span class="lesson-number">Lesson 1</span>
+                        <div class="lesson-title">Week 0 (Day 1-2): Python Foundations</div>
+                        <div class="lesson-status">Click to start • Double-click to mark complete</div>
+                        <span class="checkmark">✓</span>
+                    </a>
+
+                    <a href="python/week0-day3-4-files-and-classes.html" class="lesson-card" data-lesson="python-2">
+                        <span class="lesson-number">Lesson 2</span>
+                        <div class="lesson-title">Week 0 (Day 3-4): Files & Classes</div>
+                        <div class="lesson-status">Click to start • Double-click to mark complete</div>
+                        <span class="checkmark">✓</span>
+                    </a>
+
+                    <a href="python/week0-day5-6-flask-basics.html" class="lesson-card" data-lesson="python-3">
+                        <span class="lesson-number">Lesson 3</span>
+                        <div class="lesson-title">Week 0 (Day 5-6): Flask Basics</div>
+                        <div class="lesson-status">Click to start • Double-click to mark complete</div>
+                        <span class="checkmark">✓</span>
+                    </a>
+
+                    <a href="python/week0-day7-mini-project.html" class="lesson-card" data-lesson="python-4">
+                        <span class="lesson-number">Lesson 4</span>
+                        <div class="lesson-title">Week 0 (Day 7): Mini Project</div>
+                        <div class="lesson-status">Click to start • Double-click to mark complete</div>
+                        <span class="checkmark">✓</span>
+                    </a>
+
+                    <a href="python/week1-day1-2-fastapi-fundamentals.html" class="lesson-card" data-lesson="python-5">
+                        <span class="lesson-number">Lesson 5</span>
+                        <div class="lesson-title">Week 1 (Day 1-2): FastAPI Fundamentals</div>
+                        <div class="lesson-status">Click to start • Double-click to mark complete</div>
+                        <span class="checkmark">✓</span>
+                    </a>
+                </div>
+
+                <div class="hint">
+                    💡 <strong>Tip:</strong> Single-click to open lesson • Double-click to toggle completion status
+                </div>
+
+                <button class="reset-btn" onclick="resetProgress('python')">Reset Progress</button>
+            </div>
         </div>
     </div>
 
     <script>
-        // Load saved progress from localStorage
-        function loadProgress() {
-            const checkboxes = document.querySelectorAll('input[type="checkbox"]');
-            checkboxes.forEach(checkbox => {
-                const lessonId = checkbox.dataset.lesson;
-                const isCompleted = localStorage.getItem(lessonId) === 'true';
-                checkbox.checked = isCompleted;
-                if (isCompleted) {
-                    checkbox.closest('.lesson').classList.add('completed');
-                }
-            });
-            updateAllProgress();
-        }
+        // Track configurations
+        const tracks = {
+            webapp: {
+                totalLessons: 7,
+                storageKey: 'webappLessonsCompleted'
+            },
+            python: {
+                totalLessons: 5,
+                storageKey: 'pythonLessonsCompleted'
+            }
+        };
 
-        // Save progress to localStorage
-        function saveProgress(lessonId, isCompleted) {
-            localStorage.setItem(lessonId, isCompleted);
-        }
+        let currentTrack = 'webapp';
 
-        // Update progress bar for a track
-        function updateProgress(trackElement) {
-            const checkboxes = trackElement.querySelectorAll('input[type="checkbox"]');
-            const total = checkboxes.length;
-            const completed = Array.from(checkboxes).filter(cb => cb.checked).length;
-            const percentage = Math.round((completed / total) * 100);
-            
-            const progressBar = trackElement.querySelector('.progress-bar');
-            progressBar.style.width = percentage + '%';
-            progressBar.textContent = percentage + '%';
-        }
-
-        // Update all progress bars
-        function updateAllProgress() {
-            document.querySelectorAll('.track').forEach(track => {
-                updateProgress(track);
-            });
-        }
-
-        // Add event listeners to all checkboxes
-        document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
-            checkbox.addEventListener('change', function() {
-                const lessonElement = this.closest('.lesson');
-                const lessonId = this.dataset.lesson;
-                
-                if (this.checked) {
-                    lessonElement.classList.add('completed');
-                } else {
-                    lessonElement.classList.remove('completed');
-                }
-                
-                saveProgress(lessonId, this.checked);
-                updateProgress(this.closest('.track'));
-            });
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeTracks();
         });
 
-        // Load progress on page load
-        loadProgress();
+        function initializeTracks() {
+            Object.keys(tracks).forEach(trackId => {
+                loadProgress(trackId);
+                attachEventListeners(trackId);
+            });
+        }
+
+        function switchTrack(trackId) {
+            // Update active track
+            currentTrack = trackId;
+
+            // Update button states
+            document.querySelectorAll('.track-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+
+            // Update content visibility
+            document.querySelectorAll('.track-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            document.getElementById(`${trackId}-track`).classList.add('active');
+        }
+
+        function attachEventListeners(trackId) {
+            const lessonCards = document.querySelectorAll(`#${trackId}-lessons .lesson-card`);
+            
+            lessonCards.forEach(card => {
+                // Prevent default on double-click to avoid navigation
+                card.addEventListener('dblclick', function(e) {
+                    e.preventDefault();
+                    toggleLesson(trackId, card);
+                });
+
+                // Single click still allows navigation
+                card.addEventListener('click', function(e) {
+                    // If it's a double-click, it will be handled by dblclick event
+                    if (e.detail === 2) {
+                        e.preventDefault();
+                    }
+                });
+            });
+        }
+
+        function toggleLesson(trackId, card) {
+            card.classList.toggle('completed');
+            saveProgress(trackId);
+            updateProgress(trackId);
+        }
+
+        function saveProgress(trackId) {
+            const completed = [];
+            document.querySelectorAll(`#${trackId}-lessons .lesson-card.completed`).forEach(card => {
+                completed.push(card.getAttribute('data-lesson'));
+            });
+            localStorage.setItem(tracks[trackId].storageKey, JSON.stringify(completed));
+        }
+
+        function loadProgress(trackId) {
+            const completed = JSON.parse(localStorage.getItem(tracks[trackId].storageKey)) || [];
+            completed.forEach(lessonId => {
+                const card = document.querySelector(`#${trackId}-lessons .lesson-card[data-lesson="${lessonId}"]`);
+                if (card) {
+                    card.classList.add('completed');
+                }
+            });
+            updateProgress(trackId);
+        }
+
+        function updateProgress(trackId) {
+            const total = tracks[trackId].totalLessons;
+            const completed = document.querySelectorAll(`#${trackId}-lessons .lesson-card.completed`).length;
+            const percentage = Math.round((completed / total) * 100);
+
+            const progressBar = document.getElementById(`${trackId}-progress`);
+            const progressText = document.getElementById(`${trackId}-percentage`);
+
+            progressBar.style.width = percentage + '%';
+            progressText.textContent = percentage + '%';
+        }
+
+        function resetProgress(trackId) {
+            if (confirm(`Are you sure you want to reset all progress for the ${trackId === 'webapp' ? 'Web Development' : 'Python'} track?`)) {
+                localStorage.removeItem(tracks[trackId].storageKey);
+                document.querySelectorAll(`#${trackId}-lessons .lesson-card`).forEach(card => {
+                    card.classList.remove('completed');
+                });
+                updateProgress(trackId);
+            }
+        }
     </script>
 </body>
 </html>
