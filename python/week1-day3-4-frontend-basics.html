@@ -1,0 +1,833 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Week 1: Frontend Basics | Days 3-4</title>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        :root {
+            --bg-dark: #0f0f1a;
+            --bg-card: #1a1a2e;
+            --bg-input: #252542;
+            --border: #3a3a5c;
+            --text-primary: #f0f0f8;
+            --text-secondary: #b0b0c8;
+            --text-muted: #707090;
+            --accent-violet: #8b5cf6;
+            --accent-purple: #a855f7;
+            --accent-pink: #ec4899;
+            --accent-orange: #f97316;
+            --accent-yellow: #eab308;
+            --accent-green: #22c55e;
+            --accent-cyan: #06b6d4;
+            --accent-blue: #3b82f6;
+        }
+        body { font-family: 'Space Grotesk', sans-serif; background: var(--bg-dark); color: var(--text-primary); min-height: 100vh; line-height: 1.6; }
+        .header { background: linear-gradient(135deg, #8b5cf6 0%, #a855f7 50%, #ec4899 100%); padding: 20px 30px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 4px 30px rgba(139, 92, 246, 0.3); }
+        .header h1 { font-size: 24px; font-weight: 700; display: flex; align-items: center; gap: 12px; color: #fff; }
+        .header .week-badge { background: rgba(255,255,255,0.2); padding: 6px 14px; border-radius: 20px; font-size: 14px; font-weight: 500; color: #fff; }
+        .progress-bar { height: 4px; background: rgba(255,255,255,0.1); }
+        .progress-fill { height: 100%; background: linear-gradient(90deg, var(--accent-violet), var(--accent-pink)); width: 0%; transition: width 0.5s ease; }
+        .container { display: grid; grid-template-columns: 1fr 1fr; height: calc(100vh - 80px); }
+        @media (max-width: 1200px) { .container { grid-template-columns: 1fr; height: auto; } }
+        .lesson-panel { padding: 0; overflow-y: auto; border-right: 1px solid var(--border); }
+        .tabs { display: flex; background: var(--bg-card); border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 100; overflow-x: auto; }
+        .tab { padding: 14px 18px; background: none; border: none; color: var(--text-secondary); font-family: 'Space Grotesk', sans-serif; font-size: 14px; font-weight: 500; cursor: pointer; border-bottom: 2px solid transparent; transition: all 0.2s; white-space: nowrap; }
+        .tab:hover { color: var(--text-primary); background: var(--bg-input); }
+        .tab.active { color: var(--accent-violet); border-bottom-color: var(--accent-violet); }
+        .tab-content { display: none; padding: 30px; animation: fadeIn 0.3s ease; }
+        .tab-content.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .tab-content h2 { color: var(--accent-violet); font-size: 24px; margin-bottom: 16px; padding-bottom: 10px; border-bottom: 1px solid var(--border); }
+        .tab-content h3 { color: var(--accent-pink); font-size: 18px; margin-top: 28px; margin-bottom: 12px; }
+        .tab-content h4 { color: var(--accent-cyan); font-size: 16px; margin-top: 20px; margin-bottom: 10px; }
+        .tab-content p { color: var(--text-secondary); margin-bottom: 16px; }
+        .info-box { background: var(--bg-card); border: 1px solid var(--border); border-radius: 10px; padding: 16px 20px; margin: 16px 0; }
+        .info-box.tip { border-left: 4px solid var(--accent-green); background: linear-gradient(90deg, rgba(34, 197, 94, 0.1), transparent); }
+        .info-box.concept { border-left: 4px solid var(--accent-purple); background: linear-gradient(90deg, rgba(168, 85, 247, 0.1), transparent); }
+        .info-box-title { font-weight: 600; margin-bottom: 8px; display: flex; align-items: center; gap: 8px; }
+        .info-box.tip .info-box-title { color: var(--accent-green); }
+        .info-box.concept .info-box-title { color: var(--accent-purple); }
+        .code-block { background: #0a0a14; border: 1px solid var(--border); border-radius: 10px; padding: 16px; margin: 16px 0; overflow-x: auto; position: relative; }
+        .code-block pre { font-family: 'JetBrains Mono', monospace; font-size: 13px; line-height: 1.6; color: var(--text-primary); margin: 0; }
+        .code-block .filename { position: absolute; top: -10px; left: 16px; background: var(--bg-card); padding: 2px 10px; border-radius: 4px; font-size: 12px; font-family: 'JetBrains Mono', monospace; }
+        .code-block .filename.html { color: var(--accent-orange); }
+        .code-block .filename.css { color: var(--accent-blue); }
+        .code-block .filename.js { color: var(--accent-yellow); }
+        .keyword { color: var(--accent-pink); }
+        .string { color: var(--accent-green); }
+        .number { color: var(--accent-orange); }
+        .comment { color: #707090; font-style: italic; }
+        .function { color: var(--accent-cyan); }
+        .tag { color: var(--accent-pink); }
+        .attr { color: var(--accent-yellow); }
+        .value { color: var(--accent-green); }
+        .property { color: var(--accent-cyan); }
+        .selector { color: var(--accent-violet); }
+        .day-separator { display: flex; align-items: center; gap: 16px; margin: 30px 0; color: var(--accent-violet); }
+        .day-separator::before, .day-separator::after { content: ''; flex: 1; height: 1px; background: linear-gradient(90deg, transparent, var(--border), transparent); }
+        .day-badge { background: linear-gradient(135deg, #8b5cf6, #a855f7); padding: 6px 16px; border-radius: 20px; font-weight: 600; font-size: 14px; color: #fff; }
+        .topic-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 16px; margin: 20px 0; }
+        .topic-card { background: var(--bg-input); border: 1px solid var(--border); border-radius: 12px; padding: 20px; cursor: pointer; transition: all 0.3s; text-align: center; }
+        .topic-card:hover { border-color: var(--accent-violet); transform: translateY(-4px); box-shadow: 0 8px 25px rgba(139, 92, 246, 0.2); }
+        .topic-card .icon { font-size: 32px; margin-bottom: 12px; }
+        .topic-card .title { font-weight: 600; color: var(--text-primary); margin-bottom: 6px; }
+        .topic-card .desc { font-size: 13px; color: var(--text-muted); }
+        .exercise { background: linear-gradient(135deg, rgba(139, 92, 246, 0.1) 0%, rgba(236, 72, 153, 0.1) 100%); border: 1px solid var(--border); border-radius: 12px; padding: 20px; margin: 20px 0; }
+        .exercise-header { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+        .exercise-number { background: linear-gradient(135deg, #8b5cf6, #a855f7); color: #fff; width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: 14px; }
+        .exercise-title { font-weight: 600; color: var(--text-primary); }
+        .exercise-description { color: var(--text-secondary); margin-bottom: 12px; }
+        .load-exercise-btn { background: linear-gradient(135deg, #8b5cf6, #a855f7); color: #fff; border: none; padding: 10px 20px; border-radius: 6px; font-family: 'Space Grotesk', sans-serif; font-weight: 600; cursor: pointer; transition: transform 0.2s, box-shadow 0.2s; }
+        .load-exercise-btn:hover { transform: translateY(-2px); box-shadow: 0 4px 20px rgba(139, 92, 246, 0.4); }
+        code { background: var(--bg-input); padding: 2px 6px; border-radius: 4px; font-family: 'JetBrains Mono', monospace; font-size: 13px; color: var(--accent-cyan); }
+        .comparison-table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 14px; }
+        .comparison-table th, .comparison-table td { padding: 12px; text-align: left; border: 1px solid var(--border); }
+        .comparison-table th { background: var(--bg-input); color: var(--accent-violet); font-weight: 600; }
+        .comparison-table td { background: var(--bg-card); color: var(--text-secondary); }
+        .editor-panel { display: flex; flex-direction: column; background: var(--bg-card); }
+        .editor-header { display: flex; align-items: center; justify-content: space-between; padding: 12px 16px; background: var(--bg-input); border-bottom: 1px solid var(--border); }
+        .editor-title { display: flex; align-items: center; gap: 8px; font-weight: 500; font-size: 14px; }
+        .editor-title .dot { width: 12px; height: 12px; border-radius: 50%; background: var(--accent-violet); }
+        .editor-actions { display: flex; gap: 8px; }
+        .editor-btn { background: var(--bg-card); border: 1px solid var(--border); color: var(--text-secondary); padding: 6px 14px; border-radius: 6px; font-family: 'Space Grotesk', sans-serif; font-size: 13px; cursor: pointer; transition: all 0.2s; }
+        .editor-btn:hover { background: var(--border); color: var(--text-primary); }
+        .editor-btn.run { background: linear-gradient(135deg, var(--accent-violet), var(--accent-pink)); border: none; color: #fff; font-weight: 600; }
+        .code-editor-container { flex: 1; display: flex; flex-direction: column; min-height: 0; }
+        .code-editor-wrapper { flex: 1; position: relative; overflow: hidden; }
+        .code-editor { width: 100%; height: 100%; background: var(--bg-dark); border: none; color: var(--text-primary); font-family: 'JetBrains Mono', monospace; font-size: 14px; line-height: 1.6; padding: 16px; resize: none; outline: none; tab-size: 4; }
+        .output-panel { border-top: 1px solid var(--border); background: var(--bg-dark); }
+        .output-header { display: flex; align-items: center; justify-content: space-between; padding: 10px 16px; background: var(--bg-input); border-bottom: 1px solid var(--border); }
+        .output-title { font-size: 13px; font-weight: 500; color: var(--text-secondary); }
+        .output-status { font-size: 12px; padding: 2px 8px; border-radius: 4px; background: rgba(139, 92, 246, 0.2); color: var(--accent-violet); }
+        .output-content { min-height: 150px; max-height: 300px; overflow-y: auto; background: white; }
+        .output-content iframe { width: 100%; height: 200px; border: none; }
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: var(--bg-dark); }
+        ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <h1><span class="icon">🎨</span> Frontend Basics</h1>
+        <span class="week-badge">Week 1 · Days 3-4</span>
+    </header>
+    <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+
+    <div class="container">
+        <div class="lesson-panel">
+            <div class="tabs">
+                <button class="tab active" onclick="showTab('overview')">📋 Overview</button>
+                <button class="tab" onclick="showTab('html')">🏗️ HTML</button>
+                <button class="tab" onclick="showTab('css')">🎨 CSS</button>
+                <button class="tab" onclick="showTab('layout')">📐 Layout</button>
+                <button class="tab" onclick="showTab('js')">⚡ JavaScript</button>
+                <button class="tab" onclick="showTab('dom')">🔧 DOM</button>
+                <button class="tab" onclick="showTab('challenge')">🚀 Challenge</button>
+            </div>
+
+            <!-- Overview Tab -->
+            <div id="overview" class="tab-content active">
+                <h2>Frontend for Python Developers 🎨</h2>
+                <p>You've mastered the backend - now let's build the UI for your Document Analyzer! These two days cover just enough HTML, CSS, and JavaScript to create a professional dashboard.</p>
+
+                <div class="topic-grid">
+                    <div class="topic-card" onclick="showTab('html')">
+                        <div class="icon">🏗️</div>
+                        <div class="title">HTML</div>
+                        <div class="desc">Structure & content</div>
+                    </div>
+                    <div class="topic-card" onclick="showTab('css')">
+                        <div class="icon">🎨</div>
+                        <div class="title">CSS</div>
+                        <div class="desc">Styling & colors</div>
+                    </div>
+                    <div class="topic-card" onclick="showTab('layout')">
+                        <div class="icon">📐</div>
+                        <div class="title">Layout</div>
+                        <div class="desc">Flexbox & Grid</div>
+                    </div>
+                    <div class="topic-card" onclick="showTab('js')">
+                        <div class="icon">⚡</div>
+                        <div class="title">JavaScript</div>
+                        <div class="desc">Interactivity</div>
+                    </div>
+                    <div class="topic-card" onclick="showTab('dom')">
+                        <div class="icon">🔧</div>
+                        <div class="title">DOM</div>
+                        <div class="desc">Dynamic updates</div>
+                    </div>
+                </div>
+
+                <div class="info-box concept">
+                    <div class="info-box-title">🎯 Goal: Document Analyzer UI</div>
+                    <p>By Day 4, you'll build a dashboard with:</p>
+                    <ul style="margin-left: 20px; margin-top: 10px; color: var(--text-secondary);">
+                        <li>File upload area with drag & drop</li>
+                        <li>Document list display</li>
+                        <li>Analysis results visualization</li>
+                        <li>Clean, professional styling</li>
+                    </ul>
+                </div>
+
+                <h3>The Frontend Triad</h3>
+                <table class="comparison-table">
+                    <tr><th>Technology</th><th>Purpose</th><th>Python Analogy</th></tr>
+                    <tr><td><strong>HTML</strong></td><td>Structure & Content</td><td>Like defining classes</td></tr>
+                    <tr><td><strong>CSS</strong></td><td>Styling & Layout</td><td>Like __str__ formatting</td></tr>
+                    <tr><td><strong>JavaScript</strong></td><td>Behavior & Logic</td><td>Like methods & functions</td></tr>
+                </table>
+
+                <div class="info-box tip">
+                    <div class="info-box-title">💡 Python Developer Advantage</div>
+                    <p>You already understand: variables, functions, loops, conditionals, objects. JavaScript uses all of these! The syntax is just slightly different.</p>
+                </div>
+            </div>
+
+            <!-- HTML Tab -->
+            <div id="html" class="tab-content">
+                <div class="day-separator"><span class="day-badge">Day 3</span></div>
+                <h2>HTML Essentials 🏗️</h2>
+                <p>HTML defines the structure and content of web pages using tags.</p>
+
+                <h3>Basic Structure</h3>
+                <div class="code-block">
+                    <span class="filename html">index.html</span>
+                    <pre><span class="tag">&lt;!DOCTYPE html&gt;</span>
+<span class="tag">&lt;html</span> <span class="attr">lang</span>=<span class="value">"en"</span><span class="tag">&gt;</span>
+<span class="tag">&lt;head&gt;</span>
+    <span class="tag">&lt;meta</span> <span class="attr">charset</span>=<span class="value">"UTF-8"</span><span class="tag">&gt;</span>
+    <span class="tag">&lt;title&gt;</span>Document Analyzer<span class="tag">&lt;/title&gt;</span>
+    <span class="tag">&lt;link</span> <span class="attr">rel</span>=<span class="value">"stylesheet"</span> <span class="attr">href</span>=<span class="value">"style.css"</span><span class="tag">&gt;</span>
+<span class="tag">&lt;/head&gt;</span>
+<span class="tag">&lt;body&gt;</span>
+    <span class="tag">&lt;h1&gt;</span>Hello World<span class="tag">&lt;/h1&gt;</span>
+    <span class="tag">&lt;script</span> <span class="attr">src</span>=<span class="value">"app.js"</span><span class="tag">&gt;&lt;/script&gt;</span>
+<span class="tag">&lt;/body&gt;</span>
+<span class="tag">&lt;/html&gt;</span></pre>
+                </div>
+
+                <h3>Common Elements</h3>
+                <table class="comparison-table">
+                    <tr><th>Element</th><th>Purpose</th><th>Example</th></tr>
+                    <tr><td><code>&lt;div&gt;</code></td><td>Generic container</td><td><code>&lt;div class="card"&gt;...&lt;/div&gt;</code></td></tr>
+                    <tr><td><code>&lt;h1&gt;-&lt;h6&gt;</code></td><td>Headings</td><td><code>&lt;h1&gt;Title&lt;/h1&gt;</code></td></tr>
+                    <tr><td><code>&lt;p&gt;</code></td><td>Paragraph</td><td><code>&lt;p&gt;Text here&lt;/p&gt;</code></td></tr>
+                    <tr><td><code>&lt;button&gt;</code></td><td>Clickable button</td><td><code>&lt;button&gt;Click&lt;/button&gt;</code></td></tr>
+                    <tr><td><code>&lt;input&gt;</code></td><td>User input</td><td><code>&lt;input type="text"&gt;</code></td></tr>
+                </table>
+
+                <div class="exercise">
+                    <div class="exercise-header">
+                        <span class="exercise-number">1</span>
+                        <span class="exercise-title">Try It: HTML Structure</span>
+                    </div>
+                    <div class="exercise-description">Create a document card with title, description, tags, and a delete button.</div>
+                    <button class="load-exercise-btn" onclick="loadExercise('html_structure')">Load in Editor →</button>
+                </div>
+            </div>
+
+            <!-- CSS Tab -->
+            <div id="css" class="tab-content">
+                <h2>CSS Styling 🎨</h2>
+                <p>CSS controls how HTML elements look - colors, fonts, spacing, and more!</p>
+
+                <h3>Basic Syntax</h3>
+                <div class="code-block">
+                    <span class="filename css">style.css</span>
+                    <pre><span class="comment">/* Select by element */</span>
+<span class="selector">body</span> {
+    <span class="property">font-family</span>: <span class="value">'Segoe UI', sans-serif</span>;
+    <span class="property">background</span>: <span class="value">#f5f5f5</span>;
+}
+
+<span class="comment">/* Select by class */</span>
+<span class="selector">.card</span> {
+    <span class="property">background</span>: <span class="value">white</span>;
+    <span class="property">border-radius</span>: <span class="value">8px</span>;
+    <span class="property">padding</span>: <span class="value">20px</span>;
+    <span class="property">box-shadow</span>: <span class="value">0 2px 4px rgba(0,0,0,0.1)</span>;
+}
+
+<span class="comment">/* Select by ID */</span>
+<span class="selector">#header</span> {
+    <span class="property">background</span>: <span class="value">linear-gradient(135deg, #667eea, #764ba2)</span>;
+}</pre>
+                </div>
+
+                <h3>The Box Model</h3>
+                <div class="code-block">
+                    <pre><span class="comment">/*
+┌─────────────────────────────┐
+│         MARGIN              │  ← Space outside
+│  ┌───────────────────────┐  │
+│  │      BORDER           │  │  ← The line
+│  │  ┌─────────────────┐  │  │
+│  │  │    PADDING      │  │  │  ← Space inside
+│  │  │  ┌───────────┐  │  │  │
+│  │  │  │  CONTENT  │  │  │  │  ← Your text
+│  │  │  └───────────┘  │  │  │
+│  │  └─────────────────┘  │  │
+│  └───────────────────────┘  │
+└─────────────────────────────┘
+*/</span></pre>
+                </div>
+
+                <div class="exercise">
+                    <div class="exercise-header">
+                        <span class="exercise-number">2</span>
+                        <span class="exercise-title">Try It: Style a Card</span>
+                    </div>
+                    <div class="exercise-description">Style a document card with background, padding, shadow, and hover effects.</div>
+                    <button class="load-exercise-btn" onclick="loadExercise('css_card')">Load in Editor →</button>
+                </div>
+            </div>
+
+            <!-- Layout Tab -->
+            <div id="layout" class="tab-content">
+                <h2>Modern Layout: Flexbox & Grid 📐</h2>
+                <p>Flexbox and Grid make complex layouts easy!</p>
+
+                <h3>Flexbox Basics</h3>
+                <div class="code-block">
+                    <pre><span class="selector">.container</span> {
+    <span class="property">display</span>: <span class="value">flex</span>;
+    <span class="property">gap</span>: <span class="value">20px</span>;
+    <span class="property">justify-content</span>: <span class="value">space-between</span>;
+    <span class="property">align-items</span>: <span class="value">center</span>;
+}</pre>
+                </div>
+
+                <div class="day-separator"><span class="day-badge">Day 4</span></div>
+
+                <h3>CSS Grid</h3>
+                <div class="code-block">
+                    <pre><span class="selector">.grid</span> {
+    <span class="property">display</span>: <span class="value">grid</span>;
+    <span class="property">grid-template-columns</span>: <span class="value">repeat(auto-fit, minmax(300px, 1fr))</span>;
+    <span class="property">gap</span>: <span class="value">20px</span>;
+}
+
+<span class="comment">/* Dashboard layout */</span>
+<span class="selector">.dashboard</span> {
+    <span class="property">display</span>: <span class="value">grid</span>;
+    <span class="property">grid-template-columns</span>: <span class="value">250px 1fr</span>;
+    <span class="property">min-height</span>: <span class="value">100vh</span>;
+}</pre>
+                </div>
+
+                <div class="exercise">
+                    <div class="exercise-header">
+                        <span class="exercise-number">3</span>
+                        <span class="exercise-title">Try It: Dashboard Layout</span>
+                    </div>
+                    <div class="exercise-description">Create a dashboard layout with sidebar, header, and main content area.</div>
+                    <button class="load-exercise-btn" onclick="loadExercise('layout')">Load in Editor →</button>
+                </div>
+            </div>
+
+            <!-- JavaScript Tab -->
+            <div id="js" class="tab-content">
+                <h2>JavaScript Essentials ⚡</h2>
+                <p>JavaScript adds interactivity. As a Python dev, you'll find it familiar!</p>
+
+                <h3>Python → JavaScript Cheatsheet</h3>
+                <table class="comparison-table">
+                    <tr><th>Concept</th><th>Python</th><th>JavaScript</th></tr>
+                    <tr><td>Variables</td><td><code>name = "Alice"</code></td><td><code>let name = "Alice";</code></td></tr>
+                    <tr><td>Constants</td><td><code>MAX = 100</code></td><td><code>const MAX = 100;</code></td></tr>
+                    <tr><td>Functions</td><td><code>def add(a, b):</code></td><td><code>function add(a, b) {</code></td></tr>
+                    <tr><td>Arrow fn</td><td><code>lambda x: x * 2</code></td><td><code>x => x * 2</code></td></tr>
+                    <tr><td>Print</td><td><code>print("hi")</code></td><td><code>console.log("hi");</code></td></tr>
+                    <tr><td>f-strings</td><td><code>f"Hi {name}"</code></td><td><code>`Hi ${name}`</code></td></tr>
+                </table>
+
+                <h3>Async/Await (Just Like Python!)</h3>
+                <div class="code-block">
+                    <pre><span class="keyword">async function</span> <span class="function">fetchDocuments</span>() {
+    <span class="keyword">const</span> response = <span class="keyword">await</span> <span class="function">fetch</span>(<span class="string">"/api/documents"</span>);
+    <span class="keyword">const</span> data = <span class="keyword">await</span> response.<span class="function">json</span>();
+    <span class="keyword">return</span> data;
+}</pre>
+                </div>
+
+                <div class="exercise">
+                    <div class="exercise-header">
+                        <span class="exercise-number">4</span>
+                        <span class="exercise-title">Try It: API Functions</span>
+                    </div>
+                    <div class="exercise-description">Write JavaScript functions to fetch, create, and delete documents from an API.</div>
+                    <button class="load-exercise-btn" onclick="loadExercise('js_api')">Load in Editor →</button>
+                </div>
+            </div>
+
+            <!-- DOM Tab -->
+            <div id="dom" class="tab-content">
+                <h2>DOM Manipulation 🔧</h2>
+                <p>The DOM lets JavaScript interact with HTML elements.</p>
+
+                <h3>Selecting Elements</h3>
+                <div class="code-block">
+                    <pre><span class="keyword">const</span> header = document.<span class="function">getElementById</span>(<span class="string">"header"</span>);
+<span class="keyword">const</span> card = document.<span class="function">querySelector</span>(<span class="string">".card"</span>);
+<span class="keyword">const</span> cards = document.<span class="function">querySelectorAll</span>(<span class="string">".card"</span>);</pre>
+                </div>
+
+                <h3>Event Handling</h3>
+                <div class="code-block">
+                    <pre><span class="keyword">const</span> btn = document.<span class="function">querySelector</span>(<span class="string">"#submitBtn"</span>);
+btn.<span class="function">addEventListener</span>(<span class="string">"click"</span>, () => {
+    console.<span class="function">log</span>(<span class="string">"Button clicked!"</span>);
+});
+
+<span class="keyword">const</span> form = document.<span class="function">querySelector</span>(<span class="string">"#uploadForm"</span>);
+form.<span class="function">addEventListener</span>(<span class="string">"submit"</span>, (e) => {
+    e.<span class="function">preventDefault</span>();
+    <span class="comment">// Handle form...</span>
+});</pre>
+                </div>
+
+                <div class="exercise">
+                    <div class="exercise-header">
+                        <span class="exercise-number">5</span>
+                        <span class="exercise-title">Try It: Interactive List</span>
+                    </div>
+                    <div class="exercise-description">Build an interactive document list with add, delete, and search.</div>
+                    <button class="load-exercise-btn" onclick="loadExercise('dom_list')">Load in Editor →</button>
+                </div>
+            </div>
+
+            <!-- Challenge Tab -->
+            <div id="challenge" class="tab-content">
+                <h2>Final Challenge: Document Upload UI 🚀</h2>
+                <p>Build the frontend for your Document Analyzer!</p>
+
+                <div class="info-box concept">
+                    <div class="info-box-title">🎯 The Mission</div>
+                    <p>Create a professional document upload and display interface!</p>
+                </div>
+
+                <h3>Features to Build</h3>
+                <ul style="margin-left: 20px; color: var(--text-secondary); margin-bottom: 20px;">
+                    <li>Header with navigation</li>
+                    <li>File upload area with drag & drop</li>
+                    <li>Document list with cards</li>
+                    <li>Loading states and error handling</li>
+                    <li>Responsive design</li>
+                </ul>
+
+                <button class="load-exercise-btn" onclick="loadExercise('challenge')" style="width: 100%; padding: 15px; font-size: 16px; margin: 20px 0;">
+                    📥 Load Challenge Template →
+                </button>
+
+                <div class="info-box tip" style="margin-top: 30px;">
+                    <div class="info-box-title">🎉 Ready for Integration!</div>
+                    <p>Next (Days 5-6) you'll connect this UI to your FastAPI backend!</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Panel - Code Editor -->
+        <div class="editor-panel">
+            <div class="editor-header">
+                <div class="editor-title">
+                    <div class="dot"></div>
+                    <span id="editorFilename">index.html</span>
+                </div>
+                <div class="editor-actions">
+                    <button class="editor-btn" onclick="resetEditor()">↺ Reset</button>
+                    <button class="editor-btn" onclick="copyEditorCode()">📋 Copy</button>
+                    <button class="editor-btn run" onclick="runCode()">▶ Preview</button>
+                </div>
+            </div>
+            <div class="code-editor-container">
+                <div class="code-editor-wrapper">
+                    <textarea class="code-editor" id="codeEditor" spellcheck="false"><!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Document Analyzer</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', sans-serif; background: #f5f5f5; min-height: 100vh; }
+        .header { background: linear-gradient(135deg, #667eea, #764ba2); color: white; padding: 20px; text-align: center; }
+        .container { max-width: 800px; margin: 20px auto; padding: 20px; }
+        .card { background: white; border-radius: 8px; padding: 20px; margin-bottom: 16px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .btn { background: #667eea; color: white; padding: 10px 20px; border: none; border-radius: 6px; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <h1>📄 Document Analyzer</h1>
+    </header>
+    <div class="container">
+        <div class="card">
+            <h2>Upload Document</h2>
+            <p>Select a file to analyze</p>
+            <input type="file" id="fileInput">
+            <button class="btn">Upload</button>
+        </div>
+    </div>
+</body>
+</html></textarea>
+                </div>
+            </div>
+            <div class="output-panel">
+                <div class="output-header">
+                    <div class="output-title">👁️ Preview</div>
+                    <span class="output-status" id="outputStatus">Ready</span>
+                </div>
+                <div class="output-content" id="outputContent">
+                    <iframe id="previewFrame"></iframe>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const tabOrder = ['overview', 'html', 'css', 'layout', 'js', 'dom', 'challenge'];
+        
+        function showTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+            document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
+            document.getElementById(tabId).classList.add('active');
+            event.target.classList.add('active');
+            const index = tabOrder.indexOf(tabId);
+            document.getElementById('progressFill').style.width = ((index + 1) / tabOrder.length * 100) + '%';
+        }
+
+        function runCode() {
+            document.getElementById('previewFrame').srcdoc = document.getElementById('codeEditor').value;
+            document.getElementById('outputStatus').textContent = 'Updated';
+        }
+
+        function resetEditor() {
+            document.getElementById('codeEditor').value = `<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Document Analyzer</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', sans-serif; background: #f5f5f5; min-height: 100vh; }
+        .header { background: linear-gradient(135deg, #667eea, #764ba2); color: white; padding: 20px; text-align: center; }
+        .container { max-width: 800px; margin: 20px auto; padding: 20px; }
+        .card { background: white; border-radius: 8px; padding: 20px; margin-bottom: 16px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .btn { background: #667eea; color: white; padding: 10px 20px; border: none; border-radius: 6px; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <h1>📄 Document Analyzer</h1>
+    </header>
+    <div class="container">
+        <div class="card">
+            <h2>Upload Document</h2>
+            <p>Select a file to analyze</p>
+            <input type="file" id="fileInput">
+            <button class="btn">Upload</button>
+        </div>
+    </div>
+</body>
+</html>`;
+            runCode();
+        }
+
+        function copyEditorCode() {
+            navigator.clipboard.writeText(document.getElementById('codeEditor').value);
+        }
+
+        const exercises = {
+            html_structure: `<!DOCTYPE html>
+<html>
+<head>
+    <title>Document Card</title>
+    <style>
+        body { font-family: sans-serif; padding: 20px; background: #f0f0f0; }
+        .card { background: white; padding: 20px; border-radius: 8px; max-width: 400px; }
+        .card h3 { margin-bottom: 10px; }
+        .tags { display: flex; gap: 8px; margin: 15px 0; }
+        .tag { background: #e0e0ff; color: #4040a0; padding: 4px 12px; border-radius: 12px; font-size: 12px; }
+        .btn-delete { background: #ff4444; color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h3>Project Report Q4</h3>
+        <p>Quarterly financial report with analysis.</p>
+        <div class="tags">
+            <span class="tag">finance</span>
+            <span class="tag">report</span>
+        </div>
+        <button class="btn-delete">Delete</button>
+    </div>
+</body>
+</html>`,
+            css_card: `<!DOCTYPE html>
+<html>
+<head>
+    <title>Styled Card</title>
+    <style>
+        body { font-family: 'Segoe UI', sans-serif; background: linear-gradient(135deg, #667eea20, #764ba220); min-height: 100vh; padding: 40px; display: flex; justify-content: center; }
+        .card { background: white; border-radius: 12px; padding: 24px; width: 350px; box-shadow: 0 4px 20px rgba(0,0,0,0.1); transition: transform 0.2s, box-shadow 0.2s; }
+        .card:hover { transform: translateY(-4px); box-shadow: 0 8px 30px rgba(0,0,0,0.15); }
+        .card h3 { color: #333; margin-bottom: 8px; }
+        .badge { background: #e0ffe0; color: #208020; padding: 4px 10px; border-radius: 12px; font-size: 12px; }
+        .card p { color: #666; line-height: 1.6; margin: 16px 0; }
+        .btn { background: #667eea; color: white; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; }
+        .btn:hover { background: #5a6fd6; }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+            <h3>Annual Report 2024</h3>
+            <span class="badge">PDF</span>
+        </div>
+        <p>Complete annual report including financial statements and market analysis.</p>
+        <button class="btn">View Analysis</button>
+    </div>
+</body>
+</html>`,
+            layout: `<!DOCTYPE html>
+<html>
+<head>
+    <title>Dashboard Layout</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', sans-serif; }
+        .dashboard { display: grid; grid-template-columns: 250px 1fr; grid-template-rows: 60px 1fr; min-height: 100vh; }
+        .header { grid-column: 1 / -1; background: linear-gradient(135deg, #667eea, #764ba2); color: white; display: flex; align-items: center; padding: 0 20px; justify-content: space-between; }
+        .sidebar { background: #1a1a2e; color: white; padding: 20px; }
+        .nav-item { padding: 12px; margin-bottom: 8px; border-radius: 6px; cursor: pointer; }
+        .nav-item:hover { background: #252542; }
+        .nav-item.active { background: #667eea; }
+        .main { background: #f5f5f5; padding: 20px; }
+        .stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+        .stat-card { background: white; padding: 20px; border-radius: 8px; text-align: center; }
+        .stat-card h4 { color: #888; font-size: 14px; }
+        .stat-card .value { font-size: 28px; font-weight: bold; color: #333; }
+    </style>
+</head>
+<body>
+    <div class="dashboard">
+        <header class="header">
+            <h1>📄 Document Analyzer</h1>
+            <span>Welcome, User</span>
+        </header>
+        <aside class="sidebar">
+            <div class="nav-item active">📊 Dashboard</div>
+            <div class="nav-item">📁 Documents</div>
+            <div class="nav-item">📤 Upload</div>
+        </aside>
+        <main class="main">
+            <div class="stats">
+                <div class="stat-card"><h4>Total Documents</h4><div class="value">24</div></div>
+                <div class="stat-card"><h4>Analyzed</h4><div class="value">18</div></div>
+                <div class="stat-card"><h4>Pending</h4><div class="value">6</div></div>
+            </div>
+        </main>
+    </div>
+</body>
+</html>`,
+            js_api: `<!DOCTYPE html>
+<html>
+<head>
+    <title>API Functions</title>
+    <style>
+        body { font-family: monospace; padding: 20px; background: #1a1a2e; color: #fff; }
+        .output { background: #0a0a14; padding: 20px; border-radius: 8px; white-space: pre-wrap; margin-top: 20px; }
+        button { background: #667eea; color: white; border: none; padding: 10px 20px; margin: 5px; border-radius: 6px; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <h2>API Functions Demo</h2>
+    <button onclick="testFetch()">Fetch Data</button>
+    <div class="output" id="output">Click button to test...</div>
+    <script>
+        const API_URL = "https://jsonplaceholder.typicode.com";
+        
+        async function fetchDocuments() {
+            const response = await fetch(API_URL + "/posts?_limit=3");
+            return response.json();
+        }
+        
+        async function testFetch() {
+            const output = document.getElementById("output");
+            output.textContent = "Fetching...";
+            const docs = await fetchDocuments();
+            output.textContent = "Fetched:\\n" + JSON.stringify(docs, null, 2);
+        }
+    </script>
+</body>
+</html>`,
+            dom_list: `<!DOCTYPE html>
+<html>
+<head>
+    <title>Interactive List</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', sans-serif; background: #f5f5f5; padding: 20px; }
+        .container { max-width: 500px; margin: 0 auto; }
+        .controls { display: flex; gap: 10px; margin-bottom: 20px; }
+        input { flex: 1; padding: 12px; border: 1px solid #ddd; border-radius: 6px; }
+        button { background: #667eea; color: white; border: none; padding: 12px 24px; border-radius: 6px; cursor: pointer; }
+        .doc-item { background: white; padding: 16px; margin-bottom: 8px; border-radius: 8px; display: flex; justify-content: space-between; }
+        .btn-delete { background: #ff4444; padding: 8px 16px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📁 My Documents</h1>
+        <div class="controls">
+            <input type="text" id="titleInput" placeholder="Document title...">
+            <button onclick="addDocument()">Add</button>
+        </div>
+        <div id="docList"></div>
+    </div>
+    <script>
+        let documents = [];
+        let nextId = 1;
+        
+        function addDocument() {
+            const input = document.getElementById("titleInput");
+            if (!input.value.trim()) return;
+            documents.push({ id: nextId++, title: input.value });
+            input.value = "";
+            render();
+        }
+        
+        function deleteDocument(id) {
+            documents = documents.filter(d => d.id !== id);
+            render();
+        }
+        
+        function render() {
+            const list = document.getElementById("docList");
+            list.innerHTML = documents.map(doc => 
+                '<div class="doc-item"><span>' + doc.title + '</span>' +
+                '<button class="btn-delete" onclick="deleteDocument(' + doc.id + ')">Delete</button></div>'
+            ).join("");
+        }
+        
+        document.getElementById("titleInput").addEventListener("keypress", e => {
+            if (e.key === "Enter") addDocument();
+        });
+    </script>
+</body>
+</html>`,
+            challenge: `<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document Analyzer</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', sans-serif; background: #f5f7fa; min-height: 100vh; }
+        .header { background: linear-gradient(135deg, #667eea, #764ba2); color: white; padding: 20px 40px; display: flex; justify-content: space-between; align-items: center; }
+        .logo { font-size: 24px; font-weight: bold; }
+        .container { max-width: 1000px; margin: 0 auto; padding: 40px 20px; }
+        .upload-area { background: white; border: 2px dashed #ccc; border-radius: 12px; padding: 60px; text-align: center; margin-bottom: 40px; cursor: pointer; transition: all 0.3s; }
+        .upload-area:hover { border-color: #667eea; background: #f8f9ff; }
+        .upload-icon { font-size: 48px; margin-bottom: 20px; }
+        .upload-btn { background: #667eea; color: white; border: none; padding: 12px 30px; border-radius: 6px; font-size: 16px; cursor: pointer; }
+        #fileInput { display: none; }
+        .doc-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; }
+        .doc-card { background: white; border-radius: 12px; padding: 24px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); transition: transform 0.2s; }
+        .doc-card:hover { transform: translateY(-4px); }
+        .doc-title { font-size: 18px; font-weight: 600; margin-bottom: 8px; }
+        .doc-type { background: #e8f0fe; color: #1a73e8; padding: 4px 10px; border-radius: 12px; font-size: 12px; display: inline-block; }
+        .doc-stats { display: flex; gap: 20px; margin-top: 16px; padding-top: 16px; border-top: 1px solid #eee; }
+        .stat { text-align: center; }
+        .stat-value { font-size: 20px; font-weight: 600; color: #667eea; }
+        .stat-label { font-size: 12px; color: #888; }
+        .loading { text-align: center; padding: 40px; }
+        .spinner { width: 40px; height: 40px; border: 3px solid #f0f0f0; border-top-color: #667eea; border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto 20px; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .empty-state { text-align: center; padding: 60px; color: #888; }
+        .empty-state .icon { font-size: 64px; margin-bottom: 20px; }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="logo">📄 Document Analyzer</div>
+    </header>
+    <div class="container">
+        <div class="upload-area" onclick="document.getElementById('fileInput').click()">
+            <div class="upload-icon">📤</div>
+            <h2>Upload Document</h2>
+            <p style="color: #888; margin: 10px 0 20px;">Drag & drop or click to browse</p>
+            <button class="upload-btn">Select Files</button>
+            <input type="file" id="fileInput" accept=".pdf,.txt,.doc">
+        </div>
+        <h2 style="margin-bottom: 20px;">Your Documents</h2>
+        <div id="documentList">
+            <div class="empty-state">
+                <div class="icon">📁</div>
+                <h3>No documents yet</h3>
+                <p>Upload a document to get started</p>
+            </div>
+        </div>
+    </div>
+    <script>
+        let documents = [];
+        const fileInput = document.getElementById('fileInput');
+        const documentList = document.getElementById('documentList');
+        
+        fileInput.addEventListener('change', async (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+            
+            documentList.innerHTML = '<div class="loading"><div class="spinner"></div><p>Analyzing...</p></div>';
+            await new Promise(r => setTimeout(r, 1500));
+            
+            documents.push({
+                id: Date.now(),
+                title: file.name,
+                type: file.name.split('.').pop().toUpperCase(),
+                words: Math.floor(Math.random() * 5000) + 500,
+                sentences: Math.floor(Math.random() * 200) + 20
+            });
+            render();
+        });
+        
+        function render() {
+            if (documents.length === 0) {
+                documentList.innerHTML = '<div class="empty-state"><div class="icon">📁</div><h3>No documents yet</h3></div>';
+                return;
+            }
+            documentList.innerHTML = '<div class="doc-grid">' + documents.map(doc => 
+                '<div class="doc-card"><div style="display:flex;justify-content:space-between"><span class="doc-title">' + doc.title + '</span><span class="doc-type">' + doc.type + '</span></div>' +
+                '<div class="doc-stats"><div class="stat"><div class="stat-value">' + doc.words + '</div><div class="stat-label">Words</div></div>' +
+                '<div class="stat"><div class="stat-value">' + doc.sentences + '</div><div class="stat-label">Sentences</div></div></div></div>'
+            ).join('') + '</div>';
+        }
+    </script>
+</body>
+</html>`
+        };
+
+        function loadExercise(name) {
+            if (exercises[name]) {
+                document.getElementById('codeEditor').value = exercises[name];
+                document.getElementById('editorFilename').textContent = 'index.html';
+                runCode();
+            }
+        }
+
+        document.getElementById('codeEditor').addEventListener('keydown', function(e) {
+            if (e.key === 'Tab') {
+                e.preventDefault();
+                const start = this.selectionStart;
+                this.value = this.value.substring(0, start) + '    ' + this.value.substring(this.selectionEnd);
+                this.selectionStart = this.selectionEnd = start + 4;
+            }
+        });
+
+        runCode();
+    </script>
+</body>
+</html>

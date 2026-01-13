@@ -1,0 +1,1466 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Week 1: API Integration | Days 5-6</title>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        :root {
+            --bg-dark: #0a0f1a;
+            --bg-card: #111827;
+            --bg-input: #1f2937;
+            --border: #374151;
+            --text-primary: #f9fafb;
+            --text-secondary: #d1d5db;
+            --text-muted: #9ca3af;
+            --accent-emerald: #10b981;
+            --accent-teal: #14b8a6;
+            --accent-cyan: #06b6d4;
+            --accent-blue: #3b82f6;
+            --accent-violet: #8b5cf6;
+            --accent-pink: #ec4899;
+            --accent-orange: #f97316;
+            --accent-yellow: #eab308;
+            --accent-red: #ef4444;
+        }
+        body { font-family: 'Space Grotesk', sans-serif; background: var(--bg-dark); color: var(--text-primary); min-height: 100vh; line-height: 1.6; }
+        .header { background: linear-gradient(135deg, #10b981 0%, #14b8a6 50%, #06b6d4 100%); padding: 20px 30px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 4px 30px rgba(16, 185, 129, 0.3); }
+        .header h1 { font-size: 24px; font-weight: 700; display: flex; align-items: center; gap: 12px; color: #0a0f1a; }
+        .header .week-badge { background: rgba(0,0,0,0.2); padding: 6px 14px; border-radius: 20px; font-size: 14px; font-weight: 500; color: #0a0f1a; }
+        .progress-bar { height: 4px; background: rgba(255,255,255,0.1); }
+        .progress-fill { height: 100%; background: linear-gradient(90deg, var(--accent-emerald), var(--accent-cyan)); width: 0%; transition: width 0.5s ease; }
+        .container { display: grid; grid-template-columns: 1fr 1fr; height: calc(100vh - 80px); }
+        @media (max-width: 1200px) { .container { grid-template-columns: 1fr; height: auto; } }
+        .lesson-panel { padding: 0; overflow-y: auto; border-right: 1px solid var(--border); }
+        .tabs { display: flex; background: var(--bg-card); border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 100; overflow-x: auto; }
+        .tab { padding: 14px 18px; background: none; border: none; color: var(--text-secondary); font-family: 'Space Grotesk', sans-serif; font-size: 14px; font-weight: 500; cursor: pointer; border-bottom: 2px solid transparent; transition: all 0.2s; white-space: nowrap; }
+        .tab:hover { color: var(--text-primary); background: var(--bg-input); }
+        .tab.active { color: var(--accent-emerald); border-bottom-color: var(--accent-emerald); }
+        .tab-content { display: none; padding: 30px; animation: fadeIn 0.3s ease; }
+        .tab-content.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .tab-content h2 { color: var(--accent-emerald); font-size: 24px; margin-bottom: 16px; padding-bottom: 10px; border-bottom: 1px solid var(--border); }
+        .tab-content h3 { color: var(--accent-teal); font-size: 18px; margin-top: 28px; margin-bottom: 12px; }
+        .tab-content h4 { color: var(--accent-cyan); font-size: 16px; margin-top: 20px; margin-bottom: 10px; }
+        .tab-content p { color: var(--text-secondary); margin-bottom: 16px; }
+        .info-box { background: var(--bg-card); border: 1px solid var(--border); border-radius: 10px; padding: 16px 20px; margin: 16px 0; }
+        .info-box.tip { border-left: 4px solid var(--accent-emerald); background: linear-gradient(90deg, rgba(16, 185, 129, 0.1), transparent); }
+        .info-box.warning { border-left: 4px solid var(--accent-orange); background: linear-gradient(90deg, rgba(249, 115, 22, 0.1), transparent); }
+        .info-box.concept { border-left: 4px solid var(--accent-violet); background: linear-gradient(90deg, rgba(139, 92, 246, 0.1), transparent); }
+        .info-box.success { border-left: 4px solid var(--accent-emerald); background: linear-gradient(90deg, rgba(16, 185, 129, 0.15), transparent); }
+        .info-box-title { font-weight: 600; margin-bottom: 8px; display: flex; align-items: center; gap: 8px; }
+        .info-box.tip .info-box-title { color: var(--accent-emerald); }
+        .info-box.warning .info-box-title { color: var(--accent-orange); }
+        .info-box.concept .info-box-title { color: var(--accent-violet); }
+        .info-box.success .info-box-title { color: var(--accent-emerald); }
+        .code-block { background: #030712; border: 1px solid var(--border); border-radius: 10px; padding: 16px; margin: 16px 0; overflow-x: auto; position: relative; }
+        .code-block pre { font-family: 'JetBrains Mono', monospace; font-size: 13px; line-height: 1.6; color: var(--text-primary); margin: 0; }
+        .code-block .filename { position: absolute; top: -10px; left: 16px; background: var(--bg-card); padding: 2px 10px; border-radius: 4px; font-size: 12px; font-family: 'JetBrains Mono', monospace; }
+        .code-block .filename.py { color: var(--accent-blue); }
+        .code-block .filename.js { color: var(--accent-yellow); }
+        .code-block .filename.html { color: var(--accent-orange); }
+        .keyword { color: var(--accent-pink); }
+        .string { color: var(--accent-emerald); }
+        .number { color: var(--accent-orange); }
+        .comment { color: #6b7280; font-style: italic; }
+        .function { color: var(--accent-cyan); }
+        .class-name { color: var(--accent-yellow); }
+        .decorator { color: var(--accent-teal); }
+        .day-separator { display: flex; align-items: center; gap: 16px; margin: 30px 0; color: var(--accent-emerald); }
+        .day-separator::before, .day-separator::after { content: ''; flex: 1; height: 1px; background: linear-gradient(90deg, transparent, var(--border), transparent); }
+        .day-badge { background: linear-gradient(135deg, var(--accent-emerald), var(--accent-teal)); padding: 6px 16px; border-radius: 20px; font-weight: 600; font-size: 14px; color: #0a0f1a; }
+        .topic-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 16px; margin: 20px 0; }
+        .topic-card { background: var(--bg-input); border: 1px solid var(--border); border-radius: 12px; padding: 20px; cursor: pointer; transition: all 0.3s; text-align: center; }
+        .topic-card:hover { border-color: var(--accent-emerald); transform: translateY(-4px); box-shadow: 0 8px 25px rgba(16, 185, 129, 0.2); }
+        .topic-card .icon { font-size: 32px; margin-bottom: 12px; }
+        .topic-card .title { font-weight: 600; color: var(--text-primary); margin-bottom: 6px; }
+        .topic-card .desc { font-size: 13px; color: var(--text-muted); }
+        .exercise { background: linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, rgba(6, 182, 212, 0.1) 100%); border: 1px solid var(--border); border-radius: 12px; padding: 20px; margin: 20px 0; }
+        .exercise-header { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+        .exercise-number { background: linear-gradient(135deg, var(--accent-emerald), var(--accent-teal)); color: #0a0f1a; width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: 14px; }
+        .exercise-title { font-weight: 600; color: var(--text-primary); }
+        .exercise-description { color: var(--text-secondary); margin-bottom: 12px; }
+        .load-exercise-btn { background: linear-gradient(135deg, var(--accent-emerald), var(--accent-teal)); color: #0a0f1a; border: none; padding: 10px 20px; border-radius: 6px; font-family: 'Space Grotesk', sans-serif; font-weight: 600; cursor: pointer; transition: transform 0.2s, box-shadow 0.2s; }
+        .load-exercise-btn:hover { transform: translateY(-2px); box-shadow: 0 4px 20px rgba(16, 185, 129, 0.4); }
+        code { background: var(--bg-input); padding: 2px 6px; border-radius: 4px; font-family: 'JetBrains Mono', monospace; font-size: 13px; color: var(--accent-cyan); }
+        .comparison-table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 14px; }
+        .comparison-table th, .comparison-table td { padding: 12px; text-align: left; border: 1px solid var(--border); }
+        .comparison-table th { background: var(--bg-input); color: var(--accent-emerald); font-weight: 600; }
+        .comparison-table td { background: var(--bg-card); color: var(--text-secondary); }
+        .method-badge { display: inline-block; padding: 4px 10px; border-radius: 4px; font-family: 'JetBrains Mono', monospace; font-size: 12px; font-weight: 600; }
+        .method-badge.get { background: rgba(16, 185, 129, 0.2); color: var(--accent-emerald); }
+        .method-badge.post { background: rgba(59, 130, 246, 0.2); color: var(--accent-blue); }
+        .method-badge.put { background: rgba(249, 115, 22, 0.2); color: var(--accent-orange); }
+        .method-badge.delete { background: rgba(239, 68, 68, 0.2); color: var(--accent-red); }
+        .endpoint { background: #030712; border: 1px solid var(--border); border-radius: 8px; padding: 12px 16px; margin: 10px 0; display: flex; align-items: center; gap: 12px; }
+        .endpoint .path { font-family: 'JetBrains Mono', monospace; color: var(--text-primary); font-size: 13px; }
+        .endpoint .desc { color: var(--text-muted); font-size: 12px; margin-left: auto; }
+        .editor-panel { display: flex; flex-direction: column; background: var(--bg-card); }
+        .editor-header { display: flex; align-items: center; justify-content: space-between; padding: 12px 16px; background: var(--bg-input); border-bottom: 1px solid var(--border); }
+        .editor-title { display: flex; align-items: center; gap: 8px; font-weight: 500; font-size: 14px; }
+        .editor-title .dot { width: 12px; height: 12px; border-radius: 50%; background: var(--accent-emerald); }
+        .editor-actions { display: flex; gap: 8px; }
+        .editor-btn { background: var(--bg-card); border: 1px solid var(--border); color: var(--text-secondary); padding: 6px 14px; border-radius: 6px; font-family: 'Space Grotesk', sans-serif; font-size: 13px; cursor: pointer; transition: all 0.2s; }
+        .editor-btn:hover { background: var(--border); color: var(--text-primary); }
+        .editor-btn.run { background: linear-gradient(135deg, var(--accent-emerald), var(--accent-teal)); border: none; color: #0a0a0a; font-weight: 600; }
+        .code-editor-container { flex: 1; display: flex; flex-direction: column; min-height: 0; }
+        .code-editor-wrapper { flex: 1; position: relative; overflow: hidden; }
+        .code-editor { width: 100%; height: 100%; background: var(--bg-dark); border: none; color: var(--text-primary); font-family: 'JetBrains Mono', monospace; font-size: 14px; line-height: 1.6; padding: 16px; resize: none; outline: none; tab-size: 4; }
+        .output-panel { border-top: 1px solid var(--border); background: var(--bg-dark); }
+        .output-header { display: flex; align-items: center; justify-content: space-between; padding: 10px 16px; background: var(--bg-input); border-bottom: 1px solid var(--border); }
+        .output-title { font-size: 13px; font-weight: 500; color: var(--text-secondary); }
+        .output-status { font-size: 12px; padding: 2px 8px; border-radius: 4px; background: rgba(16, 185, 129, 0.2); color: var(--accent-emerald); }
+        .output-content { min-height: 150px; max-height: 300px; overflow-y: auto; background: white; }
+        .output-content iframe { width: 100%; height: 200px; border: none; }
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: var(--bg-dark); }
+        ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+        .architecture-diagram { background: var(--bg-input); border: 1px solid var(--border); border-radius: 10px; padding: 30px; margin: 20px 0; text-align: center; font-family: 'JetBrains Mono', monospace; font-size: 14px; }
+        .architecture-diagram .box { display: inline-block; background: var(--bg-card); border: 2px solid var(--accent-emerald); border-radius: 8px; padding: 15px 25px; margin: 10px; }
+        .architecture-diagram .arrow { color: var(--accent-cyan); margin: 0 10px; }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <h1><span class="icon">🔗</span> API Integration</h1>
+        <span class="week-badge">Week 1 · Days 5-6</span>
+    </header>
+    <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+
+    <div class="container">
+        <div class="lesson-panel">
+            <div class="tabs">
+                <button class="tab active" onclick="showTab('overview')">📋 Overview</button>
+                <button class="tab" onclick="showTab('fetch')">🌐 Fetch API</button>
+                <button class="tab" onclick="showTab('crud')">📝 CRUD Ops</button>
+                <button class="tab" onclick="showTab('upload')">📤 File Upload</button>
+                <button class="tab" onclick="showTab('errors')">⚠️ Errors</button>
+                <button class="tab" onclick="showTab('cors')">🔒 CORS</button>
+                <button class="tab" onclick="showTab('challenge')">🚀 Challenge</button>
+            </div>
+
+            <!-- Overview Tab -->
+            <div id="overview" class="tab-content active">
+                <h2>Connecting Frontend to Backend 🔗</h2>
+                <p>Now we bring it all together! Connect your HTML/CSS/JS frontend to your FastAPI backend to create a complete full-stack application.</p>
+
+                <div class="architecture-diagram">
+                    <div class="box">🌐 Browser<br><small>HTML/CSS/JS</small></div>
+                    <span class="arrow">← fetch() →</span>
+                    <div class="box">⚡ FastAPI<br><small>Python Backend</small></div>
+                    <span class="arrow">← ORM →</span>
+                    <div class="box">💾 Database<br><small>JSON/SQLite</small></div>
+                </div>
+
+                <div class="topic-grid">
+                    <div class="topic-card" onclick="showTab('fetch')">
+                        <div class="icon">🌐</div>
+                        <div class="title">Fetch API</div>
+                        <div class="desc">HTTP requests</div>
+                    </div>
+                    <div class="topic-card" onclick="showTab('crud')">
+                        <div class="icon">📝</div>
+                        <div class="title">CRUD</div>
+                        <div class="desc">Full operations</div>
+                    </div>
+                    <div class="topic-card" onclick="showTab('upload')">
+                        <div class="icon">📤</div>
+                        <div class="title">File Upload</div>
+                        <div class="desc">FormData API</div>
+                    </div>
+                    <div class="topic-card" onclick="showTab('errors')">
+                        <div class="icon">⚠️</div>
+                        <div class="title">Errors</div>
+                        <div class="desc">Error handling</div>
+                    </div>
+                    <div class="topic-card" onclick="showTab('cors')">
+                        <div class="icon">🔒</div>
+                        <div class="title">CORS</div>
+                        <div class="desc">Cross-origin</div>
+                    </div>
+                </div>
+
+                <div class="info-box concept">
+                    <div class="info-box-title">🎯 Goal: Full-Stack Document Analyzer</div>
+                    <p>By the end of Day 6, you'll have:</p>
+                    <ul style="margin-left: 20px; margin-top: 10px; color: var(--text-secondary);">
+                        <li>Frontend that uploads files to FastAPI</li>
+                        <li>Real-time document list from API</li>
+                        <li>Delete and update operations</li>
+                        <li>Proper error handling and loading states</li>
+                    </ul>
+                </div>
+
+                <h3>What You Need Running</h3>
+                <div class="code-block">
+                    <pre><span class="comment"># Terminal 1: Backend</span>
+uvicorn main:app --reload --port 8000
+
+<span class="comment"># Terminal 2: Frontend (simple server)</span>
+python -m http.server 3000
+
+<span class="comment"># Or use VS Code Live Server extension</span></pre>
+                </div>
+            </div>
+
+            <!-- Fetch API Tab -->
+            <div id="fetch" class="tab-content">
+                <div class="day-separator"><span class="day-badge">Day 5</span></div>
+                <h2>The Fetch API 🌐</h2>
+                <p>Fetch is the modern way to make HTTP requests from JavaScript. It's similar to Python's <code>requests</code> library!</p>
+
+                <h3>Basic GET Request</h3>
+                <div class="code-block">
+                    <span class="filename js">app.js</span>
+                    <pre><span class="comment">// Simple GET request</span>
+<span class="keyword">async function</span> <span class="function">getDocuments</span>() {
+    <span class="keyword">const</span> response = <span class="keyword">await</span> <span class="function">fetch</span>(<span class="string">"http://localhost:8000/api/documents"</span>);
+    <span class="keyword">const</span> data = <span class="keyword">await</span> response.<span class="function">json</span>();
+    <span class="keyword">return</span> data;
+}
+
+<span class="comment">// Usage</span>
+<span class="keyword">const</span> docs = <span class="keyword">await</span> <span class="function">getDocuments</span>();
+console.<span class="function">log</span>(docs);</pre>
+                </div>
+
+                <h3>Python requests vs JavaScript fetch</h3>
+                <table class="comparison-table">
+                    <tr><th>Python (requests)</th><th>JavaScript (fetch)</th></tr>
+                    <tr>
+                        <td><code>response = requests.get(url)</code></td>
+                        <td><code>response = await fetch(url)</code></td>
+                    </tr>
+                    <tr>
+                        <td><code>data = response.json()</code></td>
+                        <td><code>data = await response.json()</code></td>
+                    </tr>
+                    <tr>
+                        <td><code>response.status_code</code></td>
+                        <td><code>response.status</code></td>
+                    </tr>
+                    <tr>
+                        <td><code>response.ok</code></td>
+                        <td><code>response.ok</code></td>
+                    </tr>
+                </table>
+
+                <h3>POST Request with JSON Body</h3>
+                <div class="code-block">
+                    <pre><span class="keyword">async function</span> <span class="function">createDocument</span>(doc) {
+    <span class="keyword">const</span> response = <span class="keyword">await</span> <span class="function">fetch</span>(<span class="string">"http://localhost:8000/api/documents"</span>, {
+        method: <span class="string">"POST"</span>,
+        headers: {
+            <span class="string">"Content-Type"</span>: <span class="string">"application/json"</span>
+        },
+        body: JSON.<span class="function">stringify</span>(doc)
+    });
+    
+    <span class="keyword">if</span> (!response.ok) {
+        <span class="keyword">throw new</span> <span class="class-name">Error</span>(<span class="string">`HTTP error! status: </span>${response.status}<span class="string">`</span>);
+    }
+    
+    <span class="keyword">return</span> response.<span class="function">json</span>();
+}
+
+<span class="comment">// Usage</span>
+<span class="keyword">const</span> newDoc = <span class="keyword">await</span> <span class="function">createDocument</span>({
+    title: <span class="string">"My Document"</span>,
+    content: <span class="string">"Hello world!"</span>
+});</pre>
+                </div>
+
+                <div class="info-box tip">
+                    <div class="info-box-title">💡 Key Differences from Python</div>
+                    <ul style="margin-left: 20px; margin-top: 10px; color: var(--text-secondary);">
+                        <li><code>fetch()</code> returns a Promise - always use <code>await</code></li>
+                        <li><code>response.json()</code> is also async - needs <code>await</code></li>
+                        <li>Must stringify JSON for the body</li>
+                        <li>Headers are an object, not a dict</li>
+                    </ul>
+                </div>
+
+                <div class="exercise">
+                    <div class="exercise-header">
+                        <span class="exercise-number">1</span>
+                        <span class="exercise-title">Try It: API Client Class</span>
+                    </div>
+                    <div class="exercise-description">Create a reusable API client class with methods for all HTTP verbs.</div>
+                    <button class="load-exercise-btn" onclick="loadExercise('api_client')">Load in Editor →</button>
+                </div>
+            </div>
+
+            <!-- CRUD Operations Tab -->
+            <div id="crud" class="tab-content">
+                <h2>Full CRUD Operations 📝</h2>
+                <p>Let's implement all Create, Read, Update, Delete operations with proper error handling.</p>
+
+                <h3>Complete API Service</h3>
+                <div class="code-block">
+                    <span class="filename js">api.js</span>
+                    <pre><span class="keyword">const</span> API_BASE = <span class="string">"http://localhost:8000/api"</span>;
+
+<span class="keyword">const</span> api = {
+    <span class="comment">// GET all documents</span>
+    <span class="keyword">async</span> <span class="function">getDocuments</span>(search = <span class="string">""</span>) {
+        <span class="keyword">const</span> url = search 
+            ? <span class="string">`</span>${API_BASE}<span class="string">/documents?q=</span>${<span class="function">encodeURIComponent</span>(search)}<span class="string">`</span>
+            : <span class="string">`</span>${API_BASE}<span class="string">/documents`</span>;
+        <span class="keyword">const</span> res = <span class="keyword">await</span> <span class="function">fetch</span>(url);
+        <span class="keyword">return</span> res.<span class="function">json</span>();
+    },
+
+    <span class="comment">// GET single document</span>
+    <span class="keyword">async</span> <span class="function">getDocument</span>(id) {
+        <span class="keyword">const</span> res = <span class="keyword">await</span> <span class="function">fetch</span>(<span class="string">`</span>${API_BASE}<span class="string">/documents/</span>${id}<span class="string">`</span>);
+        <span class="keyword">if</span> (!res.ok) <span class="keyword">throw new</span> <span class="class-name">Error</span>(<span class="string">"Document not found"</span>);
+        <span class="keyword">return</span> res.<span class="function">json</span>();
+    },
+
+    <span class="comment">// POST create document</span>
+    <span class="keyword">async</span> <span class="function">createDocument</span>(data) {
+        <span class="keyword">const</span> res = <span class="keyword">await</span> <span class="function">fetch</span>(<span class="string">`</span>${API_BASE}<span class="string">/documents`</span>, {
+            method: <span class="string">"POST"</span>,
+            headers: { <span class="string">"Content-Type"</span>: <span class="string">"application/json"</span> },
+            body: JSON.<span class="function">stringify</span>(data)
+        });
+        <span class="keyword">if</span> (!res.ok) {
+            <span class="keyword">const</span> error = <span class="keyword">await</span> res.<span class="function">json</span>();
+            <span class="keyword">throw new</span> <span class="class-name">Error</span>(error.detail || <span class="string">"Failed to create"</span>);
+        }
+        <span class="keyword">return</span> res.<span class="function">json</span>();
+    },
+
+    <span class="comment">// PUT update document</span>
+    <span class="keyword">async</span> <span class="function">updateDocument</span>(id, data) {
+        <span class="keyword">const</span> res = <span class="keyword">await</span> <span class="function">fetch</span>(<span class="string">`</span>${API_BASE}<span class="string">/documents/</span>${id}<span class="string">`</span>, {
+            method: <span class="string">"PUT"</span>,
+            headers: { <span class="string">"Content-Type"</span>: <span class="string">"application/json"</span> },
+            body: JSON.<span class="function">stringify</span>(data)
+        });
+        <span class="keyword">if</span> (!res.ok) <span class="keyword">throw new</span> <span class="class-name">Error</span>(<span class="string">"Failed to update"</span>);
+        <span class="keyword">return</span> res.<span class="function">json</span>();
+    },
+
+    <span class="comment">// DELETE document</span>
+    <span class="keyword">async</span> <span class="function">deleteDocument</span>(id) {
+        <span class="keyword">const</span> res = <span class="keyword">await</span> <span class="function">fetch</span>(<span class="string">`</span>${API_BASE}<span class="string">/documents/</span>${id}<span class="string">`</span>, {
+            method: <span class="string">"DELETE"</span>
+        });
+        <span class="keyword">if</span> (!res.ok) <span class="keyword">throw new</span> <span class="class-name">Error</span>(<span class="string">"Failed to delete"</span>);
+        <span class="keyword">return</span> res.<span class="function">json</span>();
+    }
+};</pre>
+                </div>
+
+                <h3>Connecting to UI</h3>
+                <div class="code-block">
+                    <span class="filename js">app.js</span>
+                    <pre><span class="comment">// State</span>
+<span class="keyword">let</span> documents = [];
+<span class="keyword">let</span> loading = <span class="keyword">false</span>;
+
+<span class="comment">// Load and render documents</span>
+<span class="keyword">async function</span> <span class="function">loadDocuments</span>() {
+    loading = <span class="keyword">true</span>;
+    <span class="function">renderLoading</span>();
+    
+    <span class="keyword">try</span> {
+        documents = <span class="keyword">await</span> api.<span class="function">getDocuments</span>();
+        <span class="function">renderDocuments</span>();
+    } <span class="keyword">catch</span> (error) {
+        <span class="function">renderError</span>(error.message);
+    } <span class="keyword">finally</span> {
+        loading = <span class="keyword">false</span>;
+    }
+}
+
+<span class="comment">// Delete handler</span>
+<span class="keyword">async function</span> <span class="function">handleDelete</span>(id) {
+    <span class="keyword">if</span> (!<span class="function">confirm</span>(<span class="string">"Delete this document?"</span>)) <span class="keyword">return</span>;
+    
+    <span class="keyword">try</span> {
+        <span class="keyword">await</span> api.<span class="function">deleteDocument</span>(id);
+        documents = documents.<span class="function">filter</span>(d => d.id !== id);
+        <span class="function">renderDocuments</span>();
+    } <span class="keyword">catch</span> (error) {
+        <span class="function">alert</span>(<span class="string">"Failed to delete: "</span> + error.message);
+    }
+}
+
+<span class="comment">// Initialize on page load</span>
+document.<span class="function">addEventListener</span>(<span class="string">"DOMContentLoaded"</span>, <span class="function">loadDocuments</span>);</pre>
+                </div>
+
+                <div class="exercise">
+                    <div class="exercise-header">
+                        <span class="exercise-number">2</span>
+                        <span class="exercise-title">Try It: Full CRUD UI</span>
+                    </div>
+                    <div class="exercise-description">Build a complete UI with list, add, edit, and delete functionality.</div>
+                    <button class="load-exercise-btn" onclick="loadExercise('crud_ui')">Load in Editor →</button>
+                </div>
+            </div>
+
+            <!-- File Upload Tab -->
+            <div id="upload" class="tab-content">
+                <div class="day-separator"><span class="day-badge">Day 6</span></div>
+                <h2>File Upload with FormData 📤</h2>
+                <p>Uploading files requires FormData instead of JSON. This is crucial for your Document Analyzer!</p>
+
+                <h3>Basic File Upload</h3>
+                <div class="code-block">
+                    <span class="filename js">upload.js</span>
+                    <pre><span class="keyword">async function</span> <span class="function">uploadFile</span>(file) {
+    <span class="keyword">const</span> formData = <span class="keyword">new</span> <span class="class-name">FormData</span>();
+    formData.<span class="function">append</span>(<span class="string">"file"</span>, file);
+    
+    <span class="keyword">const</span> response = <span class="keyword">await</span> <span class="function">fetch</span>(<span class="string">"http://localhost:8000/api/upload"</span>, {
+        method: <span class="string">"POST"</span>,
+        body: formData
+        <span class="comment">// Note: Don't set Content-Type header!</span>
+        <span class="comment">// Browser sets it automatically with boundary</span>
+    });
+    
+    <span class="keyword">return</span> response.<span class="function">json</span>();
+}
+
+<span class="comment">// Handle file input</span>
+<span class="keyword">const</span> fileInput = document.<span class="function">getElementById</span>(<span class="string">"fileInput"</span>);
+fileInput.<span class="function">addEventListener</span>(<span class="string">"change"</span>, <span class="keyword">async</span> (e) => {
+    <span class="keyword">const</span> file = e.target.files[<span class="number">0</span>];
+    <span class="keyword">if</span> (file) {
+        <span class="keyword">const</span> result = <span class="keyword">await</span> <span class="function">uploadFile</span>(file);
+        console.<span class="function">log</span>(<span class="string">"Uploaded:"</span>, result);
+    }
+});</pre>
+                </div>
+
+                <div class="info-box warning">
+                    <div class="info-box-title">⚠️ Important: No Content-Type Header!</div>
+                    <p>When using FormData, do NOT set the <code>Content-Type</code> header manually. The browser sets it automatically with the correct boundary string.</p>
+                </div>
+
+                <h3>Drag & Drop Upload</h3>
+                <div class="code-block">
+                    <pre><span class="keyword">const</span> dropZone = document.<span class="function">getElementById</span>(<span class="string">"dropZone"</span>);
+
+<span class="comment">// Prevent default drag behaviors</span>
+[<span class="string">"dragenter"</span>, <span class="string">"dragover"</span>, <span class="string">"dragleave"</span>, <span class="string">"drop"</span>].<span class="function">forEach</span>(event => {
+    dropZone.<span class="function">addEventListener</span>(event, (e) => {
+        e.<span class="function">preventDefault</span>();
+        e.<span class="function">stopPropagation</span>();
+    });
+});
+
+<span class="comment">// Highlight on drag</span>
+dropZone.<span class="function">addEventListener</span>(<span class="string">"dragover"</span>, () => {
+    dropZone.classList.<span class="function">add</span>(<span class="string">"dragover"</span>);
+});
+
+dropZone.<span class="function">addEventListener</span>(<span class="string">"dragleave"</span>, () => {
+    dropZone.classList.<span class="function">remove</span>(<span class="string">"dragover"</span>);
+});
+
+<span class="comment">// Handle drop</span>
+dropZone.<span class="function">addEventListener</span>(<span class="string">"drop"</span>, <span class="keyword">async</span> (e) => {
+    dropZone.classList.<span class="function">remove</span>(<span class="string">"dragover"</span>);
+    <span class="keyword">const</span> file = e.dataTransfer.files[<span class="number">0</span>];
+    
+    <span class="keyword">if</span> (file) {
+        <span class="keyword">await</span> <span class="function">uploadFile</span>(file);
+    }
+});</pre>
+                </div>
+
+                <h3>FastAPI Endpoint for Upload</h3>
+                <div class="code-block">
+                    <span class="filename py">main.py</span>
+                    <pre><span class="keyword">from</span> fastapi <span class="keyword">import</span> FastAPI, UploadFile, File
+
+<span class="decorator">@app.post</span>(<span class="string">"/api/upload"</span>)
+<span class="keyword">async def</span> <span class="function">upload_file</span>(file: UploadFile = File(...)):
+    <span class="comment"># Read file content</span>
+    content = <span class="keyword">await</span> file.<span class="function">read</span>()
+    
+    <span class="comment"># Process the file...</span>
+    word_count = <span class="builtin">len</span>(content.<span class="function">decode</span>().<span class="function">split</span>())
+    
+    <span class="keyword">return</span> {
+        <span class="string">"filename"</span>: file.filename,
+        <span class="string">"size"</span>: <span class="builtin">len</span>(content),
+        <span class="string">"word_count"</span>: word_count
+    }</pre>
+                </div>
+
+                <div class="exercise">
+                    <div class="exercise-header">
+                        <span class="exercise-number">3</span>
+                        <span class="exercise-title">Try It: File Upload with Progress</span>
+                    </div>
+                    <div class="exercise-description">Create a drag & drop file upload with progress indicator and file preview.</div>
+                    <button class="load-exercise-btn" onclick="loadExercise('file_upload')">Load in Editor →</button>
+                </div>
+            </div>
+
+            <!-- Error Handling Tab -->
+            <div id="errors" class="tab-content">
+                <h2>Error Handling ⚠️</h2>
+                <p>Proper error handling makes your app robust and user-friendly.</p>
+
+                <h3>Comprehensive Error Handler</h3>
+                <div class="code-block">
+                    <pre><span class="keyword">class</span> <span class="class-name">APIError</span> <span class="keyword">extends</span> <span class="class-name">Error</span> {
+    <span class="function">constructor</span>(message, status, details = <span class="keyword">null</span>) {
+        <span class="keyword">super</span>(message);
+        <span class="keyword">this</span>.status = status;
+        <span class="keyword">this</span>.details = details;
+    }
+}
+
+<span class="keyword">async function</span> <span class="function">fetchWithError</span>(url, options = {}) {
+    <span class="keyword">try</span> {
+        <span class="keyword">const</span> response = <span class="keyword">await</span> <span class="function">fetch</span>(url, options);
+        
+        <span class="keyword">if</span> (!response.ok) {
+            <span class="keyword">let</span> errorMessage = <span class="string">`HTTP </span>${response.status}<span class="string">`</span>;
+            <span class="keyword">let</span> details = <span class="keyword">null</span>;
+            
+            <span class="keyword">try</span> {
+                <span class="keyword">const</span> errorData = <span class="keyword">await</span> response.<span class="function">json</span>();
+                errorMessage = errorData.detail || errorData.message || errorMessage;
+                details = errorData;
+            } <span class="keyword">catch</span> {}
+            
+            <span class="keyword">throw new</span> <span class="class-name">APIError</span>(errorMessage, response.status, details);
+        }
+        
+        <span class="keyword">return</span> response.<span class="function">json</span>();
+        
+    } <span class="keyword">catch</span> (error) {
+        <span class="keyword">if</span> (error <span class="keyword">instanceof</span> APIError) {
+            <span class="keyword">throw</span> error;
+        }
+        
+        <span class="comment">// Network error</span>
+        <span class="keyword">if</span> (error.name === <span class="string">"TypeError"</span>) {
+            <span class="keyword">throw new</span> <span class="class-name">APIError</span>(<span class="string">"Network error. Check your connection."</span>, <span class="number">0</span>);
+        }
+        
+        <span class="keyword">throw</span> error;
+    }
+}</pre>
+                </div>
+
+                <h3>User-Friendly Error Display</h3>
+                <div class="code-block">
+                    <pre><span class="keyword">function</span> <span class="function">showError</span>(error) {
+    <span class="keyword">const</span> container = document.<span class="function">getElementById</span>(<span class="string">"errorContainer"</span>);
+    
+    <span class="keyword">let</span> message = error.message;
+    <span class="keyword">let</span> type = <span class="string">"error"</span>;
+    
+    <span class="comment">// Customize message based on status</span>
+    <span class="keyword">if</span> (error.status === <span class="number">404</span>) {
+        message = <span class="string">"Document not found"</span>;
+    } <span class="keyword">else if</span> (error.status === <span class="number">422</span>) {
+        message = <span class="string">"Invalid data. Please check your input."</span>;
+    } <span class="keyword">else if</span> (error.status === <span class="number">500</span>) {
+        message = <span class="string">"Server error. Please try again later."</span>;
+    } <span class="keyword">else if</span> (error.status === <span class="number">0</span>) {
+        message = <span class="string">"Cannot connect to server."</span>;
+        type = <span class="string">"warning"</span>;
+    }
+    
+    container.innerHTML = <span class="string">`
+        &lt;div class="alert alert-</span>${type}<span class="string">"&gt;
+            &lt;strong&gt;Error:&lt;/strong&gt; </span>${message}<span class="string">
+            &lt;button onclick="this.parentElement.remove()"&gt;×&lt;/button&gt;
+        &lt;/div&gt;
+    `</span>;
+}</pre>
+                </div>
+
+                <h3>Loading States</h3>
+                <div class="code-block">
+                    <pre><span class="keyword">async function</span> <span class="function">loadWithState</span>(loadingElement, action) {
+    <span class="comment">// Show loading</span>
+    loadingElement.innerHTML = <span class="string">`
+        &lt;div class="loading"&gt;
+            &lt;div class="spinner"&gt;&lt;/div&gt;
+            &lt;p&gt;Loading...&lt;/p&gt;
+        &lt;/div&gt;
+    `</span>;
+    
+    <span class="keyword">try</span> {
+        <span class="keyword">const</span> result = <span class="keyword">await</span> <span class="function">action</span>();
+        <span class="keyword">return</span> result;
+    } <span class="keyword">catch</span> (error) {
+        loadingElement.innerHTML = <span class="string">`
+            &lt;div class="error-state"&gt;
+                &lt;p&gt;😕 </span>${error.message}<span class="string">&lt;/p&gt;
+                &lt;button onclick="location.reload()"&gt;Retry&lt;/button&gt;
+            &lt;/div&gt;
+        `</span>;
+        <span class="keyword">throw</span> error;
+    }
+}</pre>
+                </div>
+
+                <div class="exercise">
+                    <div class="exercise-header">
+                        <span class="exercise-number">4</span>
+                        <span class="exercise-title">Try It: Robust Error Handling</span>
+                    </div>
+                    <div class="exercise-description">Add comprehensive error handling with retry logic and user feedback.</div>
+                    <button class="load-exercise-btn" onclick="loadExercise('error_handling')">Load in Editor →</button>
+                </div>
+            </div>
+
+            <!-- CORS Tab -->
+            <div id="cors" class="tab-content">
+                <h2>CORS Configuration 🔒</h2>
+                <p>Cross-Origin Resource Sharing (CORS) is a security feature that blocks requests from different origins. You'll encounter this when your frontend and backend run on different ports!</p>
+
+                <div class="info-box warning">
+                    <div class="info-box-title">⚠️ Common Error</div>
+                    <code style="display: block; margin-top: 10px; color: var(--accent-red);">
+                        Access to fetch at 'http://localhost:8000' from origin 'http://localhost:3000' has been blocked by CORS policy
+                    </code>
+                </div>
+
+                <h3>Fix: Enable CORS in FastAPI</h3>
+                <div class="code-block">
+                    <span class="filename py">main.py</span>
+                    <pre><span class="keyword">from</span> fastapi <span class="keyword">import</span> FastAPI
+<span class="keyword">from</span> fastapi.middleware.cors <span class="keyword">import</span> CORSMiddleware
+
+app = FastAPI()
+
+<span class="comment"># Add CORS middleware</span>
+app.<span class="function">add_middleware</span>(
+    CORSMiddleware,
+    allow_origins=[
+        <span class="string">"http://localhost:3000"</span>,     <span class="comment"># Your frontend</span>
+        <span class="string">"http://127.0.0.1:3000"</span>,
+        <span class="string">"http://localhost:5500"</span>,     <span class="comment"># VS Code Live Server</span>
+    ],
+    allow_credentials=<span class="keyword">True</span>,
+    allow_methods=[<span class="string">"*"</span>],           <span class="comment"># Allow all methods</span>
+    allow_headers=[<span class="string">"*"</span>],           <span class="comment"># Allow all headers</span>
+)
+
+<span class="comment"># For development, allow all origins:</span>
+<span class="comment"># allow_origins=["*"]</span></pre>
+                </div>
+
+                <h3>Understanding CORS</h3>
+                <table class="comparison-table">
+                    <tr><th>Scenario</th><th>Same Origin?</th><th>Needs CORS?</th></tr>
+                    <tr><td>localhost:3000 → localhost:3000</td><td>✅ Yes</td><td>No</td></tr>
+                    <tr><td>localhost:3000 → localhost:8000</td><td>❌ No (different port)</td><td>Yes</td></tr>
+                    <tr><td>mysite.com → api.mysite.com</td><td>❌ No (different subdomain)</td><td>Yes</td></tr>
+                    <tr><td>http → https</td><td>❌ No (different protocol)</td><td>Yes</td></tr>
+                </table>
+
+                <div class="info-box tip">
+                    <div class="info-box-title">💡 Production Tip</div>
+                    <p>In production, always specify exact origins instead of using <code>"*"</code>. This prevents unauthorized websites from accessing your API.</p>
+                </div>
+            </div>
+
+            <!-- Challenge Tab -->
+            <div id="challenge" class="tab-content">
+                <h2>Final Challenge: Complete Document Analyzer 🚀</h2>
+                <p>Bring everything together to build the full Document Analyzer with frontend and backend integration!</p>
+
+                <div class="info-box success">
+                    <div class="info-box-title">🎯 You're Building a Real App!</div>
+                    <p>This is exactly the kind of project that impresses in interviews. A full-stack application with file upload, data processing, and a clean UI.</p>
+                </div>
+
+                <h3>Architecture</h3>
+                <div class="architecture-diagram">
+                    <div class="box">📄 Upload UI<br><small>Drag & Drop</small></div>
+                    <span class="arrow">→</span>
+                    <div class="box">⚡ FastAPI<br><small>/api/upload</small></div>
+                    <span class="arrow">→</span>
+                    <div class="box">🔍 Analysis<br><small>Word count, etc</small></div>
+                    <br><br>
+                    <div class="box">📊 Results UI<br><small>Cards & Stats</small></div>
+                    <span class="arrow">←</span>
+                    <div class="box">💾 Storage<br><small>JSON/SQLite</small></div>
+                    <span class="arrow">←</span>
+                    <div class="box">📦 Response<br><small>JSON data</small></div>
+                </div>
+
+                <h3>Features to Implement</h3>
+                <table class="comparison-table">
+                    <tr><th>Feature</th><th>Frontend</th><th>Backend</th></tr>
+                    <tr><td>File Upload</td><td>Drag & drop, FormData</td><td>UploadFile endpoint</td></tr>
+                    <tr><td>Document List</td><td>Fetch & render cards</td><td>GET /documents</td></tr>
+                    <tr><td>Analysis View</td><td>Display stats</td><td>Text processing</td></tr>
+                    <tr><td>Delete</td><td>Confirm & remove</td><td>DELETE endpoint</td></tr>
+                    <tr><td>Search</td><td>Input & filter</td><td>Query params</td></tr>
+                    <tr><td>Loading States</td><td>Spinner component</td><td>-</td></tr>
+                    <tr><td>Error Handling</td><td>User messages</td><td>HTTP status codes</td></tr>
+                </table>
+
+                <button class="load-exercise-btn" onclick="loadExercise('challenge')" style="width: 100%; padding: 15px; font-size: 16px; margin: 20px 0;">
+                    📥 Load Complete Challenge →
+                </button>
+
+                <div class="info-box tip" style="margin-top: 30px;">
+                    <div class="info-box-title">🎉 Week 1 Complete!</div>
+                    <p>You now have all the skills for your portfolio projects:</p>
+                    <ul style="margin-left: 20px; margin-top: 10px; color: var(--text-secondary);">
+                        <li>✅ FastAPI for modern Python backends</li>
+                        <li>✅ Pydantic for data validation</li>
+                        <li>✅ HTML/CSS/JS for frontend</li>
+                        <li>✅ Fetch API for HTTP requests</li>
+                        <li>✅ File uploads with FormData</li>
+                        <li>✅ Error handling & CORS</li>
+                    </ul>
+                    <p style="margin-top: 15px;"><strong>Next:</strong> Week 2 - Text Processing & NLP!</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Panel - Code Editor -->
+        <div class="editor-panel">
+            <div class="editor-header">
+                <div class="editor-title">
+                    <div class="dot"></div>
+                    <span id="editorFilename">app.js</span>
+                </div>
+                <div class="editor-actions">
+                    <button class="editor-btn" onclick="resetEditor()">↺ Reset</button>
+                    <button class="editor-btn" onclick="copyEditorCode()">📋 Copy</button>
+                    <button class="editor-btn run" onclick="runCode()">▶ Preview</button>
+                </div>
+            </div>
+            <div class="code-editor-container">
+                <div class="code-editor-wrapper">
+                    <textarea class="code-editor" id="codeEditor" spellcheck="false"><!DOCTYPE html>
+<html>
+<head>
+    <title>API Integration Demo</title>
+    <style>
+        body { font-family: sans-serif; padding: 20px; background: #f5f5f5; }
+        .card { background: white; padding: 20px; border-radius: 8px; margin-bottom: 16px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        button { background: #10b981; color: white; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; }
+        .loading { text-align: center; color: #888; }
+        .error { color: #ef4444; }
+    </style>
+</head>
+<body>
+    <h1>🔗 API Integration</h1>
+    
+    <div class="card">
+        <h3>Test API Connection</h3>
+        <button onclick="testConnection()">Test Connection</button>
+        <p id="result"></p>
+    </div>
+
+    <script>
+        const API_URL = "https://jsonplaceholder.typicode.com";
+        
+        async function testConnection() {
+            const result = document.getElementById("result");
+            result.innerHTML = '<span class="loading">Connecting...</span>';
+            
+            try {
+                const response = await fetch(API_URL + "/posts/1");
+                const data = await response.json();
+                result.innerHTML = "✅ Connected! Got: " + data.title;
+            } catch (error) {
+                result.innerHTML = '<span class="error">❌ Error: ' + error.message + '</span>';
+            }
+        }
+    </script>
+</body>
+</html></textarea>
+                </div>
+            </div>
+            <div class="output-panel">
+                <div class="output-header">
+                    <div class="output-title">👁️ Preview</div>
+                    <span class="output-status" id="outputStatus">Ready</span>
+                </div>
+                <div class="output-content" id="outputContent">
+                    <iframe id="previewFrame"></iframe>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const tabOrder = ['overview', 'fetch', 'crud', 'upload', 'errors', 'cors', 'challenge'];
+        
+        function showTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+            document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
+            document.getElementById(tabId).classList.add('active');
+            event.target.classList.add('active');
+            const index = tabOrder.indexOf(tabId);
+            document.getElementById('progressFill').style.width = ((index + 1) / tabOrder.length * 100) + '%';
+        }
+
+        function runCode() {
+            document.getElementById('previewFrame').srcdoc = document.getElementById('codeEditor').value;
+            document.getElementById('outputStatus').textContent = 'Updated';
+        }
+
+        function resetEditor() {
+            document.getElementById('codeEditor').value = `<!DOCTYPE html>
+<html>
+<head>
+    <title>API Integration Demo</title>
+    <style>
+        body { font-family: sans-serif; padding: 20px; background: #f5f5f5; }
+        .card { background: white; padding: 20px; border-radius: 8px; margin-bottom: 16px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        button { background: #10b981; color: white; border: none; padding: 10px 20px; border-radius: 6px; cursor: pointer; }
+        .loading { text-align: center; color: #888; }
+        .error { color: #ef4444; }
+    </style>
+</head>
+<body>
+    <h1>🔗 API Integration</h1>
+    
+    <div class="card">
+        <h3>Test API Connection</h3>
+        <button onclick="testConnection()">Test Connection</button>
+        <p id="result"></p>
+    </div>
+
+    <script>
+        const API_URL = "https://jsonplaceholder.typicode.com";
+        
+        async function testConnection() {
+            const result = document.getElementById("result");
+            result.innerHTML = '<span class="loading">Connecting...</span>';
+            
+            try {
+                const response = await fetch(API_URL + "/posts/1");
+                const data = await response.json();
+                result.innerHTML = "✅ Connected! Got: " + data.title;
+            } catch (error) {
+                result.innerHTML = '<span class="error">❌ Error: ' + error.message + '</span>';
+            }
+        }
+    <\/script>
+</body>
+</html>`;
+            runCode();
+        }
+
+        function copyEditorCode() {
+            navigator.clipboard.writeText(document.getElementById('codeEditor').value);
+        }
+
+        const exercises = {
+            api_client: `<!DOCTYPE html>
+<html>
+<head>
+    <title>API Client Class</title>
+    <style>
+        body { font-family: monospace; background: #1a1a2e; color: #fff; padding: 20px; }
+        .output { background: #0a0a14; padding: 20px; border-radius: 8px; white-space: pre-wrap; margin-top: 20px; max-height: 300px; overflow: auto; }
+        button { background: #10b981; color: white; border: none; padding: 10px 20px; margin: 5px; border-radius: 6px; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <h2>🔗 API Client Class</h2>
+    <button onclick="testGet()">GET Posts</button>
+    <button onclick="testPost()">POST New</button>
+    <button onclick="testPut()">PUT Update</button>
+    <button onclick="testDelete()">DELETE</button>
+    <div class="output" id="output">Click a button to test...</div>
+
+    <script>
+        class APIClient {
+            constructor(baseURL) {
+                this.baseURL = baseURL;
+            }
+            
+            async request(endpoint, options = {}) {
+                const url = this.baseURL + endpoint;
+                const response = await fetch(url, {
+                    ...options,
+                    headers: {
+                        'Content-Type': 'application/json',
+                        ...options.headers
+                    }
+                });
+                
+                if (!response.ok) {
+                    throw new Error(\`HTTP \${response.status}\`);
+                }
+                
+                return response.json();
+            }
+            
+            get(endpoint) {
+                return this.request(endpoint);
+            }
+            
+            post(endpoint, data) {
+                return this.request(endpoint, {
+                    method: 'POST',
+                    body: JSON.stringify(data)
+                });
+            }
+            
+            put(endpoint, data) {
+                return this.request(endpoint, {
+                    method: 'PUT',
+                    body: JSON.stringify(data)
+                });
+            }
+            
+            delete(endpoint) {
+                return this.request(endpoint, { method: 'DELETE' });
+            }
+        }
+        
+        const api = new APIClient('https://jsonplaceholder.typicode.com');
+        const output = document.getElementById('output');
+        
+        async function testGet() {
+            output.textContent = 'Loading...';
+            const posts = await api.get('/posts?_limit=3');
+            output.textContent = 'GET /posts:\\n' + JSON.stringify(posts, null, 2);
+        }
+        
+        async function testPost() {
+            output.textContent = 'Creating...';
+            const newPost = await api.post('/posts', { title: 'New Post', body: 'Content', userId: 1 });
+            output.textContent = 'POST /posts:\\n' + JSON.stringify(newPost, null, 2);
+        }
+        
+        async function testPut() {
+            output.textContent = 'Updating...';
+            const updated = await api.put('/posts/1', { title: 'Updated Title' });
+            output.textContent = 'PUT /posts/1:\\n' + JSON.stringify(updated, null, 2);
+        }
+        
+        async function testDelete() {
+            output.textContent = 'Deleting...';
+            const result = await api.delete('/posts/1');
+            output.textContent = 'DELETE /posts/1:\\n' + JSON.stringify(result, null, 2);
+        }
+    </script>
+</body>
+</html>`,
+            crud_ui: `<!DOCTYPE html>
+<html>
+<head>
+    <title>Full CRUD UI</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', sans-serif; background: #f5f5f5; padding: 20px; }
+        .container { max-width: 600px; margin: 0 auto; }
+        h1 { margin-bottom: 20px; }
+        .add-form { display: flex; gap: 10px; margin-bottom: 20px; }
+        input { flex: 1; padding: 12px; border: 1px solid #ddd; border-radius: 6px; }
+        button { background: #10b981; color: white; border: none; padding: 12px 20px; border-radius: 6px; cursor: pointer; }
+        .btn-delete { background: #ef4444; padding: 8px 16px; }
+        .btn-edit { background: #3b82f6; padding: 8px 16px; margin-right: 8px; }
+        .item { background: white; padding: 16px; margin-bottom: 8px; border-radius: 8px; display: flex; justify-content: space-between; align-items: center; }
+        .loading { text-align: center; padding: 40px; color: #888; }
+        .error { background: #fee; color: #c00; padding: 16px; border-radius: 8px; margin-bottom: 16px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📝 CRUD Demo</h1>
+        <div id="error"></div>
+        <div class="add-form">
+            <input type="text" id="titleInput" placeholder="Enter title...">
+            <button onclick="createItem()">Add</button>
+        </div>
+        <div id="list"></div>
+    </div>
+
+    <script>
+        const API = 'https://jsonplaceholder.typicode.com';
+        let items = [];
+        
+        async function loadItems() {
+            document.getElementById('list').innerHTML = '<div class="loading">Loading...</div>';
+            try {
+                const res = await fetch(API + '/posts?_limit=5');
+                items = await res.json();
+                render();
+            } catch (e) {
+                showError(e.message);
+            }
+        }
+        
+        async function createItem() {
+            const input = document.getElementById('titleInput');
+            if (!input.value.trim()) return;
+            
+            try {
+                const res = await fetch(API + '/posts', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ title: input.value, userId: 1 })
+                });
+                const newItem = await res.json();
+                items.unshift({ ...newItem, id: Date.now() });
+                input.value = '';
+                render();
+            } catch (e) {
+                showError(e.message);
+            }
+        }
+        
+        function deleteItem(id) {
+            if (!confirm('Delete this item?')) return;
+            items = items.filter(i => i.id !== id);
+            render();
+        }
+        
+        function editItem(id) {
+            const item = items.find(i => i.id === id);
+            const newTitle = prompt('Edit title:', item.title);
+            if (newTitle) {
+                item.title = newTitle;
+                render();
+            }
+        }
+        
+        function render() {
+            document.getElementById('list').innerHTML = items.map(item => 
+                '<div class="item"><span>' + item.title + '</span><div>' +
+                '<button class="btn-edit" onclick="editItem(' + item.id + ')">Edit</button>' +
+                '<button class="btn-delete" onclick="deleteItem(' + item.id + ')">Delete</button></div></div>'
+            ).join('');
+        }
+        
+        function showError(msg) {
+            document.getElementById('error').innerHTML = '<div class="error">' + msg + '</div>';
+        }
+        
+        loadItems();
+    </script>
+</body>
+</html>`,
+            file_upload: `<!DOCTYPE html>
+<html>
+<head>
+    <title>File Upload</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', sans-serif; background: #f5f5f5; min-height: 100vh; padding: 40px 20px; }
+        .container { max-width: 600px; margin: 0 auto; }
+        h1 { margin-bottom: 20px; }
+        .upload-area { background: white; border: 2px dashed #ccc; border-radius: 12px; padding: 60px 40px; text-align: center; cursor: pointer; transition: all 0.3s; }
+        .upload-area:hover, .upload-area.dragover { border-color: #10b981; background: #f0fdf4; }
+        .upload-icon { font-size: 48px; margin-bottom: 16px; }
+        .btn { background: #10b981; color: white; border: none; padding: 12px 24px; border-radius: 6px; cursor: pointer; margin-top: 16px; }
+        #fileInput { display: none; }
+        .file-info { background: white; padding: 20px; border-radius: 8px; margin-top: 20px; }
+        .progress-bar { height: 8px; background: #e5e5e5; border-radius: 4px; margin-top: 16px; overflow: hidden; }
+        .progress-fill { height: 100%; background: #10b981; width: 0%; transition: width 0.3s; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📤 File Upload Demo</h1>
+        
+        <div class="upload-area" id="dropZone" onclick="document.getElementById('fileInput').click()">
+            <div class="upload-icon">📁</div>
+            <h2>Drag & Drop File Here</h2>
+            <p style="color: #888; margin: 10px 0;">or click to browse</p>
+            <button class="btn">Select File</button>
+            <input type="file" id="fileInput">
+        </div>
+        
+        <div class="file-info" id="fileInfo" style="display: none;">
+            <h3 id="fileName"></h3>
+            <p id="fileSize"></p>
+            <div class="progress-bar"><div class="progress-fill" id="progress"></div></div>
+            <p id="status" style="margin-top: 10px; color: #888;"></p>
+        </div>
+    </div>
+
+    <script>
+        const dropZone = document.getElementById('dropZone');
+        const fileInput = document.getElementById('fileInput');
+        const fileInfo = document.getElementById('fileInfo');
+        
+        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(event => {
+            dropZone.addEventListener(event, e => { e.preventDefault(); e.stopPropagation(); });
+        });
+        
+        dropZone.addEventListener('dragover', () => dropZone.classList.add('dragover'));
+        dropZone.addEventListener('dragleave', () => dropZone.classList.remove('dragover'));
+        
+        dropZone.addEventListener('drop', e => {
+            dropZone.classList.remove('dragover');
+            handleFile(e.dataTransfer.files[0]);
+        });
+        
+        fileInput.addEventListener('change', e => handleFile(e.target.files[0]));
+        
+        function handleFile(file) {
+            if (!file) return;
+            
+            fileInfo.style.display = 'block';
+            document.getElementById('fileName').textContent = file.name;
+            document.getElementById('fileSize').textContent = formatSize(file.size);
+            document.getElementById('status').textContent = 'Uploading...';
+            
+            // Simulate upload progress
+            let progress = 0;
+            const interval = setInterval(() => {
+                progress += 10;
+                document.getElementById('progress').style.width = progress + '%';
+                if (progress >= 100) {
+                    clearInterval(interval);
+                    document.getElementById('status').textContent = '✅ Upload complete!';
+                }
+            }, 200);
+        }
+        
+        function formatSize(bytes) {
+            if (bytes < 1024) return bytes + ' B';
+            if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
+            return (bytes / (1024 * 1024)).toFixed(1) + ' MB';
+        }
+    </script>
+</body>
+</html>`,
+            error_handling: `<!DOCTYPE html>
+<html>
+<head>
+    <title>Error Handling</title>
+    <style>
+        body { font-family: 'Segoe UI', sans-serif; background: #f5f5f5; padding: 20px; }
+        .container { max-width: 600px; margin: 0 auto; }
+        button { background: #3b82f6; color: white; border: none; padding: 10px 20px; margin: 5px; border-radius: 6px; cursor: pointer; }
+        .alert { padding: 16px; border-radius: 8px; margin: 16px 0; display: flex; justify-content: space-between; align-items: center; }
+        .alert-error { background: #fee2e2; color: #991b1b; }
+        .alert-warning { background: #fef3c7; color: #92400e; }
+        .alert-success { background: #d1fae5; color: #065f46; }
+        .alert button { background: transparent; color: inherit; padding: 0; font-size: 20px; }
+        .loading { text-align: center; padding: 40px; }
+        .spinner { width: 40px; height: 40px; border: 3px solid #e5e5e5; border-top-color: #3b82f6; border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto 16px; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .card { background: white; padding: 20px; border-radius: 8px; margin-bottom: 16px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>⚠️ Error Handling Demo</h1>
+        
+        <div class="card">
+            <h3>Test Different Scenarios</h3>
+            <button onclick="testSuccess()">✅ Success</button>
+            <button onclick="testNotFound()">🔍 404 Error</button>
+            <button onclick="testServer()">💥 500 Error</button>
+            <button onclick="testNetwork()">📡 Network Error</button>
+        </div>
+        
+        <div id="alertContainer"></div>
+        <div id="result"></div>
+    </div>
+
+    <script>
+        const API = 'https://jsonplaceholder.typicode.com';
+        
+        function showAlert(message, type = 'error') {
+            const container = document.getElementById('alertContainer');
+            container.innerHTML = \`
+                <div class="alert alert-\${type}">
+                    <span>\${message}</span>
+                    <button onclick="this.parentElement.remove()">×</button>
+                </div>
+            \`;
+        }
+        
+        function showLoading() {
+            document.getElementById('result').innerHTML = \`
+                <div class="loading">
+                    <div class="spinner"></div>
+                    <p>Loading...</p>
+                </div>
+            \`;
+        }
+        
+        async function fetchWithError(url) {
+            const response = await fetch(url);
+            if (!response.ok) {
+                const status = response.status;
+                if (status === 404) throw new Error('Resource not found');
+                if (status === 500) throw new Error('Server error');
+                throw new Error('HTTP ' + status);
+            }
+            return response.json();
+        }
+        
+        async function testSuccess() {
+            showLoading();
+            try {
+                const data = await fetchWithError(API + '/posts/1');
+                showAlert('Successfully loaded!', 'success');
+                document.getElementById('result').innerHTML = '<div class="card">' + data.title + '</div>';
+            } catch (e) {
+                showAlert(e.message);
+            }
+        }
+        
+        async function testNotFound() {
+            showLoading();
+            try {
+                await fetchWithError(API + '/posts/99999');
+            } catch (e) {
+                showAlert('Error: ' + e.message, 'error');
+                document.getElementById('result').innerHTML = '';
+            }
+        }
+        
+        async function testServer() {
+            showLoading();
+            await new Promise(r => setTimeout(r, 1000));
+            showAlert('Server error. Please try again later.', 'error');
+            document.getElementById('result').innerHTML = '';
+        }
+        
+        async function testNetwork() {
+            showLoading();
+            try {
+                await fetch('https://invalid-domain-12345.com/api');
+            } catch (e) {
+                showAlert('Network error. Check your connection.', 'warning');
+                document.getElementById('result').innerHTML = '';
+            }
+        }
+    </script>
+</body>
+</html>`,
+            challenge: `<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Document Analyzer - Full Stack</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', sans-serif; background: #f5f7fa; min-height: 100vh; }
+        .header { background: linear-gradient(135deg, #10b981, #06b6d4); color: white; padding: 20px 40px; display: flex; justify-content: space-between; align-items: center; }
+        .logo { font-size: 24px; font-weight: bold; }
+        .container { max-width: 1000px; margin: 0 auto; padding: 40px 20px; }
+        .upload-area { background: white; border: 2px dashed #ccc; border-radius: 12px; padding: 50px; text-align: center; margin-bottom: 30px; cursor: pointer; transition: all 0.3s; }
+        .upload-area:hover, .upload-area.dragover { border-color: #10b981; background: #f0fdf4; }
+        .upload-icon { font-size: 48px; margin-bottom: 16px; }
+        .btn { background: #10b981; color: white; border: none; padding: 12px 24px; border-radius: 6px; cursor: pointer; }
+        #fileInput { display: none; }
+        .doc-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; }
+        .doc-card { background: white; border-radius: 12px; padding: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); transition: transform 0.2s; }
+        .doc-card:hover { transform: translateY(-4px); }
+        .doc-title { font-size: 18px; font-weight: 600; margin-bottom: 8px; }
+        .doc-type { background: #e0f2fe; color: #0369a1; padding: 4px 10px; border-radius: 12px; font-size: 12px; display: inline-block; }
+        .doc-stats { display: flex; gap: 20px; margin-top: 16px; padding-top: 16px; border-top: 1px solid #eee; }
+        .stat { text-align: center; }
+        .stat-value { font-size: 18px; font-weight: 600; color: #10b981; }
+        .stat-label { font-size: 12px; color: #888; }
+        .doc-actions { margin-top: 16px; display: flex; gap: 10px; }
+        .btn-sm { padding: 8px 16px; font-size: 14px; }
+        .btn-danger { background: #ef4444; }
+        .loading { text-align: center; padding: 40px; }
+        .spinner { width: 40px; height: 40px; border: 3px solid #e5e5e5; border-top-color: #10b981; border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto 16px; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .empty-state { text-align: center; padding: 60px; color: #888; }
+        .alert { padding: 16px; border-radius: 8px; margin-bottom: 20px; }
+        .alert-error { background: #fee2e2; color: #991b1b; }
+        .search-bar { display: flex; gap: 10px; margin-bottom: 20px; }
+        .search-bar input { flex: 1; padding: 12px; border: 1px solid #ddd; border-radius: 6px; }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="logo">📄 Document Analyzer</div>
+        <span id="stats">0 documents</span>
+    </header>
+    
+    <div class="container">
+        <div id="alertContainer"></div>
+        
+        <div class="upload-area" id="dropZone" onclick="document.getElementById('fileInput').click()">
+            <div class="upload-icon">📤</div>
+            <h2>Upload Document</h2>
+            <p style="color: #888; margin: 10px 0 20px;">Drag & drop or click to browse</p>
+            <button class="btn">Select File</button>
+            <input type="file" id="fileInput" accept=".txt,.pdf,.doc,.docx">
+        </div>
+        
+        <div class="search-bar">
+            <input type="text" id="searchInput" placeholder="Search documents..." oninput="filterDocuments()">
+        </div>
+        
+        <div id="documentList"></div>
+    </div>
+
+    <script>
+        // Simulated API (replace with real FastAPI endpoints)
+        const API_URL = 'http://localhost:8000/api';
+        let documents = [];
+        
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            setupDragDrop();
+            loadDocuments();
+        });
+        
+        // Drag & Drop
+        function setupDragDrop() {
+            const dropZone = document.getElementById('dropZone');
+            
+            ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(event => {
+                dropZone.addEventListener(event, e => { e.preventDefault(); e.stopPropagation(); });
+            });
+            
+            dropZone.addEventListener('dragover', () => dropZone.classList.add('dragover'));
+            dropZone.addEventListener('dragleave', () => dropZone.classList.remove('dragover'));
+            dropZone.addEventListener('drop', e => {
+                dropZone.classList.remove('dragover');
+                handleFile(e.dataTransfer.files[0]);
+            });
+            
+            document.getElementById('fileInput').addEventListener('change', e => {
+                handleFile(e.target.files[0]);
+            });
+        }
+        
+        // Handle file upload
+        async function handleFile(file) {
+            if (!file) return;
+            
+            showLoading();
+            
+            // Simulate processing
+            await new Promise(r => setTimeout(r, 1500));
+            
+            // Create document (simulated)
+            const doc = {
+                id: Date.now(),
+                title: file.name,
+                type: file.name.split('.').pop().toUpperCase(),
+                size: formatSize(file.size),
+                words: Math.floor(Math.random() * 5000) + 500,
+                sentences: Math.floor(Math.random() * 200) + 20,
+                keywords: Math.floor(Math.random() * 20) + 5,
+                createdAt: new Date().toLocaleDateString()
+            };
+            
+            documents.unshift(doc);
+            renderDocuments();
+            showAlert('Document uploaded successfully!', 'success');
+        }
+        
+        // Load documents
+        async function loadDocuments() {
+            showLoading();
+            
+            // Simulated initial data
+            await new Promise(r => setTimeout(r, 500));
+            documents = [
+                { id: 1, title: 'Sample Report.pdf', type: 'PDF', size: '2.4 MB', words: 3500, sentences: 120, keywords: 15, createdAt: '1/10/2026' },
+                { id: 2, title: 'Notes.txt', type: 'TXT', size: '45 KB', words: 850, sentences: 45, keywords: 8, createdAt: '1/9/2026' }
+            ];
+            
+            renderDocuments();
+        }
+        
+        // Delete document
+        async function deleteDocument(id) {
+            if (!confirm('Delete this document?')) return;
+            
+            documents = documents.filter(d => d.id !== id);
+            renderDocuments();
+            showAlert('Document deleted', 'success');
+        }
+        
+        // Filter documents
+        function filterDocuments() {
+            const search = document.getElementById('searchInput').value.toLowerCase();
+            const filtered = documents.filter(d => d.title.toLowerCase().includes(search));
+            renderDocuments(filtered);
+        }
+        
+        // Render documents
+        function renderDocuments(docs = documents) {
+            const container = document.getElementById('documentList');
+            document.getElementById('stats').textContent = docs.length + ' documents';
+            
+            if (docs.length === 0) {
+                container.innerHTML = '<div class="empty-state"><div style="font-size:64px;margin-bottom:20px;">📁</div><h3>No documents found</h3></div>';
+                return;
+            }
+            
+            container.innerHTML = '<div class="doc-grid">' + docs.map(doc => \`
+                <div class="doc-card">
+                    <div style="display:flex;justify-content:space-between;align-items:start">
+                        <span class="doc-title">\${doc.title}</span>
+                        <span class="doc-type">\${doc.type}</span>
+                    </div>
+                    <p style="color:#888;font-size:14px;margin:8px 0">\${doc.size} • \${doc.createdAt}</p>
+                    <div class="doc-stats">
+                        <div class="stat"><div class="stat-value">\${doc.words}</div><div class="stat-label">Words</div></div>
+                        <div class="stat"><div class="stat-value">\${doc.sentences}</div><div class="stat-label">Sentences</div></div>
+                        <div class="stat"><div class="stat-value">\${doc.keywords}</div><div class="stat-label">Keywords</div></div>
+                    </div>
+                    <div class="doc-actions">
+                        <button class="btn btn-sm">View</button>
+                        <button class="btn btn-sm btn-danger" onclick="deleteDocument(\${doc.id})">Delete</button>
+                    </div>
+                </div>
+            \`).join('') + '</div>';
+        }
+        
+        // UI Helpers
+        function showLoading() {
+            document.getElementById('documentList').innerHTML = '<div class="loading"><div class="spinner"></div><p>Loading...</p></div>';
+        }
+        
+        function showAlert(message, type = 'error') {
+            const container = document.getElementById('alertContainer');
+            container.innerHTML = \`<div class="alert alert-\${type === 'success' ? 'success' : 'error'}" style="background:\${type === 'success' ? '#d1fae5' : '#fee2e2'};color:\${type === 'success' ? '#065f46' : '#991b1b'}">\${message}</div>\`;
+            setTimeout(() => container.innerHTML = '', 3000);
+        }
+        
+        function formatSize(bytes) {
+            if (bytes < 1024) return bytes + ' B';
+            if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
+            return (bytes / (1024 * 1024)).toFixed(1) + ' MB';
+        }
+    </script>
+</body>
+</html>`
+        };
+
+        function loadExercise(name) {
+            if (exercises[name]) {
+                document.getElementById('codeEditor').value = exercises[name];
+                document.getElementById('editorFilename').textContent = 'index.html';
+                runCode();
+            }
+        }
+
+        document.getElementById('codeEditor').addEventListener('keydown', function(e) {
+            if (e.key === 'Tab') {
+                e.preventDefault();
+                const start = this.selectionStart;
+                this.value = this.value.substring(0, start) + '    ' + this.value.substring(this.selectionEnd);
+                this.selectionStart = this.selectionEnd = start + 4;
+            }
+        });
+
+        runCode();
+    </script>
+</body>
+</html>
