@@ -3,471 +3,90 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Learning Roadmap - Track Progress</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            padding: 20px;
-        }
-
-        .container {
-            max-width: 1400px;
-            margin: 0 auto;
-        }
-
-        header {
-            text-align: center;
-            color: white;
-            margin-bottom: 40px;
-        }
-
-        h1 {
-            font-size: 2.5em;
-            margin-bottom: 10px;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
-        }
-
-        .subtitle {
-            font-size: 1.2em;
-            opacity: 0.9;
-        }
-
-        .tracks-container {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
-            gap: 30px;
-            margin-bottom: 40px;
-        }
-
-        .track-card {
-            background: white;
-            border-radius: 15px;
-            padding: 25px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-
-        .track-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 15px 40px rgba(0,0,0,0.3);
-        }
-
-        .track-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-            padding-bottom: 15px;
-            border-bottom: 3px solid #667eea;
-        }
-
-        .track-title {
-            font-size: 1.5em;
-            color: #333;
-            font-weight: bold;
-        }
-
-        .track-stats {
-            text-align: right;
-        }
-
-        .completion-rate {
-            font-size: 2em;
-            font-weight: bold;
-            color: #667eea;
-        }
-
-        .stats-label {
-            font-size: 0.9em;
-            color: #666;
-        }
-
-        .progress-bar {
-            width: 100%;
-            height: 25px;
-            background: #e0e0e0;
-            border-radius: 12px;
-            overflow: hidden;
-            margin-bottom: 20px;
-            position: relative;
-        }
-
-        .progress-fill {
-            height: 100%;
-            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
-            transition: width 0.5s ease;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-weight: bold;
-            font-size: 0.9em;
-        }
-
-        .lessons-list {
-            list-style: none;
-        }
-
-        .lesson-item {
-            padding: 12px;
-            margin-bottom: 10px;
-            border-radius: 8px;
-            background: #f8f9fa;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            transition: all 0.3s ease;
-            cursor: pointer;
-        }
-
-        .lesson-item:hover {
-            background: #e9ecef;
-            transform: translateX(5px);
-        }
-
-        .lesson-checkbox {
-            width: 24px;
-            height: 24px;
-            cursor: pointer;
-            accent-color: #667eea;
-        }
-
-        .lesson-link {
-            flex: 1;
-            color: #333;
-            text-decoration: none;
-            font-weight: 500;
-        }
-
-        .lesson-item.completed {
-            background: #d4edda;
-            border-left: 4px solid #28a745;
-        }
-
-        .lesson-item.completed .lesson-link {
-            color: #155724;
-        }
-
-        .summary-card {
-            background: white;
-            border-radius: 15px;
-            padding: 30px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-            text-align: center;
-        }
-
-        .summary-title {
-            font-size: 2em;
-            color: #333;
-            margin-bottom: 20px;
-        }
-
-        .summary-stats {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 20px;
-            margin-top: 20px;
-        }
-
-        .stat-box {
-            padding: 20px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            border-radius: 10px;
-            color: white;
-        }
-
-        .stat-number {
-            font-size: 2.5em;
-            font-weight: bold;
-            margin-bottom: 5px;
-        }
-
-        .stat-label {
-            font-size: 1em;
-            opacity: 0.9;
-        }
-
-        .reset-button {
-            margin-top: 20px;
-            padding: 12px 30px;
-            background: #dc3545;
-            color: white;
-            border: none;
-            border-radius: 8px;
-            font-size: 1em;
-            cursor: pointer;
-            transition: background 0.3s ease;
-        }
-
-        .reset-button:hover {
-            background: #c82333;
-        }
-
-        @media (max-width: 768px) {
-            .tracks-container {
-                grid-template-columns: 1fr;
-            }
-            
-            h1 {
-                font-size: 2em;
-            }
-            
-            .track-title {
-                font-size: 1.2em;
-            }
-        }
-
-        .celebration {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: white;
-            padding: 40px;
-            border-radius: 20px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-            text-align: center;
-            z-index: 1000;
-            display: none;
-        }
-
-        .celebration.show {
-            display: block;
-            animation: popIn 0.5s ease;
-        }
-
-        @keyframes popIn {
-            0% {
-                transform: translate(-50%, -50%) scale(0);
-            }
-            100% {
-                transform: translate(-50%, -50%) scale(1);
-            }
-        }
-
-        .celebration-emoji {
-            font-size: 4em;
-            margin-bottom: 20px;
-        }
-
-        .celebration-text {
-            font-size: 1.5em;
-            color: #333;
-            margin-bottom: 20px;
-        }
-
-        .overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.5);
-            z-index: 999;
-            display: none;
-        }
-
-        .overlay.show {
-            display: block;
-        }
-    </style>
+    <title>Learning Hub</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <div class="overlay" id="overlay"></div>
-    <div class="celebration" id="celebration">
-        <div class="celebration-emoji">🎉</div>
-        <div class="celebration-text">Lesson Completed!</div>
-        <div>Keep up the great work!</div>
-    </div>
-
     <div class="container">
         <header>
-            <h1>🚀 My Learning Roadmap</h1>
-            <p class="subtitle">Track your progress on your journey to mastery</p>
+            <h1>🎓 Learning Hub</h1>
+            <p>Track your progress across different learning paths</p>
         </header>
 
-        <div class="tracks-container">
-            <div class="track-card">
-                <div class="track-header">
-                    <div class="track-title">Python Track (7 lessons)</div>
-                    <div class="track-stats">
-                        <div class="completion-rate" id="python-rate">0%</div>
-                        <div class="stats-label">Complete</div>
-                    </div>
-                </div>
-                <div class="progress-bar">
-                    <div class="progress-fill" id="python-progress" style="width: 0%">
-                        <span id="python-progress-text">0/7</span>
-                    </div>
-                </div>
-                <ul class="lessons-list" id="python-lessons"></ul>
+        <section class="track">
+            <h2>🐍 Python Learning Track (7 lessons)</h2>
+            <div class="progress-bar">
+                <div class="progress" style="width: 0%"></div>
             </div>
+            <p class="progress-text">0/7 lessons completed</p>
+            
+            <div class="lessons">
+                <a href="python/week1-day1-intro.html" class="lesson-item" data-lesson="python-1">
+                    <div class="lesson-number">1</div>
+                    <div class="lesson-content">
+                        <h3>Week 1 (Day 1): Python Fundamentals & Setup</h3>
+                        <p>Learn Python basics, setup your environment, and understand core concepts</p>
+                    </div>
+                    <div class="lesson-status">📖</div>
+                </a>
 
-            <div class="track-card">
-                <div class="track-header">
-                    <div class="track-title">React Track (4 lessons)</div>
-                    <div class="track-stats">
-                        <div class="completion-rate" id="react-rate">0%</div>
-                        <div class="stats-label">Complete</div>
+                <a href="python/week1-day2-oop.html" class="lesson-item" data-lesson="python-2">
+                    <div class="lesson-number">2</div>
+                    <div class="lesson-content">
+                        <h3>Week 1 (Day 2): Object-Oriented Programming</h3>
+                        <p>Master classes, objects, inheritance, and OOP principles</p>
                     </div>
-                </div>
-                <div class="progress-bar">
-                    <div class="progress-fill" id="react-progress" style="width: 0%">
-                        <span id="react-progress-text">0/4</span>
-                    </div>
-                </div>
-                <ul class="lessons-list" id="react-lessons"></ul>
-            </div>
-        </div>
+                    <div class="lesson-status">📖</div>
+                </a>
 
-        <div class="summary-card">
-            <div class="summary-title">📊 Overall Progress</div>
-            <div class="summary-stats">
-                <div class="stat-box">
-                    <div class="stat-number" id="total-completed">0</div>
-                    <div class="stat-label">Lessons Completed</div>
-                </div>
-                <div class="stat-box">
-                    <div class="stat-number" id="total-lessons">11</div>
-                    <div class="stat-label">Total Lessons</div>
-                </div>
-                <div class="stat-box">
-                    <div class="stat-number" id="overall-rate">0%</div>
-                    <div class="stat-label">Overall Progress</div>
-                </div>
+                <a href="python/week1-day3-apis.html" class="lesson-item" data-lesson="python-3">
+                    <div class="lesson-number">3</div>
+                    <div class="lesson-content">
+                        <h3>Week 1 (Day 3): REST APIs & HTTP</h3>
+                        <p>Understand REST principles, HTTP methods, and API design</p>
+                    </div>
+                    <div class="lesson-status">📖</div>
+                </a>
+
+                <a href="python/week1-day4-fastapi-intro.html" class="lesson-item" data-lesson="python-4">
+                    <div class="lesson-number">4</div>
+                    <div class="lesson-content">
+                        <h3>Week 1 (Day 4): FastAPI Introduction</h3>
+                        <p>Get started with FastAPI, create your first API endpoints</p>
+                    </div>
+                    <div class="lesson-status">📖</div>
+                </a>
+
+                <a href="python/week1-day5-6-fastapi-fundamentals.html" class="lesson-item" data-lesson="python-5">
+                    <div class="lesson-number">5</div>
+                    <div class="lesson-content">
+                        <h3>Week 1 (Day 1-2): FastAPI Fundamentals</h3>
+                        <p>Deep dive into FastAPI features and best practices</p>
+                    </div>
+                    <div class="lesson-status">📖</div>
+                </a>
+
+                <a href="python/week1-day3-4-frontend-basics.html" class="lesson-item" data-lesson="python-6">
+                    <div class="lesson-number">6</div>
+                    <div class="lesson-content">
+                        <h3>Week 1 (Day 3-4): Frontend Basics</h3>
+                        <p>Learn frontend fundamentals to complement your backend skills</p>
+                    </div>
+                    <div class="lesson-status">📖</div>
+                </a>
+
+                <a href="python/week1-day5-6-api-integration.html" class="lesson-item" data-lesson="python-7">
+                    <div class="lesson-number">7</div>
+                    <div class="lesson-content">
+                        <h3>Week 1 (Day 5-6): API Integration</h3>
+                        <p>Connect frontend and backend through API integration</p>
+                    </div>
+                    <div class="lesson-status">📖</div>
+                </a>
             </div>
-            <button class="reset-button" onclick="resetProgress()">Reset All Progress</button>
-        </div>
+        </section>
     </div>
 
-    <script>
-        const lessons = {
-            python: [
-                { name: 'Python Basics & Setup', file: 'week1-day1-2-python-basics.html' },
-                { name: 'Data Structures & Functions', file: 'week1-day3-4-data-structures.html' },
-                { name: 'OOP & File Handling', file: 'week1-day5-6-oop-files.html' },
-                { name: 'Database Operations', file: 'week2-day1-2-database.html' },
-                { name: 'FastAPI Fundamentals', file: 'week2-day3-4-fastapi-basics.html' },
-                { name: 'Frontend Basics', file: 'week1-day3-4-frontend-basics.html' },
-                { name: 'API Integration', file: 'week1-day5-6-api-integration.html' }
-            ],
-            react: [
-                { name: 'React Setup & Basics', file: 'week2-day5-6-react-setup.html' },
-                { name: 'Component Architecture', file: 'week3-day1-2-react-components.html' },
-                { name: 'State Management', file: 'week3-day3-4-react-state.html' },
-                { name: 'API Integration & Deployment', file: 'week3-day5-6-integration.html' }
-            ]
-        };
-
-        // Load progress from localStorage
-        let progress = JSON.parse(localStorage.getItem('learningProgress')) || {
-            python: [],
-            react: []
-        };
-
-        function saveProgress() {
-            localStorage.setItem('learningProgress', JSON.stringify(progress));
-        }
-
-        function toggleLesson(track, index) {
-            const lessonIndex = progress[track].indexOf(index);
-            if (lessonIndex === -1) {
-                progress[track].push(index);
-                showCelebration();
-            } else {
-                progress[track].splice(lessonIndex, 1);
-            }
-            saveProgress();
-            updateUI();
-        }
-
-        function showCelebration() {
-            const celebration = document.getElementById('celebration');
-            const overlay = document.getElementById('overlay');
-            celebration.classList.add('show');
-            overlay.classList.add('show');
-            setTimeout(() => {
-                celebration.classList.remove('show');
-                overlay.classList.remove('show');
-            }, 2000);
-        }
-
-        function updateUI() {
-            updateTrack('python');
-            updateTrack('react');
-            updateOverallProgress();
-        }
-
-        function updateTrack(track) {
-            const lessonsList = document.getElementById(`${track}-lessons`);
-            const progressBar = document.getElementById(`${track}-progress`);
-            const progressText = document.getElementById(`${track}-progress-text`);
-            const completionRate = document.getElementById(`${track}-rate`);
-
-            lessonsList.innerHTML = '';
-            lessons[track].forEach((lesson, index) => {
-                const li = document.createElement('li');
-                li.className = 'lesson-item';
-                if (progress[track].includes(index)) {
-                    li.classList.add('completed');
-                }
-
-                const checkbox = document.createElement('input');
-                checkbox.type = 'checkbox';
-                checkbox.className = 'lesson-checkbox';
-                checkbox.checked = progress[track].includes(index);
-                checkbox.addEventListener('change', () => toggleLesson(track, index));
-
-                const link = document.createElement('a');
-                link.href = lesson.file;
-                link.className = 'lesson-link';
-                link.textContent = lesson.name;
-
-                li.appendChild(checkbox);
-                li.appendChild(link);
-                lessonsList.appendChild(li);
-            });
-
-            const completed = progress[track].length;
-            const total = lessons[track].length;
-            const percentage = Math.round((completed / total) * 100);
-
-            progressBar.style.width = `${percentage}%`;
-            progressText.textContent = `${completed}/${total}`;
-            completionRate.textContent = `${percentage}%`;
-        }
-
-        function updateOverallProgress() {
-            const totalCompleted = progress.python.length + progress.react.length;
-            const totalLessons = lessons.python.length + lessons.react.length;
-            const overallPercentage = Math.round((totalCompleted / totalLessons) * 100);
-
-            document.getElementById('total-completed').textContent = totalCompleted;
-            document.getElementById('total-lessons').textContent = totalLessons;
-            document.getElementById('overall-rate').textContent = `${overallPercentage}%`;
-        }
-
-        function resetProgress() {
-            if (confirm('Are you sure you want to reset all progress? This cannot be undone.')) {
-                progress = {
-                    python: [],
-                    react: []
-                };
-                saveProgress();
-                updateUI();
-            }
-        }
-
-        // Initialize UI on page load
-        updateUI();
-    </script>
+    <script src="script.js"></script>
 </body>
 </html>
