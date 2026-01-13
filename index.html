@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Learning Tracker</title>
+    <title>Learning Progress Tracker</title>
     <style>
         * {
             margin: 0;
@@ -12,7 +12,7 @@
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
             padding: 20px;
@@ -23,433 +23,330 @@
             margin: 0 auto;
         }
 
-        h1 {
+        header {
             text-align: center;
             color: white;
-            margin-bottom: 30px;
+            margin-bottom: 40px;
+        }
+
+        h1 {
             font-size: 2.5em;
+            margin-bottom: 10px;
             text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
         }
 
-        .stats {
-            background: white;
-            border-radius: 10px;
-            padding: 20px;
-            margin-bottom: 30px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-            display: flex;
-            justify-content: space-around;
-            flex-wrap: wrap;
+        .subtitle {
+            font-size: 1.2em;
+            opacity: 0.9;
         }
 
-        .stat-item {
-            text-align: center;
-            padding: 10px;
-        }
-
-        .stat-number {
-            font-size: 2em;
-            font-weight: bold;
-            color: #667eea;
-        }
-
-        .stat-label {
-            color: #666;
-            margin-top: 5px;
-        }
-
-        .lessons-grid {
+        .tracks {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 20px;
+            grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+            gap: 30px;
             margin-bottom: 30px;
         }
 
-        .lesson-card {
+        .track {
             background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+        }
+
+        .track-header {
+            margin-bottom: 20px;
+        }
+
+        .track-title {
+            font-size: 1.8em;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .progress-container {
+            background: #f0f0f0;
             border-radius: 10px;
-            padding: 20px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-            transition: all 0.3s ease;
-            cursor: pointer;
+            height: 30px;
+            overflow: hidden;
             position: relative;
         }
 
-        .lesson-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 6px 12px rgba(0,0,0,0.15);
-        }
-
-        .lesson-card.completed {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-        }
-
-        .lesson-checkbox {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            width: 24px;
-            height: 24px;
-            cursor: pointer;
-            accent-color: #667eea;
-        }
-
-        .lesson-card.completed .lesson-checkbox {
-            accent-color: white;
-        }
-
-        .lesson-title {
-            font-size: 1.3em;
-            margin-bottom: 10px;
-            font-weight: bold;
-            padding-right: 40px;
-        }
-
-        .lesson-description {
-            color: #666;
-            line-height: 1.6;
-        }
-
-        .lesson-card.completed .lesson-description {
-            color: rgba(255, 255, 255, 0.9);
-        }
-
-        .lesson-date {
-            margin-top: 10px;
-            font-size: 0.9em;
-            opacity: 0.8;
-        }
-
-        .add-lesson-btn {
-            position: fixed;
-            bottom: 30px;
-            right: 30px;
-            width: 60px;
-            height: 60px;
-            background: #667eea;
-            color: white;
-            border: none;
-            border-radius: 50%;
-            font-size: 2em;
-            cursor: pointer;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.2);
-            transition: all 0.3s ease;
-        }
-
-        .add-lesson-btn:hover {
-            transform: scale(1.1);
-            background: #764ba2;
-        }
-
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.5);
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
-        }
-
-        .modal.active {
-            display: flex;
-        }
-
-        .modal-content {
-            background: white;
-            padding: 30px;
-            border-radius: 10px;
-            width: 90%;
-            max-width: 500px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-        }
-
-        .modal-content h2 {
-            margin-bottom: 20px;
-            color: #667eea;
-        }
-
-        .form-group {
-            margin-bottom: 20px;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 5px;
-            color: #333;
-            font-weight: bold;
-        }
-
-        .form-group input,
-        .form-group textarea {
-            width: 100%;
-            padding: 10px;
-            border: 2px solid #ddd;
-            border-radius: 5px;
-            font-family: inherit;
-            font-size: 1em;
-        }
-
-        .form-group textarea {
-            resize: vertical;
-            min-height: 100px;
-        }
-
-        .form-group input:focus,
-        .form-group textarea:focus {
-            outline: none;
-            border-color: #667eea;
-        }
-
-        .modal-buttons {
-            display: flex;
-            gap: 10px;
-            justify-content: flex-end;
-        }
-
-        .btn {
-            padding: 10px 20px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 1em;
-            transition: all 0.3s ease;
-        }
-
-        .btn-primary {
-            background: #667eea;
-            color: white;
-        }
-
-        .btn-primary:hover {
-            background: #764ba2;
-        }
-
-        .btn-secondary {
-            background: #ddd;
-            color: #333;
-        }
-
-        .btn-secondary:hover {
-            background: #ccc;
-        }
-
         .progress-bar {
-            width: 100%;
-            height: 30px;
-            background: #f0f0f0;
-            border-radius: 15px;
-            overflow: hidden;
-            margin-top: 10px;
-        }
-
-        .progress-fill {
-            height: 100%;
             background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            height: 100%;
             transition: width 0.3s ease;
             display: flex;
             align-items: center;
             justify-content: center;
             color: white;
             font-weight: bold;
+            font-size: 0.9em;
+        }
+
+        .progress-text {
+            position: absolute;
+            width: 100%;
+            text-align: center;
+            line-height: 30px;
+            font-weight: bold;
+            color: #333;
+            z-index: 1;
+        }
+
+        .lessons {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .lesson-card {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 15px 15px 15px 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .lesson-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            border-color: #667eea;
+        }
+
+        .lesson-card.completed {
+            background: linear-gradient(135deg, #667eea15 0%, #764ba215 100%);
+            border-color: #667eea;
+        }
+
+        .lesson-checkbox {
+            width: 24px;
+            height: 24px;
+            cursor: pointer;
+            accent-color: #667eea;
+            flex-shrink: 0;
+        }
+
+        .lesson-content {
+            flex: 1;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .lesson-info {
+            flex: 1;
+        }
+
+        .lesson-number {
+            font-size: 0.9em;
+            color: #667eea;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .lesson-title {
+            font-size: 1.1em;
+            color: #333;
+            font-weight: 600;
+        }
+
+        .lesson-status {
+            font-size: 0.9em;
+            color: #28a745;
+            font-weight: bold;
+            margin-left: 10px;
+        }
+
+        .hint {
+            text-align: center;
+            color: white;
+            font-size: 0.9em;
+            opacity: 0.8;
+            margin-top: 10px;
+        }
+
+        .reset-btn {
+            background: white;
+            color: #667eea;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 25px;
+            font-size: 1em;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            transition: all 0.3s ease;
+            display: block;
+            margin: 30px auto;
+        }
+
+        .reset-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 7px 20px rgba(0,0,0,0.3);
+        }
+
+        @media (max-width: 768px) {
+            .tracks {
+                grid-template-columns: 1fr;
+            }
+            
+            h1 {
+                font-size: 2em;
+            }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>📚 Learning Tracker</h1>
-        
-        <div class="stats">
-            <div class="stat-item">
-                <div class="stat-number" id="totalLessons">0</div>
-                <div class="stat-label">Total Lessons</div>
-            </div>
-            <div class="stat-item">
-                <div class="stat-number" id="completedLessons">0</div>
-                <div class="stat-label">Completed</div>
-            </div>
-            <div class="stat-item">
-                <div class="stat-number" id="remainingLessons">0</div>
-                <div class="stat-label">Remaining</div>
-            </div>
-            <div class="stat-item" style="width: 100%; margin-top: 20px;">
-                <div class="progress-bar">
-                    <div class="progress-fill" id="progressBar" style="width: 0%">0%</div>
+        <header>
+            <h1>🚀 Learning Progress Tracker</h1>
+            <p class="subtitle">Track your journey through Web Development and Python</p>
+        </header>
+
+        <div class="tracks">
+            <!-- Web App Track -->
+            <div class="track">
+                <div class="track-header">
+                    <h2 class="track-title">🌐 Web App Development</h2>
+                    <div class="progress-container">
+                        <div class="progress-text" id="webapp-progress-text">0%</div>
+                        <div class="progress-bar" id="webapp-progress" style="width: 0%"></div>
+                    </div>
                 </div>
+                <div class="lessons" id="webapp-lessons"></div>
+            </div>
+
+            <!-- Python Track -->
+            <div class="track">
+                <div class="track-header">
+                    <h2 class="track-title">🐍 Python Programming</h2>
+                    <div class="progress-container">
+                        <div class="progress-text" id="python-progress-text">0%</div>
+                        <div class="progress-bar" id="python-progress" style="width: 0%"></div>
+                    </div>
+                </div>
+                <div class="lessons" id="python-lessons"></div>
             </div>
         </div>
 
-        <div class="lessons-grid" id="lessonsGrid"></div>
-    </div>
+        <p class="hint">💡 Click to open lesson • Check the box to mark complete</p>
 
-    <button class="add-lesson-btn" id="addLessonBtn">+</button>
-
-    <div class="modal" id="addLessonModal">
-        <div class="modal-content">
-            <h2>Add New Lesson</h2>
-            <form id="lessonForm">
-                <div class="form-group">
-                    <label for="lessonTitle">Lesson Title</label>
-                    <input type="text" id="lessonTitle" required>
-                </div>
-                <div class="form-group">
-                    <label for="lessonDescription">Description</label>
-                    <textarea id="lessonDescription" required></textarea>
-                </div>
-                <div class="modal-buttons">
-                    <button type="button" class="btn btn-secondary" id="cancelBtn">Cancel</button>
-                    <button type="submit" class="btn btn-primary">Add Lesson</button>
-                </div>
-            </form>
-        </div>
+        <button class="reset-btn" onclick="resetProgress()">🔄 Reset All Progress</button>
     </div>
 
     <script>
-        class LearningTracker {
-            constructor() {
-                this.lessons = JSON.parse(localStorage.getItem('lessons')) || [];
-                this.init();
+        const webappLessons = [
+            { id: 1, title: "HTML Basics", url: "https://www.w3schools.com/html/" },
+            { id: 2, title: "CSS Fundamentals", url: "https://www.w3schools.com/css/" },
+            { id: 3, title: "JavaScript Essentials", url: "https://www.w3schools.com/js/" },
+            { id: 4, title: "Responsive Design", url: "https://www.w3schools.com/css/css_rwd_intro.asp" },
+            { id: 5, title: "DOM Manipulation", url: "https://www.w3schools.com/js/js_htmldom.asp" },
+            { id: 6, title: "Fetch API & AJAX", url: "https://www.w3schools.com/js/js_api_fetch.asp" },
+            { id: 7, title: "Local Storage", url: "https://www.w3schools.com/jsref/prop_win_localstorage.asp" },
+            { id: 8, title: "Modern CSS (Flexbox & Grid)", url: "https://www.w3schools.com/css/css3_flexbox.asp" }
+        ];
+
+        const pythonLessons = [
+            { id: 1, title: "Python Basics", url: "https://www.w3schools.com/python/" },
+            { id: 2, title: "Data Types & Variables", url: "https://www.w3schools.com/python/python_datatypes.asp" },
+            { id: 3, title: "Control Flow", url: "https://www.w3schools.com/python/python_conditions.asp" },
+            { id: 4, title: "Functions", url: "https://www.w3schools.com/python/python_functions.asp" },
+            { id: 5, title: "Lists & Tuples", url: "https://www.w3schools.com/python/python_lists.asp" },
+            { id: 6, title: "Dictionaries & Sets", url: "https://www.w3schools.com/python/python_dictionaries.asp" },
+            { id: 7, title: "File Handling", url: "https://www.w3schools.com/python/python_file_handling.asp" },
+            { id: 8, title: "Object-Oriented Programming", url: "https://www.w3schools.com/python/python_classes.asp" }
+        ];
+
+        // Load progress from localStorage
+        function loadProgress(track) {
+            const saved = localStorage.getItem(`${track}-progress`);
+            return saved ? JSON.parse(saved) : [];
+        }
+
+        // Save progress to localStorage
+        function saveProgress(track, completed) {
+            localStorage.setItem(`${track}-progress`, JSON.stringify(completed));
+        }
+
+        // Toggle lesson completion
+        function toggleLesson(track, lessonId) {
+            let completed = loadProgress(track);
+            const index = completed.indexOf(lessonId);
+            
+            if (index > -1) {
+                completed.splice(index, 1);
+            } else {
+                completed.push(lessonId);
             }
+            
+            saveProgress(track, completed);
+            renderTrack(track);
+        }
 
-            init() {
-                this.renderLessons();
-                this.updateStats();
-                this.attachEventListeners();
+        // Open lesson in new tab
+        function openLesson(url, event) {
+            // Prevent opening if clicking on checkbox
+            if (event.target.type === 'checkbox') {
+                return;
             }
+            window.open(url, '_blank');
+        }
 
-            attachEventListeners() {
-                document.getElementById('addLessonBtn').addEventListener('click', () => {
-                    document.getElementById('addLessonModal').classList.add('active');
-                });
+        // Render a track
+        function renderTrack(track) {
+            const lessons = track === 'webapp' ? webappLessons : pythonLessons;
+            const completed = loadProgress(track);
+            const container = document.getElementById(`${track}-lessons`);
+            
+            container.innerHTML = lessons.map(lesson => `
+                <div class="lesson-card ${completed.includes(lesson.id) ? 'completed' : ''}" 
+                     onclick="openLesson('${lesson.url}', event)">
+                    <input type="checkbox" 
+                           class="lesson-checkbox" 
+                           ${completed.includes(lesson.id) ? 'checked' : ''}
+                           onchange="toggleLesson('${track}', ${lesson.id})"
+                           onclick="event.stopPropagation()">
+                    <div class="lesson-content">
+                        <div class="lesson-info">
+                            <div class="lesson-number">Lesson ${lesson.id}</div>
+                            <div class="lesson-title">${lesson.title}</div>
+                        </div>
+                        ${completed.includes(lesson.id) ? '<span class="lesson-status">✓ Completed</span>' : ''}
+                    </div>
+                </div>
+            `).join('');
+            
+            updateProgress(track, completed.length, lessons.length);
+        }
 
-                document.getElementById('cancelBtn').addEventListener('click', () => {
-                    this.closeModal();
-                });
+        // Update progress bar
+        function updateProgress(track, completed, total) {
+            const percentage = Math.round((completed / total) * 100);
+            const progressBar = document.getElementById(`${track}-progress`);
+            const progressText = document.getElementById(`${track}-progress-text`);
+            
+            progressBar.style.width = `${percentage}%`;
+            progressText.textContent = `${percentage}%`;
+        }
 
-                document.getElementById('lessonForm').addEventListener('submit', (e) => {
-                    e.preventDefault();
-                    this.addLesson();
-                });
-
-                document.getElementById('addLessonModal').addEventListener('click', (e) => {
-                    if (e.target.id === 'addLessonModal') {
-                        this.closeModal();
-                    }
-                });
-            }
-
-            addLesson() {
-                const title = document.getElementById('lessonTitle').value;
-                const description = document.getElementById('lessonDescription').value;
-
-                const lesson = {
-                    id: Date.now(),
-                    title,
-                    description,
-                    completed: false,
-                    dateAdded: new Date().toLocaleDateString()
-                };
-
-                this.lessons.push(lesson);
-                this.saveLessons();
-                this.renderLessons();
-                this.updateStats();
-                this.closeModal();
-            }
-
-            toggleLesson(id) {
-                const lesson = this.lessons.find(l => l.id === id);
-                if (lesson) {
-                    lesson.completed = !lesson.completed;
-                    if (lesson.completed) {
-                        lesson.dateCompleted = new Date().toLocaleDateString();
-                    } else {
-                        delete lesson.dateCompleted;
-                    }
-                    this.saveLessons();
-                    this.renderLessons();
-                    this.updateStats();
-                }
-            }
-
-            renderLessons() {
-                const grid = document.getElementById('lessonsGrid');
-                grid.innerHTML = '';
-
-                this.lessons.forEach(lesson => {
-                    const card = document.createElement('div');
-                    card.className = `lesson-card ${lesson.completed ? 'completed' : ''}`;
-                    
-                    const checkbox = document.createElement('input');
-                    checkbox.type = 'checkbox';
-                    checkbox.className = 'lesson-checkbox';
-                    checkbox.checked = lesson.completed;
-                    checkbox.addEventListener('click', (e) => {
-                        e.stopPropagation();
-                        this.toggleLesson(lesson.id);
-                    });
-
-                    const title = document.createElement('div');
-                    title.className = 'lesson-title';
-                    title.textContent = lesson.title;
-
-                    const description = document.createElement('div');
-                    description.className = 'lesson-description';
-                    description.textContent = lesson.description;
-
-                    const date = document.createElement('div');
-                    date.className = 'lesson-date';
-                    date.textContent = lesson.completed 
-                        ? `✓ Completed: ${lesson.dateCompleted}` 
-                        : `Added: ${lesson.dateAdded}`;
-
-                    card.appendChild(checkbox);
-                    card.appendChild(title);
-                    card.appendChild(description);
-                    card.appendChild(date);
-
-                    // Allow clicking anywhere on the card to toggle completion
-                    card.addEventListener('click', (e) => {
-                        if (e.target !== checkbox) {
-                            this.toggleLesson(lesson.id);
-                        }
-                    });
-
-                    grid.appendChild(card);
-                });
-            }
-
-            updateStats() {
-                const total = this.lessons.length;
-                const completed = this.lessons.filter(l => l.completed).length;
-                const remaining = total - completed;
-                const percentage = total > 0 ? Math.round((completed / total) * 100) : 0;
-
-                document.getElementById('totalLessons').textContent = total;
-                document.getElementById('completedLessons').textContent = completed;
-                document.getElementById('remainingLessons').textContent = remaining;
-                
-                const progressBar = document.getElementById('progressBar');
-                progressBar.style.width = `${percentage}%`;
-                progressBar.textContent = `${percentage}%`;
-            }
-
-            saveLessons() {
-                localStorage.setItem('lessons', JSON.stringify(this.lessons));
-            }
-
-            closeModal() {
-                document.getElementById('addLessonModal').classList.remove('active');
-                document.getElementById('lessonForm').reset();
+        // Reset all progress
+        function resetProgress() {
+            if (confirm('Are you sure you want to reset all progress? This cannot be undone.')) {
+                localStorage.removeItem('webapp-progress');
+                localStorage.removeItem('python-progress');
+                renderTrack('webapp');
+                renderTrack('python');
             }
         }
 
-        // Initialize the app
-        const app = new LearningTracker();
+        // Initialize
+        renderTrack('webapp');
+        renderTrack('python');
     </script>
 </body>
 </html>
