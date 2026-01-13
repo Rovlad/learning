@@ -3,104 +3,472 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Learning Progress Tracker</title>
-    <link rel="stylesheet" href="styles.css">
+    <title>Learning Path</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 2rem;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            color: white;
+            text-align: center;
+            margin-bottom: 3rem;
+            font-size: 2.5rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .tracks {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .track-card {
+            background: white;
+            border-radius: 15px;
+            padding: 2rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            cursor: pointer;
+        }
+
+        .track-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+        }
+
+        .track-card.active {
+            border: 3px solid #667eea;
+        }
+
+        .track-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .track-title {
+            font-size: 1.5rem;
+            color: #333;
+            margin-bottom: 0.5rem;
+        }
+
+        .track-description {
+            color: #666;
+            font-size: 0.9rem;
+            line-height: 1.6;
+        }
+
+        .lessons-container {
+            background: white;
+            border-radius: 15px;
+            padding: 2rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            display: none;
+        }
+
+        .lessons-container.active {
+            display: block;
+        }
+
+        .lessons-title {
+            font-size: 2rem;
+            color: #333;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 3px solid #667eea;
+        }
+
+        .lesson-item {
+            display: flex;
+            align-items: center;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            background: #f8f9fa;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .lesson-item:hover {
+            background: #e9ecef;
+            transform: translateX(10px);
+        }
+
+        .lesson-number {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-right: 1.5rem;
+            flex-shrink: 0;
+        }
+
+        .lesson-content {
+            flex-grow: 1;
+        }
+
+        .lesson-title {
+            font-size: 1.2rem;
+            color: #333;
+            margin-bottom: 0.3rem;
+        }
+
+        .lesson-subtitle {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .lesson-status {
+            font-size: 1.5rem;
+            margin-left: 1rem;
+        }
+
+        .back-button {
+            display: inline-block;
+            margin-bottom: 1.5rem;
+            padding: 0.8rem 1.5rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            transition: transform 0.3s ease;
+            font-weight: 600;
+        }
+
+        .back-button:hover {
+            transform: scale(1.05);
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 1rem;
+            }
+
+            h1 {
+                font-size: 2rem;
+                margin-bottom: 2rem;
+            }
+
+            .tracks {
+                grid-template-columns: 1fr;
+            }
+
+            .lesson-number {
+                width: 50px;
+                height: 50px;
+                font-size: 0.9rem;
+            }
+
+            .lesson-title {
+                font-size: 1rem;
+            }
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #e9ecef;
+            border-radius: 10px;
+            margin-top: 1rem;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            border-radius: 10px;
+            transition: width 0.5s ease;
+        }
+
+        .progress-text {
+            margin-top: 0.5rem;
+            color: #666;
+            font-size: 0.9rem;
+            text-align: right;
+        }
+    </style>
 </head>
 <body>
     <div class="container">
-        <h1>🎓 Learning Progress Tracker</h1>
+        <h1>🎓 My Learning Journey</h1>
         
-        <!-- Python Course Section -->
-        <div class="course-section">
-            <div class="course-header">
-                <h2>🐍 Python Development Course</h2>
+        <div class="tracks" id="tracksContainer">
+            <div class="track-card" data-track="javascript">
+                <div class="track-icon">🟨</div>
+                <h2 class="track-title">JavaScript Track</h2>
+                <p class="track-description">Master modern JavaScript from basics to advanced concepts. Build interactive web applications.</p>
                 <div class="progress-bar">
-                    <div class="progress-fill" id="python-progress"></div>
+                    <div class="progress-fill" style="width: 0%"></div>
                 </div>
-                <p class="progress-text" id="python-progress-text">0/7 lessons completed</p>
+                <div class="progress-text">0% Complete</div>
             </div>
-            
-            <div class="lessons-container">
-                <!-- Lesson 1 -->
-                <div class="lesson-item" data-lesson="python-1">
-                    <div class="lesson-checkbox" onclick="toggleLesson('python', 1)">
-                        <span class="checkmark">✓</span>
-                    </div>
-                    <div class="lesson-info">
-                        <div class="lesson-title">Week 1 (Day 1): Python Fundamentals & Setup</div>
-                        <a href="python/week1-day1-python-fundamentals.html" class="lesson-link">Start Lesson</a>
-                    </div>
-                </div>
 
-                <!-- Lesson 2 -->
-                <div class="lesson-item" data-lesson="python-2">
-                    <div class="lesson-checkbox" onclick="toggleLesson('python', 2)">
-                        <span class="checkmark">✓</span>
-                    </div>
-                    <div class="lesson-info">
-                        <div class="lesson-title">Week 1 (Day 2): Data Structures & Control Flow</div>
-                        <a href="python/week1-day2-data-structures.html" class="lesson-link">Start Lesson</a>
-                    </div>
+            <div class="track-card" data-track="react">
+                <div class="track-icon">⚛️</div>
+                <h2 class="track-title">React Track</h2>
+                <p class="track-description">Learn React and build modern, dynamic user interfaces with components and hooks.</p>
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: 0%"></div>
                 </div>
-
-                <!-- Lesson 3 -->
-                <div class="lesson-item" data-lesson="python-3">
-                    <div class="lesson-checkbox" onclick="toggleLesson('python', 3)">
-                        <span class="checkmark">✓</span>
-                    </div>
-                    <div class="lesson-info">
-                        <div class="lesson-title">Week 1 (Day 3): Functions & Modules</div>
-                        <a href="python/week1-day3-functions-modules.html" class="lesson-link">Start Lesson</a>
-                    </div>
-                </div>
-
-                <!-- Lesson 4 -->
-                <div class="lesson-item" data-lesson="python-4">
-                    <div class="lesson-checkbox" onclick="toggleLesson('python', 4)">
-                        <span class="checkmark">✓</span>
-                    </div>
-                    <div class="lesson-info">
-                        <div class="lesson-title">Week 1 (Day 4): Object-Oriented Programming</div>
-                        <a href="python/week1-day4-oop.html" class="lesson-link">Start Lesson</a>
-                    </div>
-                </div>
-
-                <!-- Lesson 5 -->
-                <div class="lesson-item" data-lesson="python-5">
-                    <div class="lesson-checkbox" onclick="toggleLesson('python', 5)">
-                        <span class="checkmark">✓</span>
-                    </div>
-                    <div class="lesson-info">
-                        <div class="lesson-title">Week 1 (Day 5): File Handling & Error Management</div>
-                        <a href="python/week1-day5-files-errors.html" class="lesson-link">Start Lesson</a>
-                    </div>
-                </div>
-
-                <!-- Lesson 6 -->
-                <div class="lesson-item" data-lesson="python-6">
-                    <div class="lesson-checkbox" onclick="toggleLesson('python', 6)">
-                        <span class="checkmark">✓</span>
-                    </div>
-                    <div class="lesson-info">
-                        <div class="lesson-title">Week 1 (Day 3-4): Frontend Basics</div>
-                        <a href="python/week1-day3-4-frontend-basics.html" class="lesson-link">Start Lesson</a>
-                    </div>
-                </div>
-
-                <!-- Lesson 7 -->
-                <div class="lesson-item" data-lesson="python-7">
-                    <div class="lesson-checkbox" onclick="toggleLesson('python', 7)">
-                        <span class="checkmark">✓</span>
-                    </div>
-                    <div class="lesson-info">
-                        <div class="lesson-title">Week 1 (Day 5-6): API Integration</div>
-                        <a href="python/week1-day5-6-api-integration.html" class="lesson-link">Start Lesson</a>
-                    </div>
-                </div>
+                <div class="progress-text">0% Complete</div>
             </div>
+
+            <div class="track-card" data-track="python">
+                <div class="track-icon">🐍</div>
+                <h2 class="track-title">Python Track (7 lessons)</h2>
+                <p class="track-description">Learn Python programming and web development with Django and FastAPI.</p>
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: 0%"></div>
+                </div>
+                <div class="progress-text">0% Complete</div>
+            </div>
+        </div>
+
+        <div class="lessons-container" id="lessonsContainer">
+            <a href="#" class="back-button" id="backButton">← Back to Tracks</a>
+            <h2 class="lessons-title" id="lessonsTitle"></h2>
+            <div id="lessonsList"></div>
         </div>
     </div>
 
-    <script src="script.js"></script>
+    <script>
+        // Lesson data structure
+        const lessons = {
+            javascript: [
+                {
+                    number: "1",
+                    title: "JavaScript Basics",
+                    subtitle: "Variables, Data Types, and Operators",
+                    path: "javascript/lesson1.html",
+                    completed: false
+                },
+                {
+                    number: "2",
+                    title: "Control Flow",
+                    subtitle: "Conditionals and Loops",
+                    path: "javascript/lesson2.html",
+                    completed: false
+                },
+                {
+                    number: "3",
+                    title: "Functions",
+                    subtitle: "Function Declarations and Expressions",
+                    path: "javascript/lesson3.html",
+                    completed: false
+                }
+            ],
+            react: [
+                {
+                    number: "1",
+                    title: "React Fundamentals",
+                    subtitle: "Components and JSX",
+                    path: "react/lesson1.html",
+                    completed: false
+                },
+                {
+                    number: "2",
+                    title: "State and Props",
+                    subtitle: "Managing Component Data",
+                    path: "react/lesson2.html",
+                    completed: false
+                }
+            ],
+            python: [
+                {
+                    number: "Week 1 (Day 1)",
+                    title: "Python Basics",
+                    path: "python/week1-day1-python-basics.html",
+                    completed: false
+                },
+                {
+                    number: "Week 1 (Day 2)",
+                    title: "FastAPI Fundamentals",
+                    path: "python/week1-day2-fastapi-fundamentals.html",
+                    completed: false
+                },
+                {
+                    number: "Week 1 (Day 3-4)",
+                    title: "Frontend Basics",
+                    path: "python/week1-day3-4-frontend-basics.html",
+                    completed: false
+                },
+                {
+                    number: "Week 1 (Day 5-6)",
+                    title: "API Integration",
+                    path: "python/week1-day5-6-api-integration.html",
+                    completed: false
+                },
+                {
+                    number: "Week 1 (Day 7)",
+                    title: "Full-Stack Integration",
+                    path: "python/week1-day7-fullstack-integration.html",
+                    completed: false
+                },
+                {
+                    number: "Week 2 (Day 1-2)",
+                    title: "Django Setup & Models",
+                    path: "python/week2-day1-2-django-setup-models.html",
+                    completed: false
+                },
+                {
+                    number: "Week 2 (Day 3-7)",
+                    title: "Full Project Development",
+                    path: "python/week2-day3-7-full-project.html",
+                    completed: false
+                }
+            ]
+        };
+
+        // Load progress from localStorage
+        function loadProgress() {
+            const saved = localStorage.getItem('learningProgress');
+            if (saved) {
+                const progress = JSON.parse(saved);
+                Object.keys(progress).forEach(track => {
+                    if (lessons[track]) {
+                        lessons[track].forEach((lesson, index) => {
+                            if (progress[track][index] !== undefined) {
+                                lesson.completed = progress[track][index];
+                            }
+                        });
+                    }
+                });
+            }
+            updateAllProgress();
+        }
+
+        // Save progress to localStorage
+        function saveProgress() {
+            const progress = {};
+            Object.keys(lessons).forEach(track => {
+                progress[track] = lessons[track].map(lesson => lesson.completed);
+            });
+            localStorage.setItem('learningProgress', JSON.stringify(progress));
+        }
+
+        // Update progress bars for all tracks
+        function updateAllProgress() {
+            Object.keys(lessons).forEach(track => {
+                updateProgress(track);
+            });
+        }
+
+        // Update progress bar for a specific track
+        function updateProgress(track) {
+            const trackLessons = lessons[track];
+            const completed = trackLessons.filter(l => l.completed).length;
+            const total = trackLessons.length;
+            const percentage = (completed / total) * 100;
+
+            const trackCard = document.querySelector(`[data-track="${track}"]`);
+            if (trackCard) {
+                const progressFill = trackCard.querySelector('.progress-fill');
+                const progressText = trackCard.querySelector('.progress-text');
+                progressFill.style.width = `${percentage}%`;
+                progressText.textContent = `${Math.round(percentage)}% Complete (${completed}/${total})`;
+            }
+        }
+
+        // Toggle lesson completion
+        function toggleLesson(track, index) {
+            lessons[track][index].completed = !lessons[track][index].completed;
+            saveProgress();
+            updateProgress(track);
+            showLessons(track);
+        }
+
+        // Show lessons for a track
+        function showLessons(track) {
+            const tracksContainer = document.getElementById('tracksContainer');
+            const lessonsContainer = document.getElementById('lessonsContainer');
+            const lessonsTitle = document.getElementById('lessonsTitle');
+            const lessonsList = document.getElementById('lessonsList');
+
+            tracksContainer.style.display = 'none';
+            lessonsContainer.classList.add('active');
+
+            const trackTitles = {
+                javascript: '🟨 JavaScript Track',
+                react: '⚛️ React Track',
+                python: '🐍 Python Track'
+            };
+
+            lessonsTitle.textContent = trackTitles[track];
+            lessonsList.innerHTML = '';
+
+            lessons[track].forEach((lesson, index) => {
+                const lessonItem = document.createElement('a');
+                lessonItem.href = lesson.path;
+                lessonItem.className = 'lesson-item';
+                lessonItem.innerHTML = `
+                    <div class="lesson-number">${lesson.number}</div>
+                    <div class="lesson-content">
+                        <div class="lesson-title">${lesson.title}</div>
+                        ${lesson.subtitle ? `<div class="lesson-subtitle">${lesson.subtitle}</div>` : ''}
+                    </div>
+                    <div class="lesson-status">${lesson.completed ? '✅' : '⭕'}</div>
+                `;
+
+                // Add click handler for status toggle
+                const statusIcon = lessonItem.querySelector('.lesson-status');
+                statusIcon.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    toggleLesson(track, index);
+                });
+
+                lessonsList.appendChild(lessonItem);
+            });
+        }
+
+        // Show tracks
+        function showTracks() {
+            const tracksContainer = document.getElementById('tracksContainer');
+            const lessonsContainer = document.getElementById('lessonsContainer');
+
+            tracksContainer.style.display = 'grid';
+            lessonsContainer.classList.remove('active');
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            loadProgress();
+
+            // Track card click handlers
+            document.querySelectorAll('.track-card').forEach(card => {
+                card.addEventListener('click', () => {
+                    const track = card.dataset.track;
+                    showLessons(track);
+                });
+            });
+
+            // Back button handler
+            document.getElementById('backButton').addEventListener('click', (e) => {
+                e.preventDefault();
+                showTracks();
+            });
+        });
+    </script>
 </body>
 </html>
