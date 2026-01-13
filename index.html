@@ -3,88 +3,102 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Learning Hub</title>
+    <title>Learning Progress Tracker</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <div class="container">
-        <header>
-            <h1>🎓 Learning Hub</h1>
-            <p>Track your progress across different learning paths</p>
-        </header>
-
-        <section class="track">
-            <h2>🐍 Python Learning Track (7 lessons)</h2>
-            <div class="progress-bar">
-                <div class="progress" style="width: 0%"></div>
+        <h1>🎓 Learning Progress Tracker</h1>
+        
+        <!-- Python Course Section -->
+        <div class="course-section">
+            <div class="course-header">
+                <h2>🐍 Python Development Course</h2>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="python-progress"></div>
+                </div>
+                <p class="progress-text" id="python-progress-text">0/7 lessons completed</p>
             </div>
-            <p class="progress-text">0/7 lessons completed</p>
             
-            <div class="lessons">
-                <a href="python/week1-day1-intro.html" class="lesson-item" data-lesson="python-1">
-                    <div class="lesson-number">1</div>
-                    <div class="lesson-content">
-                        <h3>Week 1 (Day 1): Python Fundamentals & Setup</h3>
-                        <p>Learn Python basics, setup your environment, and understand core concepts</p>
+            <div class="lessons-container">
+                <!-- Lesson 1 -->
+                <div class="lesson-item" data-lesson="python-1">
+                    <div class="lesson-checkbox" onclick="toggleLesson('python', 1)">
+                        <span class="checkmark">✓</span>
                     </div>
-                    <div class="lesson-status">📖</div>
-                </a>
+                    <div class="lesson-info">
+                        <div class="lesson-title">Week 1 (Day 1): Python Fundamentals & Setup</div>
+                        <a href="python/week1-day1-python-fundamentals.html" class="lesson-link">Start Lesson</a>
+                    </div>
+                </div>
 
-                <a href="python/week1-day2-oop.html" class="lesson-item" data-lesson="python-2">
-                    <div class="lesson-number">2</div>
-                    <div class="lesson-content">
-                        <h3>Week 1 (Day 2): Object-Oriented Programming</h3>
-                        <p>Master classes, objects, inheritance, and OOP principles</p>
+                <!-- Lesson 2 -->
+                <div class="lesson-item" data-lesson="python-2">
+                    <div class="lesson-checkbox" onclick="toggleLesson('python', 2)">
+                        <span class="checkmark">✓</span>
                     </div>
-                    <div class="lesson-status">📖</div>
-                </a>
+                    <div class="lesson-info">
+                        <div class="lesson-title">Week 1 (Day 2): Data Structures & Control Flow</div>
+                        <a href="python/week1-day2-data-structures.html" class="lesson-link">Start Lesson</a>
+                    </div>
+                </div>
 
-                <a href="python/week1-day3-apis.html" class="lesson-item" data-lesson="python-3">
-                    <div class="lesson-number">3</div>
-                    <div class="lesson-content">
-                        <h3>Week 1 (Day 3): REST APIs & HTTP</h3>
-                        <p>Understand REST principles, HTTP methods, and API design</p>
+                <!-- Lesson 3 -->
+                <div class="lesson-item" data-lesson="python-3">
+                    <div class="lesson-checkbox" onclick="toggleLesson('python', 3)">
+                        <span class="checkmark">✓</span>
                     </div>
-                    <div class="lesson-status">📖</div>
-                </a>
+                    <div class="lesson-info">
+                        <div class="lesson-title">Week 1 (Day 3): Functions & Modules</div>
+                        <a href="python/week1-day3-functions-modules.html" class="lesson-link">Start Lesson</a>
+                    </div>
+                </div>
 
-                <a href="python/week1-day4-fastapi-intro.html" class="lesson-item" data-lesson="python-4">
-                    <div class="lesson-number">4</div>
-                    <div class="lesson-content">
-                        <h3>Week 1 (Day 4): FastAPI Introduction</h3>
-                        <p>Get started with FastAPI, create your first API endpoints</p>
+                <!-- Lesson 4 -->
+                <div class="lesson-item" data-lesson="python-4">
+                    <div class="lesson-checkbox" onclick="toggleLesson('python', 4)">
+                        <span class="checkmark">✓</span>
                     </div>
-                    <div class="lesson-status">📖</div>
-                </a>
+                    <div class="lesson-info">
+                        <div class="lesson-title">Week 1 (Day 4): Object-Oriented Programming</div>
+                        <a href="python/week1-day4-oop.html" class="lesson-link">Start Lesson</a>
+                    </div>
+                </div>
 
-                <a href="python/week1-day5-6-fastapi-fundamentals.html" class="lesson-item" data-lesson="python-5">
-                    <div class="lesson-number">5</div>
-                    <div class="lesson-content">
-                        <h3>Week 1 (Day 1-2): FastAPI Fundamentals</h3>
-                        <p>Deep dive into FastAPI features and best practices</p>
+                <!-- Lesson 5 -->
+                <div class="lesson-item" data-lesson="python-5">
+                    <div class="lesson-checkbox" onclick="toggleLesson('python', 5)">
+                        <span class="checkmark">✓</span>
                     </div>
-                    <div class="lesson-status">📖</div>
-                </a>
+                    <div class="lesson-info">
+                        <div class="lesson-title">Week 1 (Day 5): File Handling & Error Management</div>
+                        <a href="python/week1-day5-files-errors.html" class="lesson-link">Start Lesson</a>
+                    </div>
+                </div>
 
-                <a href="python/week1-day3-4-frontend-basics.html" class="lesson-item" data-lesson="python-6">
-                    <div class="lesson-number">6</div>
-                    <div class="lesson-content">
-                        <h3>Week 1 (Day 3-4): Frontend Basics</h3>
-                        <p>Learn frontend fundamentals to complement your backend skills</p>
+                <!-- Lesson 6 -->
+                <div class="lesson-item" data-lesson="python-6">
+                    <div class="lesson-checkbox" onclick="toggleLesson('python', 6)">
+                        <span class="checkmark">✓</span>
                     </div>
-                    <div class="lesson-status">📖</div>
-                </a>
+                    <div class="lesson-info">
+                        <div class="lesson-title">Week 1 (Day 3-4): Frontend Basics</div>
+                        <a href="python/week1-day3-4-frontend-basics.html" class="lesson-link">Start Lesson</a>
+                    </div>
+                </div>
 
-                <a href="python/week1-day5-6-api-integration.html" class="lesson-item" data-lesson="python-7">
-                    <div class="lesson-number">7</div>
-                    <div class="lesson-content">
-                        <h3>Week 1 (Day 5-6): API Integration</h3>
-                        <p>Connect frontend and backend through API integration</p>
+                <!-- Lesson 7 -->
+                <div class="lesson-item" data-lesson="python-7">
+                    <div class="lesson-checkbox" onclick="toggleLesson('python', 7)">
+                        <span class="checkmark">✓</span>
                     </div>
-                    <div class="lesson-status">📖</div>
-                </a>
+                    <div class="lesson-info">
+                        <div class="lesson-title">Week 1 (Day 5-6): API Integration</div>
+                        <a href="python/week1-day5-6-api-integration.html" class="lesson-link">Start Lesson</a>
+                    </div>
+                </div>
             </div>
-        </section>
+        </div>
     </div>
 
     <script src="script.js"></script>
