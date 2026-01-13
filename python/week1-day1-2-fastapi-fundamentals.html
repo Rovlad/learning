@@ -1,0 +1,2495 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Week 1: FastAPI Fundamentals | Days 1-2</title>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg-dark: #0f0a19;
+            --bg-card: #1a1225;
+            --bg-input: #241832;
+            --border: #3d2a5c;
+            --text-primary: #f4f0fa;
+            --text-secondary: #b8a8d0;
+            --text-muted: #7a6890;
+            --accent-teal: #00d4aa;
+            --accent-emerald: #10b981;
+            --accent-cyan: #06b6d4;
+            --accent-blue: #3b82f6;
+            --accent-purple: #a855f7;
+            --accent-pink: #ec4899;
+            --accent-orange: #f97316;
+            --accent-yellow: #eab308;
+            --accent-red: #ef4444;
+            --gradient-start: #00d4aa;
+            --gradient-mid: #06b6d4;
+            --gradient-end: #3b82f6;
+        }
+
+        body {
+            font-family: 'Space Grotesk', sans-serif;
+            background: var(--bg-dark);
+            color: var(--text-primary);
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, var(--gradient-start) 0%, var(--gradient-mid) 50%, var(--gradient-end) 100%);
+            padding: 20px 30px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 4px 30px rgba(0, 212, 170, 0.3);
+        }
+
+        .header h1 {
+            font-size: 24px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: #0f0a19;
+        }
+
+        .header h1 .icon {
+            font-size: 28px;
+        }
+
+        .header .week-badge {
+            background: rgba(0,0,0,0.2);
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 500;
+            color: #0f0a19;
+        }
+
+        .progress-bar {
+            height: 4px;
+            background: rgba(255,255,255,0.1);
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent-teal), var(--accent-cyan));
+            width: 0%;
+            transition: width 0.5s ease;
+        }
+
+        /* Main Layout */
+        .container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            height: calc(100vh - 80px);
+        }
+
+        @media (max-width: 1200px) {
+            .container {
+                grid-template-columns: 1fr;
+                height: auto;
+            }
+        }
+
+        /* Left Panel */
+        .lesson-panel {
+            padding: 0;
+            overflow-y: auto;
+            border-right: 1px solid var(--border);
+        }
+
+        /* Tabs */
+        .tabs {
+            display: flex;
+            background: var(--bg-card);
+            border-bottom: 1px solid var(--border);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            overflow-x: auto;
+        }
+
+        .tab {
+            padding: 14px 18px;
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            transition: all 0.2s;
+            white-space: nowrap;
+        }
+
+        .tab:hover {
+            color: var(--text-primary);
+            background: var(--bg-input);
+        }
+
+        .tab.active {
+            color: var(--accent-teal);
+            border-bottom-color: var(--accent-teal);
+        }
+
+        /* Tab Content */
+        .tab-content {
+            display: none;
+            padding: 30px;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Typography */
+        .tab-content h2 {
+            color: var(--accent-teal);
+            font-size: 24px;
+            margin-bottom: 16px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .tab-content h3 {
+            color: var(--accent-cyan);
+            font-size: 18px;
+            margin-top: 28px;
+            margin-bottom: 12px;
+        }
+
+        .tab-content h4 {
+            color: var(--accent-purple);
+            font-size: 16px;
+            margin-top: 20px;
+            margin-bottom: 10px;
+        }
+
+        .tab-content p {
+            color: var(--text-secondary);
+            margin-bottom: 16px;
+        }
+
+        /* Info Boxes */
+        .info-box {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 16px 20px;
+            margin: 16px 0;
+        }
+
+        .info-box.tip {
+            border-left: 4px solid var(--accent-emerald);
+            background: linear-gradient(90deg, rgba(16, 185, 129, 0.1), transparent);
+        }
+
+        .info-box.warning {
+            border-left: 4px solid var(--accent-orange);
+            background: linear-gradient(90deg, rgba(249, 115, 22, 0.1), transparent);
+        }
+
+        .info-box.important {
+            border-left: 4px solid var(--accent-red);
+            background: linear-gradient(90deg, rgba(239, 68, 68, 0.1), transparent);
+        }
+
+        .info-box.concept {
+            border-left: 4px solid var(--accent-purple);
+            background: linear-gradient(90deg, rgba(168, 85, 247, 0.1), transparent);
+        }
+
+        .info-box.fastapi {
+            border-left: 4px solid var(--accent-teal);
+            background: linear-gradient(90deg, rgba(0, 212, 170, 0.1), transparent);
+        }
+
+        .info-box-title {
+            font-weight: 600;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .info-box.tip .info-box-title { color: var(--accent-emerald); }
+        .info-box.warning .info-box-title { color: var(--accent-orange); }
+        .info-box.important .info-box-title { color: var(--accent-red); }
+        .info-box.concept .info-box-title { color: var(--accent-purple); }
+        .info-box.fastapi .info-box-title { color: var(--accent-teal); }
+
+        /* Code Blocks */
+        .code-block {
+            background: #0a0612;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 16px;
+            margin: 16px 0;
+            overflow-x: auto;
+            position: relative;
+        }
+
+        .code-block pre {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 13px;
+            line-height: 1.6;
+            color: var(--text-primary);
+            margin: 0;
+        }
+
+        .code-block .copy-btn {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            color: var(--text-secondary);
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 12px;
+            cursor: pointer;
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+
+        .code-block:hover .copy-btn {
+            opacity: 1;
+        }
+
+        .code-block .filename {
+            position: absolute;
+            top: -10px;
+            left: 16px;
+            background: var(--bg-card);
+            padding: 2px 10px;
+            border-radius: 4px;
+            font-size: 12px;
+            color: var(--accent-teal);
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        /* Syntax Highlighting */
+        .keyword { color: var(--accent-pink); }
+        .string { color: var(--accent-emerald); }
+        .number { color: var(--accent-orange); }
+        .comment { color: #7a6890; font-style: italic; }
+        .function { color: var(--accent-cyan); }
+        .class-name { color: var(--accent-yellow); }
+        .builtin { color: var(--accent-purple); }
+        .decorator { color: var(--accent-teal); }
+        .type { color: var(--accent-blue); }
+
+        /* Day Separator */
+        .day-separator {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin: 30px 0;
+            color: var(--accent-teal);
+        }
+
+        .day-separator::before,
+        .day-separator::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--border), transparent);
+        }
+
+        .day-badge {
+            background: linear-gradient(135deg, var(--gradient-start), var(--gradient-mid));
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 14px;
+            color: #0f0a19;
+        }
+
+        /* Topic Grid */
+        .topic-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 16px;
+            margin: 20px 0;
+        }
+
+        .topic-card {
+            background: var(--bg-input);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: center;
+        }
+
+        .topic-card:hover {
+            border-color: var(--accent-teal);
+            transform: translateY(-4px);
+            box-shadow: 0 8px 25px rgba(0, 212, 170, 0.2);
+        }
+
+        .topic-card .icon {
+            font-size: 32px;
+            margin-bottom: 12px;
+        }
+
+        .topic-card .title {
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 6px;
+        }
+
+        .topic-card .desc {
+            font-size: 13px;
+            color: var(--text-muted);
+        }
+
+        /* Comparison Table */
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 16px 0;
+            font-size: 14px;
+        }
+
+        .comparison-table th,
+        .comparison-table td {
+            padding: 12px;
+            text-align: left;
+            border: 1px solid var(--border);
+        }
+
+        .comparison-table th {
+            background: var(--bg-input);
+            color: var(--accent-teal);
+            font-weight: 600;
+        }
+
+        .comparison-table td {
+            background: var(--bg-card);
+            color: var(--text-secondary);
+        }
+
+        .comparison-table code {
+            background: var(--bg-input);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12px;
+        }
+
+        /* HTTP Method Badges */
+        .method-badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .method-badge.get { background: rgba(16, 185, 129, 0.2); color: var(--accent-emerald); }
+        .method-badge.post { background: rgba(59, 130, 246, 0.2); color: var(--accent-blue); }
+        .method-badge.put { background: rgba(249, 115, 22, 0.2); color: var(--accent-orange); }
+        .method-badge.delete { background: rgba(239, 68, 68, 0.2); color: var(--accent-red); }
+
+        /* Endpoint Display */
+        .endpoint {
+            background: #0a0612;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 12px 16px;
+            margin: 10px 0;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .endpoint .path {
+            font-family: 'JetBrains Mono', monospace;
+            color: var(--text-primary);
+            font-size: 13px;
+        }
+
+        .endpoint .desc {
+            color: var(--text-muted);
+            font-size: 12px;
+            margin-left: auto;
+        }
+
+        /* Exercise Cards */
+        .exercise {
+            background: linear-gradient(135deg, rgba(0, 212, 170, 0.1) 0%, rgba(6, 182, 212, 0.1) 100%);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+
+        .exercise-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+
+        .exercise-number {
+            background: linear-gradient(135deg, var(--gradient-start), var(--gradient-mid));
+            color: #0f0a19;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .exercise-title {
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .exercise-description {
+            color: var(--text-secondary);
+            margin-bottom: 12px;
+        }
+
+        .load-exercise-btn {
+            background: linear-gradient(135deg, var(--gradient-start), var(--gradient-mid));
+            color: #0f0a19;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 6px;
+            font-family: 'Space Grotesk', sans-serif;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .load-exercise-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 20px rgba(0, 212, 170, 0.4);
+        }
+
+        /* Terminal */
+        .terminal {
+            background: #000;
+            border-radius: 8px;
+            overflow: hidden;
+            margin: 16px 0;
+        }
+
+        .terminal-header {
+            background: #333;
+            padding: 8px 12px;
+            display: flex;
+            gap: 6px;
+        }
+
+        .terminal-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+
+        .terminal-dot.red { background: #ff5f56; }
+        .terminal-dot.yellow { background: #ffbd2e; }
+        .terminal-dot.green { background: #27ca40; }
+
+        .terminal-body {
+            padding: 16px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 13px;
+            color: #00ff00;
+        }
+
+        .terminal-body .command::before {
+            content: "$ ";
+            color: var(--accent-cyan);
+        }
+
+        .terminal-body .output {
+            color: #ccc;
+        }
+
+        .terminal-body .server {
+            color: var(--accent-teal);
+        }
+
+        /* Inline code */
+        code {
+            background: var(--bg-input);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 13px;
+            color: var(--accent-cyan);
+        }
+
+        /* Right Panel - Code Editor */
+        .editor-panel {
+            display: flex;
+            flex-direction: column;
+            background: var(--bg-card);
+        }
+
+        .editor-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 16px;
+            background: var(--bg-input);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .editor-title {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 500;
+            font-size: 14px;
+        }
+
+        .editor-title .dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: var(--accent-teal);
+        }
+
+        .editor-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .editor-btn {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            color: var(--text-secondary);
+            padding: 6px 14px;
+            border-radius: 6px;
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .editor-btn:hover {
+            background: var(--border);
+            color: var(--text-primary);
+        }
+
+        .editor-btn.run {
+            background: linear-gradient(135deg, var(--accent-teal), var(--accent-cyan));
+            border: none;
+            color: #0a0a0a;
+            font-weight: 600;
+        }
+
+        .editor-btn.run:hover {
+            opacity: 0.9;
+            transform: translateY(-1px);
+        }
+
+        /* Code Editor */
+        .code-editor-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            min-height: 0;
+        }
+
+        .code-editor-wrapper {
+            flex: 1;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .code-editor {
+            width: 100%;
+            height: 100%;
+            background: var(--bg-dark);
+            border: none;
+            color: var(--text-primary);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 14px;
+            line-height: 1.6;
+            padding: 16px;
+            resize: none;
+            outline: none;
+            tab-size: 4;
+        }
+
+        /* Output Panel */
+        .output-panel {
+            border-top: 1px solid var(--border);
+            background: var(--bg-dark);
+        }
+
+        .output-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 16px;
+            background: var(--bg-input);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .output-title {
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--text-secondary);
+        }
+
+        .output-status {
+            font-size: 12px;
+            padding: 2px 8px;
+            border-radius: 4px;
+        }
+
+        .output-status.success {
+            background: rgba(0, 212, 170, 0.2);
+            color: var(--accent-teal);
+        }
+
+        .output-status.error {
+            background: rgba(239, 68, 68, 0.2);
+            color: var(--accent-red);
+        }
+
+        .output-content {
+            padding: 16px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 13px;
+            line-height: 1.6;
+            min-height: 150px;
+            max-height: 250px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--bg-dark);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--border);
+            border-radius: 4px;
+        }
+
+        /* Swagger UI Preview */
+        .swagger-preview {
+            background: #1a1a1a;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 20px;
+            margin: 16px 0;
+        }
+
+        .swagger-preview .swagger-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 16px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .swagger-preview .swagger-logo {
+            background: var(--accent-emerald);
+            color: #000;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-weight: 700;
+            font-size: 12px;
+        }
+
+        .swagger-preview .swagger-title {
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .swagger-endpoint {
+            background: var(--bg-card);
+            border-radius: 6px;
+            margin: 8px 0;
+            overflow: hidden;
+        }
+
+        .swagger-endpoint-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px;
+            cursor: pointer;
+        }
+
+        .swagger-endpoint-header:hover {
+            background: var(--bg-input);
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <h1>
+            <span class="icon">⚡</span>
+            FastAPI Fundamentals
+        </h1>
+        <span class="week-badge">Week 1 · Days 1-2</span>
+    </header>
+    <div class="progress-bar">
+        <div class="progress-fill" id="progressFill"></div>
+    </div>
+
+    <div class="container">
+        <!-- Left Panel -->
+        <div class="lesson-panel">
+            <div class="tabs">
+                <button class="tab active" onclick="showTab('overview')">📋 Overview</button>
+                <button class="tab" onclick="showTab('intro')">⚡ FastAPI Intro</button>
+                <button class="tab" onclick="showTab('pydantic')">📐 Pydantic</button>
+                <button class="tab" onclick="showTab('routes')">🛤️ Routes</button>
+                <button class="tab" onclick="showTab('async')">🔄 Async</button>
+                <button class="tab" onclick="showTab('docs')">📚 Auto Docs</button>
+                <button class="tab" onclick="showTab('exercises')">🎯 Exercises</button>
+                <button class="tab" onclick="showTab('challenge')">🚀 Challenge</button>
+            </div>
+
+            <!-- Overview Tab -->
+            <div id="overview" class="tab-content active">
+                <h2>Welcome to FastAPI! ⚡</h2>
+                <p>FastAPI is a modern, high-performance web framework for building APIs with Python. It's fast to run AND fast to code. Everything you learned with Flask transfers directly - but FastAPI adds powerful features!</p>
+
+                <div class="topic-grid">
+                    <div class="topic-card" onclick="showTab('intro')">
+                        <div class="icon">⚡</div>
+                        <div class="title">FastAPI Intro</div>
+                        <div class="desc">Setup & first app</div>
+                    </div>
+                    <div class="topic-card" onclick="showTab('pydantic')">
+                        <div class="icon">📐</div>
+                        <div class="title">Pydantic</div>
+                        <div class="desc">Data validation</div>
+                    </div>
+                    <div class="topic-card" onclick="showTab('routes')">
+                        <div class="icon">🛤️</div>
+                        <div class="title">Routes</div>
+                        <div class="desc">Path & query params</div>
+                    </div>
+                    <div class="topic-card" onclick="showTab('async')">
+                        <div class="icon">🔄</div>
+                        <div class="title">Async</div>
+                        <div class="desc">async/await basics</div>
+                    </div>
+                    <div class="topic-card" onclick="showTab('docs')">
+                        <div class="icon">📚</div>
+                        <div class="title">Auto Docs</div>
+                        <div class="desc">Swagger & ReDoc</div>
+                    </div>
+                </div>
+
+                <h3>Flask vs FastAPI</h3>
+                <table class="comparison-table">
+                    <tr>
+                        <th>Feature</th>
+                        <th>Flask</th>
+                        <th>FastAPI</th>
+                    </tr>
+                    <tr>
+                        <td>Performance</td>
+                        <td>Good</td>
+                        <td><strong>Excellent</strong> (async)</td>
+                    </tr>
+                    <tr>
+                        <td>Type Hints</td>
+                        <td>Optional</td>
+                        <td><strong>Built-in</strong> validation</td>
+                    </tr>
+                    <tr>
+                        <td>Documentation</td>
+                        <td>Manual</td>
+                        <td><strong>Auto-generated</strong></td>
+                    </tr>
+                    <tr>
+                        <td>Data Validation</td>
+                        <td>DIY or extensions</td>
+                        <td><strong>Pydantic</strong> built-in</td>
+                    </tr>
+                    <tr>
+                        <td>Async Support</td>
+                        <td>Limited</td>
+                        <td><strong>Native</strong></td>
+                    </tr>
+                </table>
+
+                <div class="info-box fastapi">
+                    <div class="info-box-title">🎯 Why FastAPI for Your Projects?</div>
+                    <ul style="margin-left: 20px; margin-top: 10px; color: var(--text-secondary);">
+                        <li><strong>Document Analyzer:</strong> Auto-validation for uploads, async file processing</li>
+                        <li><strong>Content Aggregator:</strong> Async HTTP requests to multiple sources</li>
+                        <li><strong>Modern standard:</strong> Used by Netflix, Uber, Microsoft</li>
+                        <li><strong>Great for portfolios:</strong> Shows you know current best practices</li>
+                    </ul>
+                </div>
+
+                <h3>What You'll Learn</h3>
+                <ul style="margin-left: 20px; color: var(--text-secondary);">
+                    <li>Setting up FastAPI applications</li>
+                    <li>Pydantic models for request/response validation</li>
+                    <li>Path parameters, query parameters, request bodies</li>
+                    <li>Async/await for better performance</li>
+                    <li>Automatic interactive documentation</li>
+                </ul>
+            </div>
+
+            <!-- FastAPI Intro Tab -->
+            <div id="intro" class="tab-content">
+                <div class="day-separator">
+                    <span class="day-badge">Day 1</span>
+                </div>
+
+                <h2>Getting Started with FastAPI ⚡</h2>
+                <p>Let's set up FastAPI and see how similar (yet better!) it is compared to Flask.</p>
+
+                <h3>Installation</h3>
+                <div class="terminal">
+                    <div class="terminal-header">
+                        <div class="terminal-dot red"></div>
+                        <div class="terminal-dot yellow"></div>
+                        <div class="terminal-dot green"></div>
+                    </div>
+                    <div class="terminal-body">
+                        <div class="command">pip install fastapi uvicorn[standard]</div>
+                        <div class="output">Successfully installed fastapi uvicorn ...</div>
+                    </div>
+                </div>
+
+                <div class="info-box tip">
+                    <div class="info-box-title">💡 What's Uvicorn?</div>
+                    <p>Uvicorn is an ASGI server - it runs your FastAPI app. Flask uses WSGI (like Gunicorn), but FastAPI needs ASGI for async support. Think of it as the "python app.py" equivalent.</p>
+                </div>
+
+                <h3>Your First FastAPI App</h3>
+                <div class="code-block">
+                    <span class="filename">main.py</span>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    <pre><span class="keyword">from</span> fastapi <span class="keyword">import</span> FastAPI
+
+<span class="comment"># Create the app</span>
+app = FastAPI()
+
+<span class="comment"># Define a route</span>
+<span class="decorator">@app.get</span>(<span class="string">"/"</span>)
+<span class="keyword">def</span> <span class="function">read_root</span>():
+    <span class="keyword">return</span> {<span class="string">"message"</span>: <span class="string">"Hello, FastAPI!"</span>}
+
+<span class="decorator">@app.get</span>(<span class="string">"/items/{item_id}"</span>)
+<span class="keyword">def</span> <span class="function">read_item</span>(item_id: <span class="type">int</span>):
+    <span class="keyword">return</span> {<span class="string">"item_id"</span>: item_id}</pre>
+                </div>
+
+                <h3>Running Your App</h3>
+                <div class="terminal">
+                    <div class="terminal-header">
+                        <div class="terminal-dot red"></div>
+                        <div class="terminal-dot yellow"></div>
+                        <div class="terminal-dot green"></div>
+                    </div>
+                    <div class="terminal-body">
+                        <div class="command">uvicorn main:app --reload</div>
+                        <div class="server">INFO:     Uvicorn running on http://127.0.0.1:8000</div>
+                        <div class="server">INFO:     Started reloader process</div>
+                    </div>
+                </div>
+
+                <h3>Flask vs FastAPI Comparison</h3>
+                <div class="code-block">
+                    <span class="filename">Flask</span>
+                    <pre><span class="keyword">from</span> flask <span class="keyword">import</span> Flask, jsonify
+
+app = Flask(__name__)
+
+<span class="decorator">@app.route</span>(<span class="string">"/items/&lt;int:item_id&gt;"</span>)
+<span class="keyword">def</span> <span class="function">get_item</span>(item_id):
+    <span class="keyword">return</span> jsonify({<span class="string">"item_id"</span>: item_id})</pre>
+                </div>
+
+                <div class="code-block">
+                    <span class="filename">FastAPI</span>
+                    <pre><span class="keyword">from</span> fastapi <span class="keyword">import</span> FastAPI
+
+app = FastAPI()
+
+<span class="decorator">@app.get</span>(<span class="string">"/items/{item_id}"</span>)
+<span class="keyword">def</span> <span class="function">get_item</span>(item_id: <span class="type">int</span>):
+    <span class="keyword">return</span> {<span class="string">"item_id"</span>: item_id}  <span class="comment"># Auto JSON!</span></pre>
+                </div>
+
+                <div class="info-box concept">
+                    <div class="info-box-title">🧠 Key Differences</div>
+                    <ul style="margin-left: 20px; margin-top: 10px; color: var(--text-secondary);">
+                        <li><code>@app.get()</code> instead of <code>@app.route()</code></li>
+                        <li><code>{item_id}</code> instead of <code>&lt;item_id&gt;</code></li>
+                        <li>Type hints (<code>item_id: int</code>) for automatic validation</li>
+                        <li>Returns dict directly - no need for <code>jsonify()</code></li>
+                    </ul>
+                </div>
+
+                <h3>Free Features You Get!</h3>
+                <p>Visit these URLs after starting your app:</p>
+                <div class="endpoint">
+                    <span class="method-badge get">GET</span>
+                    <span class="path">/docs</span>
+                    <span class="desc">Swagger UI (interactive docs)</span>
+                </div>
+                <div class="endpoint">
+                    <span class="method-badge get">GET</span>
+                    <span class="path">/redoc</span>
+                    <span class="desc">ReDoc (alternative docs)</span>
+                </div>
+                <div class="endpoint">
+                    <span class="method-badge get">GET</span>
+                    <span class="path">/openapi.json</span>
+                    <span class="desc">OpenAPI schema</span>
+                </div>
+
+                <div class="exercise">
+                    <div class="exercise-header">
+                        <span class="exercise-number">1</span>
+                        <span class="exercise-title">Try It: First FastAPI App</span>
+                    </div>
+                    <div class="exercise-description">
+                        Create a FastAPI app with routes for <code>/</code>, <code>/hello/{name}</code>, and <code>/add/{a}/{b}</code> (returns sum).
+                    </div>
+                    <button class="load-exercise-btn" onclick="loadExercise('firstapp')">Load in Editor →</button>
+                </div>
+            </div>
+
+            <!-- Pydantic Tab -->
+            <div id="pydantic" class="tab-content">
+                <h2>Pydantic Models 📐</h2>
+                <p>Pydantic is FastAPI's secret weapon - automatic data validation using Python type hints!</p>
+
+                <h3>Basic Model</h3>
+                <div class="code-block">
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    <pre><span class="keyword">from</span> pydantic <span class="keyword">import</span> BaseModel
+
+<span class="keyword">class</span> <span class="class-name">Item</span>(BaseModel):
+    name: <span class="type">str</span>
+    price: <span class="type">float</span>
+    quantity: <span class="type">int</span> = <span class="number">1</span>  <span class="comment"># Default value</span>
+
+<span class="comment"># Valid - all types correct</span>
+item = Item(name=<span class="string">"Widget"</span>, price=<span class="number">9.99</span>)
+<span class="builtin">print</span>(item.quantity)  <span class="comment"># 1 (default)</span>
+
+<span class="comment"># Auto-converts when possible</span>
+item2 = Item(name=<span class="string">"Gadget"</span>, price=<span class="string">"19.99"</span>, quantity=<span class="string">"5"</span>)
+<span class="builtin">print</span>(item2.price)     <span class="comment"># 19.99 (float)</span>
+<span class="builtin">print</span>(item2.quantity)  <span class="comment"># 5 (int)</span>
+
+<span class="comment"># Invalid - raises ValidationError</span>
+item3 = Item(name=<span class="string">"Bad"</span>, price=<span class="string">"not a number"</span>)  <span class="comment"># Error!</span></pre>
+                </div>
+
+                <h3>Using Models in FastAPI</h3>
+                <div class="code-block">
+                    <span class="filename">main.py</span>
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    <pre><span class="keyword">from</span> fastapi <span class="keyword">import</span> FastAPI
+<span class="keyword">from</span> pydantic <span class="keyword">import</span> BaseModel
+
+app = FastAPI()
+
+<span class="comment"># Request model</span>
+<span class="keyword">class</span> <span class="class-name">BookmarkCreate</span>(BaseModel):
+    title: <span class="type">str</span>
+    url: <span class="type">str</span>
+    tags: <span class="type">list</span>[<span class="type">str</span>] = []
+
+<span class="comment"># Response model</span>
+<span class="keyword">class</span> <span class="class-name">Bookmark</span>(BaseModel):
+    id: <span class="type">str</span>
+    title: <span class="type">str</span>
+    url: <span class="type">str</span>
+    tags: <span class="type">list</span>[<span class="type">str</span>]
+
+<span class="decorator">@app.post</span>(<span class="string">"/bookmarks"</span>, response_model=Bookmark)
+<span class="keyword">def</span> <span class="function">create_bookmark</span>(bookmark: BookmarkCreate):
+    <span class="comment"># bookmark is already validated!</span>
+    <span class="keyword">return</span> {
+        <span class="string">"id"</span>: <span class="string">"abc123"</span>,
+        <span class="string">"title"</span>: bookmark.title,
+        <span class="string">"url"</span>: bookmark.url,
+        <span class="string">"tags"</span>: bookmark.tags
+    }</pre>
+                </div>
+
+                <h3>Validation Features</h3>
+                <div class="code-block">
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    <pre><span class="keyword">from</span> pydantic <span class="keyword">import</span> BaseModel, Field, field_validator, HttpUrl
+<span class="keyword">from</span> typing <span class="keyword">import</span> Optional
+
+<span class="keyword">class</span> <span class="class-name">Bookmark</span>(BaseModel):
+    <span class="comment"># Field with constraints</span>
+    title: <span class="type">str</span> = Field(min_length=<span class="number">1</span>, max_length=<span class="number">100</span>)
+    
+    <span class="comment"># URL validation built-in</span>
+    url: HttpUrl
+    
+    <span class="comment"># Optional field</span>
+    description: Optional[<span class="type">str</span>] = <span class="keyword">None</span>
+    
+    <span class="comment"># List with constraints</span>
+    tags: <span class="type">list</span>[<span class="type">str</span>] = Field(default=[], max_length=<span class="number">10</span>)
+    
+    <span class="comment"># Custom validator</span>
+    <span class="decorator">@field_validator</span>(<span class="string">'title'</span>)
+    <span class="decorator">@classmethod</span>
+    <span class="keyword">def</span> <span class="function">title_must_not_be_empty</span>(cls, v):
+        <span class="keyword">if</span> <span class="keyword">not</span> v.strip():
+            <span class="keyword">raise</span> <span class="class-name">ValueError</span>(<span class="string">'Title cannot be empty'</span>)
+        <span class="keyword">return</span> v.strip()</pre>
+                </div>
+
+                <table class="comparison-table">
+                    <tr>
+                        <th>Validation</th>
+                        <th>Example</th>
+                        <th>Effect</th>
+                    </tr>
+                    <tr>
+                        <td><code>min_length</code></td>
+                        <td><code>Field(min_length=1)</code></td>
+                        <td>Minimum string length</td>
+                    </tr>
+                    <tr>
+                        <td><code>max_length</code></td>
+                        <td><code>Field(max_length=100)</code></td>
+                        <td>Maximum string length</td>
+                    </tr>
+                    <tr>
+                        <td><code>gt</code>, <code>lt</code></td>
+                        <td><code>Field(gt=0, lt=100)</code></td>
+                        <td>Greater/less than</td>
+                    </tr>
+                    <tr>
+                        <td><code>ge</code>, <code>le</code></td>
+                        <td><code>Field(ge=0, le=100)</code></td>
+                        <td>Greater/less or equal</td>
+                    </tr>
+                    <tr>
+                        <td><code>HttpUrl</code></td>
+                        <td><code>url: HttpUrl</code></td>
+                        <td>Valid HTTP(S) URL</td>
+                    </tr>
+                    <tr>
+                        <td><code>EmailStr</code></td>
+                        <td><code>email: EmailStr</code></td>
+                        <td>Valid email format</td>
+                    </tr>
+                </table>
+
+                <h3>Nested Models</h3>
+                <div class="code-block">
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    <pre><span class="keyword">class</span> <span class="class-name">Tag</span>(BaseModel):
+    name: <span class="type">str</span>
+    color: <span class="type">str</span> = <span class="string">"gray"</span>
+
+<span class="keyword">class</span> <span class="class-name">Bookmark</span>(BaseModel):
+    title: <span class="type">str</span>
+    url: <span class="type">str</span>
+    tags: <span class="type">list</span>[Tag] = []  <span class="comment"># Nested models!</span>
+
+<span class="comment"># Usage</span>
+bookmark = Bookmark(
+    title=<span class="string">"Python Docs"</span>,
+    url=<span class="string">"https://python.org"</span>,
+    tags=[
+        {<span class="string">"name"</span>: <span class="string">"python"</span>, <span class="string">"color"</span>: <span class="string">"blue"</span>},
+        {<span class="string">"name"</span>: <span class="string">"docs"</span>}  <span class="comment"># color defaults to "gray"</span>
+    ]
+)</pre>
+                </div>
+
+                <div class="exercise">
+                    <div class="exercise-header">
+                        <span class="exercise-number">2</span>
+                        <span class="exercise-title">Try It: Pydantic Models</span>
+                    </div>
+                    <div class="exercise-description">
+                        Create Pydantic models for a Document with title, content, author (optional), and tags. Add validation for title length.
+                    </div>
+                    <button class="load-exercise-btn" onclick="loadExercise('pydantic')">Load in Editor →</button>
+                </div>
+            </div>
+
+            <!-- Routes Tab -->
+            <div id="routes" class="tab-content">
+                <h2>Routes & Parameters 🛤️</h2>
+                <p>FastAPI makes handling different types of parameters clean and type-safe!</p>
+
+                <h3>Path Parameters</h3>
+                <div class="code-block">
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    <pre><span class="decorator">@app.get</span>(<span class="string">"/users/{user_id}"</span>)
+<span class="keyword">def</span> <span class="function">get_user</span>(user_id: <span class="type">int</span>):
+    <span class="comment"># user_id is automatically validated as int</span>
+    <span class="keyword">return</span> {<span class="string">"user_id"</span>: user_id}
+
+<span class="comment"># With enum for fixed options</span>
+<span class="keyword">from</span> enum <span class="keyword">import</span> Enum
+
+<span class="keyword">class</span> <span class="class-name">SortOrder</span>(Enum):
+    asc = <span class="string">"asc"</span>
+    desc = <span class="string">"desc"</span>
+
+<span class="decorator">@app.get</span>(<span class="string">"/items/sort/{order}"</span>)
+<span class="keyword">def</span> <span class="function">sort_items</span>(order: SortOrder):
+    <span class="keyword">return</span> {<span class="string">"order"</span>: order.value}</pre>
+                </div>
+
+                <h3>Query Parameters</h3>
+                <div class="code-block">
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    <pre><span class="keyword">from</span> typing <span class="keyword">import</span> Optional
+
+<span class="comment"># /items?skip=0&limit=10</span>
+<span class="decorator">@app.get</span>(<span class="string">"/items"</span>)
+<span class="keyword">def</span> <span class="function">get_items</span>(
+    skip: <span class="type">int</span> = <span class="number">0</span>,        <span class="comment"># Default value</span>
+    limit: <span class="type">int</span> = <span class="number">10</span>,       <span class="comment"># Default value</span>
+    q: Optional[<span class="type">str</span>] = <span class="keyword">None</span>  <span class="comment"># Optional</span>
+):
+    <span class="keyword">return</span> {<span class="string">"skip"</span>: skip, <span class="string">"limit"</span>: limit, <span class="string">"q"</span>: q}
+
+<span class="comment"># Required query param (no default)</span>
+<span class="decorator">@app.get</span>(<span class="string">"/search"</span>)
+<span class="keyword">def</span> <span class="function">search</span>(q: <span class="type">str</span>):  <span class="comment"># Required!</span>
+    <span class="keyword">return</span> {<span class="string">"results"</span>: <span class="string">f"Searching for: </span>{q}<span class="string">"</span>}</pre>
+                </div>
+
+                <h3>Request Body</h3>
+                <div class="code-block">
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    <pre><span class="keyword">from</span> pydantic <span class="keyword">import</span> BaseModel
+
+<span class="keyword">class</span> <span class="class-name">ItemCreate</span>(BaseModel):
+    name: <span class="type">str</span>
+    price: <span class="type">float</span>
+    tags: <span class="type">list</span>[<span class="type">str</span>] = []
+
+<span class="decorator">@app.post</span>(<span class="string">"/items"</span>)
+<span class="keyword">def</span> <span class="function">create_item</span>(item: ItemCreate):
+    <span class="comment"># item is validated Pydantic model</span>
+    <span class="keyword">return</span> {<span class="string">"name"</span>: item.name, <span class="string">"price"</span>: item.price}</pre>
+                </div>
+
+                <h3>Combining All Parameter Types</h3>
+                <div class="code-block">
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    <pre><span class="decorator">@app.put</span>(<span class="string">"/items/{item_id}"</span>)
+<span class="keyword">def</span> <span class="function">update_item</span>(
+    item_id: <span class="type">int</span>,              <span class="comment"># Path param</span>
+    q: Optional[<span class="type">str</span>] = <span class="keyword">None</span>,    <span class="comment"># Query param</span>
+    item: ItemCreate = <span class="keyword">None</span>     <span class="comment"># Body (Pydantic model)</span>
+):
+    result = {<span class="string">"item_id"</span>: item_id}
+    <span class="keyword">if</span> q:
+        result[<span class="string">"q"</span>] = q
+    <span class="keyword">if</span> item:
+        result[<span class="string">"item"</span>] = item.model_dump()
+    <span class="keyword">return</span> result</pre>
+                </div>
+
+                <div class="info-box concept">
+                    <div class="info-box-title">🧠 How FastAPI Knows the Difference</div>
+                    <ul style="margin-left: 20px; margin-top: 10px; color: var(--text-secondary);">
+                        <li><strong>Path param:</strong> Declared in the path string <code>{item_id}</code></li>
+                        <li><strong>Query param:</strong> Primitive type (int, str, etc.) not in path</li>
+                        <li><strong>Body:</strong> Pydantic model type</li>
+                    </ul>
+                </div>
+
+                <h3>Advanced: Query with Validation</h3>
+                <div class="code-block">
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    <pre><span class="keyword">from</span> fastapi <span class="keyword">import</span> Query
+
+<span class="decorator">@app.get</span>(<span class="string">"/items"</span>)
+<span class="keyword">def</span> <span class="function">get_items</span>(
+    q: Optional[<span class="type">str</span>] = Query(
+        default=<span class="keyword">None</span>,
+        min_length=<span class="number">3</span>,
+        max_length=<span class="number">50</span>,
+        description=<span class="string">"Search query"</span>
+    ),
+    skip: <span class="type">int</span> = Query(default=<span class="number">0</span>, ge=<span class="number">0</span>),
+    limit: <span class="type">int</span> = Query(default=<span class="number">10</span>, le=<span class="number">100</span>)
+):
+    <span class="keyword">return</span> {<span class="string">"q"</span>: q, <span class="string">"skip"</span>: skip, <span class="string">"limit"</span>: limit}</pre>
+                </div>
+
+                <div class="exercise">
+                    <div class="exercise-header">
+                        <span class="exercise-number">3</span>
+                        <span class="exercise-title">Try It: Routes & Parameters</span>
+                    </div>
+                    <div class="exercise-description">
+                        Create an API with: GET /documents (with search, skip, limit), GET /documents/{id}, POST /documents (with body).
+                    </div>
+                    <button class="load-exercise-btn" onclick="loadExercise('routes')">Load in Editor →</button>
+                </div>
+            </div>
+
+            <!-- Async Tab -->
+            <div id="async" class="tab-content">
+                <div class="day-separator">
+                    <span class="day-badge">Day 2</span>
+                </div>
+
+                <h2>Async/Await in FastAPI 🔄</h2>
+                <p>FastAPI supports both sync and async functions. Async is powerful for I/O-bound operations!</p>
+
+                <h3>Sync vs Async</h3>
+                <div class="code-block">
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    <pre><span class="comment"># Synchronous - blocks while waiting</span>
+<span class="decorator">@app.get</span>(<span class="string">"/sync"</span>)
+<span class="keyword">def</span> <span class="function">sync_endpoint</span>():
+    <span class="comment"># Good for: CPU-bound tasks, simple operations</span>
+    <span class="keyword">return</span> {<span class="string">"type"</span>: <span class="string">"sync"</span>}
+
+<span class="comment"># Asynchronous - doesn't block</span>
+<span class="decorator">@app.get</span>(<span class="string">"/async"</span>)
+<span class="keyword">async def</span> <span class="function">async_endpoint</span>():
+    <span class="comment"># Good for: I/O operations, API calls, database queries</span>
+    <span class="keyword">return</span> {<span class="string">"type"</span>: <span class="string">"async"</span>}</pre>
+                </div>
+
+                <div class="info-box tip">
+                    <div class="info-box-title">💡 When to Use Async?</div>
+                    <ul style="margin-left: 20px; margin-top: 10px; color: var(--text-secondary);">
+                        <li><strong>Use async:</strong> Database queries, HTTP requests, file I/O</li>
+                        <li><strong>Use sync:</strong> CPU-bound tasks, simple returns, when unsure</li>
+                        <li><strong>Rule:</strong> If you use <code>await</code>, function must be <code>async def</code></li>
+                    </ul>
+                </div>
+
+                <h3>Practical Async Example</h3>
+                <div class="code-block">
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    <pre><span class="keyword">import</span> httpx
+<span class="keyword">import</span> asyncio
+
+<span class="decorator">@app.get</span>(<span class="string">"/fetch-data"</span>)
+<span class="keyword">async def</span> <span class="function">fetch_data</span>():
+    <span class="comment"># Async HTTP client</span>
+    <span class="keyword">async with</span> httpx.AsyncClient() <span class="keyword">as</span> client:
+        response = <span class="keyword">await</span> client.get(<span class="string">"https://api.example.com/data"</span>)
+        <span class="keyword">return</span> response.json()
+
+<span class="comment"># Fetch multiple URLs concurrently</span>
+<span class="decorator">@app.get</span>(<span class="string">"/fetch-multiple"</span>)
+<span class="keyword">async def</span> <span class="function">fetch_multiple</span>():
+    urls = [
+        <span class="string">"https://api.example.com/users"</span>,
+        <span class="string">"https://api.example.com/posts"</span>,
+        <span class="string">"https://api.example.com/comments"</span>
+    ]
+    
+    <span class="keyword">async with</span> httpx.AsyncClient() <span class="keyword">as</span> client:
+        <span class="comment"># Fetch all at once!</span>
+        tasks = [client.get(url) <span class="keyword">for</span> url <span class="keyword">in</span> urls]
+        responses = <span class="keyword">await</span> asyncio.gather(*tasks)
+        
+    <span class="keyword">return</span> [r.json() <span class="keyword">for</span> r <span class="keyword">in</span> responses]</pre>
+                </div>
+
+                <h3>Async File Operations</h3>
+                <div class="code-block">
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    <pre><span class="keyword">import</span> aiofiles
+
+<span class="decorator">@app.post</span>(<span class="string">"/upload"</span>)
+<span class="keyword">async def</span> <span class="function">upload_file</span>(file: UploadFile):
+    <span class="comment"># Async file writing</span>
+    <span class="keyword">async with</span> aiofiles.open(<span class="string">f"uploads/</span>{file.filename}<span class="string">"</span>, <span class="string">"wb"</span>) <span class="keyword">as</span> f:
+        content = <span class="keyword">await</span> file.read()
+        <span class="keyword">await</span> f.write(content)
+    
+    <span class="keyword">return</span> {<span class="string">"filename"</span>: file.filename}
+
+<span class="decorator">@app.get</span>(<span class="string">"/files/{filename}"</span>)
+<span class="keyword">async def</span> <span class="function">read_file</span>(filename: <span class="type">str</span>):
+    <span class="keyword">async with</span> aiofiles.open(<span class="string">f"files/</span>{filename}<span class="string">"</span>) <span class="keyword">as</span> f:
+        content = <span class="keyword">await</span> f.read()
+    <span class="keyword">return</span> {<span class="string">"content"</span>: content}</pre>
+                </div>
+
+                <h3>Why Async Matters: Visual Comparison</h3>
+                <div class="code-block">
+                    <pre><span class="comment"># SYNC: Sequential (slow)</span>
+<span class="comment"># Request 1: [====]</span>
+<span class="comment"># Request 2:       [====]</span>
+<span class="comment"># Request 3:             [====]</span>
+<span class="comment"># Total: 12 units of time</span>
+
+<span class="comment"># ASYNC: Concurrent (fast)</span>
+<span class="comment"># Request 1: [====]</span>
+<span class="comment"># Request 2: [====]</span>
+<span class="comment"># Request 3: [====]</span>
+<span class="comment"># Total: 4 units of time</span></pre>
+                </div>
+
+                <div class="info-box warning">
+                    <div class="info-box-title">⚠️ Common Mistakes</div>
+                    <ul style="margin-left: 20px; margin-top: 10px; color: var(--text-secondary);">
+                        <li><strong>Don't:</strong> Use <code>time.sleep()</code> in async - use <code>await asyncio.sleep()</code></li>
+                        <li><strong>Don't:</strong> Use <code>requests</code> library in async - use <code>httpx</code></li>
+                        <li><strong>Don't:</strong> Use blocking file I/O - use <code>aiofiles</code></li>
+                    </ul>
+                </div>
+
+                <div class="exercise">
+                    <div class="exercise-header">
+                        <span class="exercise-number">4</span>
+                        <span class="exercise-title">Try It: Async Functions</span>
+                    </div>
+                    <div class="exercise-description">
+                        Create an async endpoint that simulates fetching data from multiple sources with <code>asyncio.gather()</code>.
+                    </div>
+                    <button class="load-exercise-btn" onclick="loadExercise('async')">Load in Editor →</button>
+                </div>
+            </div>
+
+            <!-- Auto Docs Tab -->
+            <div id="docs" class="tab-content">
+                <h2>Automatic Documentation 📚</h2>
+                <p>FastAPI generates beautiful, interactive API documentation automatically!</p>
+
+                <h3>Built-in Documentation</h3>
+                <div class="swagger-preview">
+                    <div class="swagger-header">
+                        <span class="swagger-logo">OAS3</span>
+                        <span class="swagger-title">My API - Swagger UI</span>
+                    </div>
+                    <div class="swagger-endpoint">
+                        <div class="swagger-endpoint-header">
+                            <span class="method-badge get">GET</span>
+                            <span style="color: var(--text-primary);">/items</span>
+                            <span style="color: var(--text-muted); margin-left: auto;">Get all items</span>
+                        </div>
+                    </div>
+                    <div class="swagger-endpoint">
+                        <div class="swagger-endpoint-header">
+                            <span class="method-badge post">POST</span>
+                            <span style="color: var(--text-primary);">/items</span>
+                            <span style="color: var(--text-muted); margin-left: auto;">Create item</span>
+                        </div>
+                    </div>
+                    <div class="swagger-endpoint">
+                        <div class="swagger-endpoint-header">
+                            <span class="method-badge delete">DELETE</span>
+                            <span style="color: var(--text-primary);">/items/{item_id}</span>
+                            <span style="color: var(--text-muted); margin-left: auto;">Delete item</span>
+                        </div>
+                    </div>
+                </div>
+
+                <h3>Enhancing Documentation</h3>
+                <div class="code-block">
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    <pre><span class="keyword">from</span> fastapi <span class="keyword">import</span> FastAPI
+
+<span class="comment"># App-level documentation</span>
+app = FastAPI(
+    title=<span class="string">"Bookmarks API"</span>,
+    description=<span class="string">"API for managing bookmarks"</span>,
+    version=<span class="string">"1.0.0"</span>,
+    docs_url=<span class="string">"/docs"</span>,      <span class="comment"># Swagger UI</span>
+    redoc_url=<span class="string">"/redoc"</span>     <span class="comment"># ReDoc</span>
+)
+
+<span class="comment"># Endpoint documentation</span>
+<span class="decorator">@app.get</span>(
+    <span class="string">"/bookmarks"</span>,
+    summary=<span class="string">"List all bookmarks"</span>,
+    description=<span class="string">"Returns all bookmarks with optional filtering"</span>,
+    response_description=<span class="string">"List of bookmarks"</span>,
+    tags=[<span class="string">"bookmarks"</span>]
+)
+<span class="keyword">def</span> <span class="function">get_bookmarks</span>():
+    <span class="string">"""
+    Get all bookmarks.
+    
+    - **skip**: Number of items to skip
+    - **limit**: Max items to return
+    """</span>
+    <span class="keyword">return</span> []</pre>
+                </div>
+
+                <h3>Document Your Models</h3>
+                <div class="code-block">
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    <pre><span class="keyword">from</span> pydantic <span class="keyword">import</span> BaseModel, Field
+
+<span class="keyword">class</span> <span class="class-name">Bookmark</span>(BaseModel):
+    <span class="string">"""A saved bookmark."""</span>
+    
+    title: <span class="type">str</span> = Field(
+        ...,  <span class="comment"># Required</span>
+        description=<span class="string">"The bookmark title"</span>,
+        example=<span class="string">"Python Documentation"</span>
+    )
+    url: <span class="type">str</span> = Field(
+        ...,
+        description=<span class="string">"The bookmark URL"</span>,
+        example=<span class="string">"https://python.org"</span>
+    )
+    tags: <span class="type">list</span>[<span class="type">str</span>] = Field(
+        default=[],
+        description=<span class="string">"Tags for categorization"</span>,
+        example=[<span class="string">"python"</span>, <span class="string">"docs"</span>]
+    )
+    
+    <span class="keyword">class</span> <span class="class-name">Config</span>:
+        json_schema_extra = {
+            <span class="string">"example"</span>: {
+                <span class="string">"title"</span>: <span class="string">"FastAPI Docs"</span>,
+                <span class="string">"url"</span>: <span class="string">"https://fastapi.tiangolo.com"</span>,
+                <span class="string">"tags"</span>: [<span class="string">"python"</span>, <span class="string">"api"</span>]
+            }
+        }</pre>
+                </div>
+
+                <h3>Organize with Tags</h3>
+                <div class="code-block">
+                    <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                    <pre><span class="keyword">from</span> fastapi <span class="keyword">import</span> FastAPI
+
+tags_metadata = [
+    {
+        <span class="string">"name"</span>: <span class="string">"bookmarks"</span>,
+        <span class="string">"description"</span>: <span class="string">"Operations with bookmarks"</span>,
+    },
+    {
+        <span class="string">"name"</span>: <span class="string">"users"</span>,
+        <span class="string">"description"</span>: <span class="string">"User management"</span>,
+    },
+]
+
+app = FastAPI(openapi_tags=tags_metadata)
+
+<span class="decorator">@app.get</span>(<span class="string">"/bookmarks"</span>, tags=[<span class="string">"bookmarks"</span>])
+<span class="keyword">def</span> <span class="function">get_bookmarks</span>():
+    <span class="keyword">return</span> []
+
+<span class="decorator">@app.get</span>(<span class="string">"/users"</span>, tags=[<span class="string">"users"</span>])
+<span class="keyword">def</span> <span class="function">get_users</span>():
+    <span class="keyword">return</span> []</pre>
+                </div>
+
+                <div class="info-box fastapi">
+                    <div class="info-box-title">🎯 Portfolio Tip</div>
+                    <p>Well-documented APIs show professionalism! When showcasing your Document Analyzer:</p>
+                    <ul style="margin-left: 20px; margin-top: 10px; color: var(--text-secondary);">
+                        <li>Include clear endpoint descriptions</li>
+                        <li>Add realistic examples</li>
+                        <li>Group related endpoints with tags</li>
+                        <li>Link to <code>/docs</code> in your README</li>
+                    </ul>
+                </div>
+
+                <div class="exercise">
+                    <div class="exercise-header">
+                        <span class="exercise-number">5</span>
+                        <span class="exercise-title">Try It: Document Your API</span>
+                    </div>
+                    <div class="exercise-description">
+                        Create a fully documented API with proper tags, descriptions, and examples for a "Documents" resource.
+                    </div>
+                    <button class="load-exercise-btn" onclick="loadExercise('docs')">Load in Editor →</button>
+                </div>
+            </div>
+
+            <!-- Exercises Tab -->
+            <div id="exercises" class="tab-content">
+                <h2>Practice Exercises 🎯</h2>
+                <p>Apply what you've learned with these hands-on exercises!</p>
+
+                <div class="exercise">
+                    <div class="exercise-header">
+                        <span class="exercise-number">1</span>
+                        <span class="exercise-title">Todo API</span>
+                    </div>
+                    <div class="exercise-description">
+                        Build a complete Todo API with Pydantic models for validation. Include CRUD operations, filtering by status, and proper documentation.
+                    </div>
+                    <button class="load-exercise-btn" onclick="loadExercise('todoapi')">Load in Editor →</button>
+                </div>
+
+                <div class="exercise">
+                    <div class="exercise-header">
+                        <span class="exercise-number">2</span>
+                        <span class="exercise-title">User Registration</span>
+                    </div>
+                    <div class="exercise-description">
+                        Create user registration endpoints with email validation, password requirements, and response models that hide sensitive data.
+                    </div>
+                    <button class="load-exercise-btn" onclick="loadExercise('userapi')">Load in Editor →</button>
+                </div>
+
+                <div class="exercise">
+                    <div class="exercise-header">
+                        <span class="exercise-number">3</span>
+                        <span class="exercise-title">Async Weather Fetcher</span>
+                    </div>
+                    <div class="exercise-description">
+                        Build an async endpoint that fetches weather data for multiple cities concurrently using <code>asyncio.gather()</code>.
+                    </div>
+                    <button class="load-exercise-btn" onclick="loadExercise('weather')">Load in Editor →</button>
+                </div>
+
+                <div class="exercise">
+                    <div class="exercise-header">
+                        <span class="exercise-number">4</span>
+                        <span class="exercise-title">File Upload API</span>
+                    </div>
+                    <div class="exercise-description">
+                        Create a file upload API with validation (file type, size), metadata extraction, and proper error handling.
+                    </div>
+                    <button class="load-exercise-btn" onclick="loadExercise('fileupload')">Load in Editor →</button>
+                </div>
+            </div>
+
+            <!-- Challenge Tab -->
+            <div id="challenge" class="tab-content">
+                <h2>Final Challenge: Bookmarks API v2 🚀</h2>
+                <p>Rebuild the Flask Bookmarks API using FastAPI with all the new features!</p>
+
+                <div class="info-box concept">
+                    <div class="info-box-title">🎯 The Mission</div>
+                    <p>Take everything you learned in Week 0 and upgrade it with FastAPI's modern features. This will be the foundation for your Document Analyzer backend!</p>
+                </div>
+
+                <h3>Requirements</h3>
+
+                <h4>Pydantic Models</h4>
+                <ul style="margin-left: 20px; color: var(--text-secondary);">
+                    <li><code>BookmarkCreate</code> - for creating bookmarks</li>
+                    <li><code>BookmarkUpdate</code> - for partial updates</li>
+                    <li><code>Bookmark</code> - full bookmark with ID and timestamps</li>
+                    <li>URL validation using <code>HttpUrl</code></li>
+                </ul>
+
+                <h4>API Endpoints</h4>
+                <div class="endpoint">
+                    <span class="method-badge get">GET</span>
+                    <span class="path">/api/bookmarks</span>
+                    <span class="desc">List with pagination</span>
+                </div>
+                <div class="endpoint">
+                    <span class="method-badge get">GET</span>
+                    <span class="path">/api/bookmarks/{id}</span>
+                    <span class="desc">Get single</span>
+                </div>
+                <div class="endpoint">
+                    <span class="method-badge post">POST</span>
+                    <span class="path">/api/bookmarks</span>
+                    <span class="desc">Create with validation</span>
+                </div>
+                <div class="endpoint">
+                    <span class="method-badge put">PUT</span>
+                    <span class="path">/api/bookmarks/{id}</span>
+                    <span class="desc">Update</span>
+                </div>
+                <div class="endpoint">
+                    <span class="method-badge delete">DELETE</span>
+                    <span class="path">/api/bookmarks/{id}</span>
+                    <span class="desc">Delete</span>
+                </div>
+
+                <h4>Bonus Features</h4>
+                <ul style="margin-left: 20px; color: var(--text-secondary);">
+                    <li>Search with query validation</li>
+                    <li>Filter by tags</li>
+                    <li>Pagination (skip/limit)</li>
+                    <li>Full API documentation</li>
+                    <li>Response models to control output</li>
+                </ul>
+
+                <button class="load-exercise-btn" onclick="loadExercise('challenge')" style="width: 100%; padding: 15px; font-size: 16px; margin: 20px 0;">
+                    📥 Load Challenge Template →
+                </button>
+
+                <div class="info-box tip" style="margin-top: 30px;">
+                    <div class="info-box-title">🎉 Ready for the Document Analyzer!</div>
+                    <p>After completing this challenge, you have all the FastAPI skills needed for your portfolio project:</p>
+                    <ul style="margin-left: 20px; margin-top: 10px; color: var(--text-secondary);">
+                        <li>Pydantic models for document metadata</li>
+                        <li>File upload endpoints</li>
+                        <li>Async processing for text analysis</li>
+                        <li>Auto-generated API documentation</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Panel - Code Editor -->
+        <div class="editor-panel">
+            <div class="editor-header">
+                <div class="editor-title">
+                    <div class="dot"></div>
+                    <span id="editorFilename">main.py</span>
+                </div>
+                <div class="editor-actions">
+                    <button class="editor-btn" onclick="resetEditor()">↺ Reset</button>
+                    <button class="editor-btn" onclick="copyEditorCode()">📋 Copy</button>
+                    <button class="editor-btn run" onclick="runCode()">▶ Run</button>
+                </div>
+            </div>
+            <div class="code-editor-container">
+                <div class="code-editor-wrapper">
+                    <textarea class="code-editor" id="codeEditor" spellcheck="false">
+# Welcome to FastAPI! ⚡
+# Modern, fast, and automatic documentation
+
+from fastapi import FastAPI
+from pydantic import BaseModel
+
+app = FastAPI(
+    title="My First FastAPI",
+    version="1.0.0"
+)
+
+class Item(BaseModel):
+    name: str
+    price: float
+    tags: list[str] = []
+
+@app.get("/")
+def read_root():
+    return {"message": "Hello, FastAPI!"}
+
+@app.get("/items/{item_id}")
+def read_item(item_id: int, q: str = None):
+    return {"item_id": item_id, "q": q}
+
+@app.post("/items")
+def create_item(item: Item):
+    return {"item": item, "status": "created"}
+
+# Run with: uvicorn main:app --reload
+# Then visit: http://localhost:8000/docs
+
+print("FastAPI App Ready!")
+print()
+print("Endpoints:")
+print("  GET  /")
+print("  GET  /items/{item_id}")
+print("  POST /items")
+print()
+print("Run: uvicorn main:app --reload")
+print("Docs: http://localhost:8000/docs")</textarea>
+                </div>
+            </div>
+            <div class="output-panel">
+                <div class="output-header">
+                    <div class="output-title">📤 Output</div>
+                    <span class="output-status success" id="outputStatus">Ready</span>
+                </div>
+                <div class="output-content" id="outputContent">
+                    <span style="color: var(--text-muted);">Click "Run" to execute...</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Tab Navigation
+        function showTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+
+            document.getElementById(tabId).classList.add('active');
+            event.target.classList.add('active');
+            updateProgress(tabId);
+        }
+
+        const tabOrder = ['overview', 'intro', 'pydantic', 'routes', 'async', 'docs', 'exercises', 'challenge'];
+        
+        function updateProgress(tabId) {
+            const index = tabOrder.indexOf(tabId);
+            const progress = ((index + 1) / tabOrder.length) * 100;
+            document.getElementById('progressFill').style.width = progress + '%';
+        }
+
+        function runCode() {
+            const code = document.getElementById('codeEditor').value;
+            const outputContent = document.getElementById('outputContent');
+            const outputStatus = document.getElementById('outputStatus');
+
+            try {
+                const output = simulatePython(code);
+                outputContent.innerHTML = output;
+                outputStatus.textContent = 'Success';
+                outputStatus.className = 'output-status success';
+            } catch (e) {
+                outputContent.innerHTML = `<span style="color: var(--accent-red);">Error: ${e.message}</span>`;
+                outputStatus.textContent = 'Error';
+                outputStatus.className = 'output-status error';
+            }
+        }
+
+        function simulatePython(code) {
+            let output = [];
+            const lines = code.split('\n');
+
+            for (let line of lines) {
+                line = line.trim();
+                if (line.startsWith('#') || line === '') continue;
+
+                if (line.startsWith('print(')) {
+                    const match = line.match(/print\((.*)\)$/);
+                    if (match) {
+                        let content = match[1];
+                        if ((content.startsWith('"') && content.endsWith('"')) ||
+                            (content.startsWith("'") && content.endsWith("'"))) {
+                            output.push(content.slice(1, -1));
+                        } else if (content.startsWith('f"') || content.startsWith("f'")) {
+                            output.push(content.slice(2, -1).replace(/\{[^}]+\}/g, '<value>'));
+                        } else {
+                            output.push(content);
+                        }
+                    }
+                }
+            }
+
+            if (output.length === 0) {
+                return '<span style="color: var(--text-muted);">No output. Copy code to run with uvicorn!</span>';
+            }
+
+            return output.map(line => `<div>${escapeHtml(line)}</div>`).join('');
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        function resetEditor() {
+            document.getElementById('codeEditor').value = `# Welcome to FastAPI! ⚡
+# Modern, fast, and automatic documentation
+
+from fastapi import FastAPI
+from pydantic import BaseModel
+
+app = FastAPI(
+    title="My First FastAPI",
+    version="1.0.0"
+)
+
+class Item(BaseModel):
+    name: str
+    price: float
+    tags: list[str] = []
+
+@app.get("/")
+def read_root():
+    return {"message": "Hello, FastAPI!"}
+
+@app.get("/items/{item_id}")
+def read_item(item_id: int, q: str = None):
+    return {"item_id": item_id, "q": q}
+
+@app.post("/items")
+def create_item(item: Item):
+    return {"item": item, "status": "created"}
+
+# Run with: uvicorn main:app --reload
+# Then visit: http://localhost:8000/docs
+
+print("FastAPI App Ready!")
+print()
+print("Endpoints:")
+print("  GET  /")
+print("  GET  /items/{item_id}")
+print("  POST /items")
+print()
+print("Run: uvicorn main:app --reload")
+print("Docs: http://localhost:8000/docs")`;
+            document.getElementById('editorFilename').textContent = 'main.py';
+            document.getElementById('outputContent').innerHTML = 
+                '<span style="color: var(--text-muted);">Click "Run" to execute...</span>';
+        }
+
+        function copyEditorCode() {
+            const code = document.getElementById('codeEditor').value;
+            navigator.clipboard.writeText(code).then(() => {
+                const btn = event.target;
+                btn.innerHTML = '✓ Copied!';
+                setTimeout(() => btn.innerHTML = '📋 Copy', 2000);
+            });
+        }
+
+        function copyCode(btn) {
+            const codeBlock = btn.parentElement;
+            const code = codeBlock.querySelector('pre').textContent;
+            navigator.clipboard.writeText(code).then(() => {
+                btn.textContent = 'Copied!';
+                setTimeout(() => btn.textContent = 'Copy', 2000);
+            });
+        }
+
+        // Exercise templates
+        const exercises = {
+            firstapp: `# Exercise 1: First FastAPI App
+from fastapi import FastAPI
+
+app = FastAPI()
+
+@app.get("/")
+def read_root():
+    return {"message": "Welcome to FastAPI!"}
+
+@app.get("/hello/{name}")
+def say_hello(name: str):
+    return {"message": f"Hello, {name}!"}
+
+@app.get("/add/{a}/{b}")
+def add_numbers(a: int, b: int):
+    return {
+        "a": a,
+        "b": b,
+        "sum": a + b
+    }
+
+# Run: uvicorn main:app --reload
+print("First FastAPI App!")
+print("Routes: /, /hello/{name}, /add/{a}/{b}")`,
+
+            pydantic: `# Exercise 2: Pydantic Models
+from fastapi import FastAPI
+from pydantic import BaseModel, Field
+from typing import Optional
+from datetime import datetime
+
+app = FastAPI()
+
+class DocumentCreate(BaseModel):
+    title: str = Field(..., min_length=1, max_length=200)
+    content: str
+    author: Optional[str] = None
+    tags: list[str] = []
+
+class Document(DocumentCreate):
+    id: str
+    created_at: datetime
+    word_count: int
+
+@app.post("/documents", response_model=Document)
+def create_document(doc: DocumentCreate):
+    return {
+        "id": "doc_123",
+        "title": doc.title,
+        "content": doc.content,
+        "author": doc.author,
+        "tags": doc.tags,
+        "created_at": datetime.now(),
+        "word_count": len(doc.content.split())
+    }
+
+print("Pydantic models created!")
+print("POST /documents with validation")`,
+
+            routes: `# Exercise 3: Routes & Parameters
+from fastapi import FastAPI, Query
+from pydantic import BaseModel
+from typing import Optional
+
+app = FastAPI()
+
+# In-memory storage
+documents = {}
+
+class DocumentCreate(BaseModel):
+    title: str
+    content: str
+
+class Document(DocumentCreate):
+    id: str
+
+@app.get("/documents")
+def list_documents(
+    q: Optional[str] = Query(None, min_length=2),
+    skip: int = Query(0, ge=0),
+    limit: int = Query(10, le=100)
+):
+    results = list(documents.values())
+    if q:
+        results = [d for d in results if q.lower() in d["title"].lower()]
+    return results[skip:skip + limit]
+
+@app.get("/documents/{doc_id}")
+def get_document(doc_id: str):
+    if doc_id not in documents:
+        return {"error": "Not found"}
+    return documents[doc_id]
+
+@app.post("/documents", response_model=Document)
+def create_document(doc: DocumentCreate):
+    doc_id = f"doc_{len(documents) + 1}"
+    documents[doc_id] = {"id": doc_id, **doc.model_dump()}
+    return documents[doc_id]
+
+print("Documents API with routes!")
+print("GET /documents?q=search&skip=0&limit=10")`,
+
+            async: `# Exercise 4: Async Functions
+from fastapi import FastAPI
+import asyncio
+
+app = FastAPI()
+
+async def fetch_user_data(user_id: int) -> dict:
+    """Simulate fetching user data"""
+    await asyncio.sleep(0.5)  # Simulate API call
+    return {"id": user_id, "name": f"User {user_id}"}
+
+async def fetch_user_posts(user_id: int) -> list:
+    """Simulate fetching posts"""
+    await asyncio.sleep(0.3)
+    return [{"id": i, "title": f"Post {i}"} for i in range(3)]
+
+async def fetch_user_comments(user_id: int) -> list:
+    """Simulate fetching comments"""
+    await asyncio.sleep(0.4)
+    return [{"id": i, "text": f"Comment {i}"} for i in range(5)]
+
+@app.get("/users/{user_id}/full")
+async def get_user_full(user_id: int):
+    # Fetch all data concurrently!
+    user, posts, comments = await asyncio.gather(
+        fetch_user_data(user_id),
+        fetch_user_posts(user_id),
+        fetch_user_comments(user_id)
+    )
+    
+    return {
+        "user": user,
+        "posts": posts,
+        "comments": comments
+    }
+
+print("Async endpoint created!")
+print("GET /users/{id}/full - fetches data concurrently")`,
+
+            docs: `# Exercise 5: Documented API
+from fastapi import FastAPI, Query
+from pydantic import BaseModel, Field
+from typing import Optional
+from datetime import datetime
+
+tags_metadata = [
+    {"name": "documents", "description": "Document operations"},
+    {"name": "health", "description": "API health checks"},
+]
+
+app = FastAPI(
+    title="Documents API",
+    description="A fully documented document management API",
+    version="2.0.0",
+    openapi_tags=tags_metadata
+)
+
+class DocumentCreate(BaseModel):
+    """Schema for creating a document"""
+    title: str = Field(
+        ...,
+        description="Document title",
+        example="My First Document"
+    )
+    content: str = Field(
+        ...,
+        description="Document content",
+        example="This is the content..."
+    )
+    tags: list[str] = Field(
+        default=[],
+        description="Tags for categorization",
+        example=["important", "draft"]
+    )
+
+class Document(DocumentCreate):
+    """Full document with metadata"""
+    id: str = Field(..., example="doc_abc123")
+    created_at: datetime
+
+@app.get("/health", tags=["health"])
+def health_check():
+    """Check API health status"""
+    return {"status": "healthy"}
+
+@app.get(
+    "/documents",
+    tags=["documents"],
+    summary="List all documents",
+    response_description="List of documents"
+)
+def list_documents(
+    q: Optional[str] = Query(
+        None,
+        description="Search query",
+        min_length=2
+    ),
+    skip: int = Query(0, ge=0, description="Items to skip"),
+    limit: int = Query(10, le=100, description="Max items")
+):
+    """
+    Retrieve documents with optional filtering.
+    
+    - **q**: Search in document titles
+    - **skip**: Pagination offset
+    - **limit**: Maximum results
+    """
+    return []
+
+@app.post(
+    "/documents",
+    tags=["documents"],
+    summary="Create a document",
+    response_model=Document
+)
+def create_document(doc: DocumentCreate):
+    """Create a new document with validation."""
+    return {
+        "id": "doc_123",
+        **doc.model_dump(),
+        "created_at": datetime.now()
+    }
+
+print("Fully documented API!")
+print("Visit /docs to see Swagger UI")`,
+
+            todoapi: `# Exercise: Complete Todo API
+from fastapi import FastAPI, HTTPException, Query
+from pydantic import BaseModel, Field
+from typing import Optional
+from datetime import datetime
+from uuid import uuid4
+
+app = FastAPI(title="Todo API", version="1.0.0")
+
+class TodoCreate(BaseModel):
+    title: str = Field(..., min_length=1, max_length=200)
+    description: Optional[str] = None
+    priority: int = Field(default=1, ge=1, le=5)
+
+class TodoUpdate(BaseModel):
+    title: Optional[str] = Field(None, min_length=1, max_length=200)
+    description: Optional[str] = None
+    completed: Optional[bool] = None
+    priority: Optional[int] = Field(None, ge=1, le=5)
+
+class Todo(TodoCreate):
+    id: str
+    completed: bool = False
+    created_at: datetime
+
+todos: dict[str, dict] = {}
+
+@app.get("/todos", response_model=list[Todo])
+def list_todos(
+    completed: Optional[bool] = None,
+    priority: Optional[int] = Query(None, ge=1, le=5)
+):
+    results = list(todos.values())
+    if completed is not None:
+        results = [t for t in results if t["completed"] == completed]
+    if priority is not None:
+        results = [t for t in results if t["priority"] == priority]
+    return results
+
+@app.post("/todos", response_model=Todo, status_code=201)
+def create_todo(todo: TodoCreate):
+    todo_id = str(uuid4())[:8]
+    new_todo = {
+        "id": todo_id,
+        **todo.model_dump(),
+        "completed": False,
+        "created_at": datetime.now()
+    }
+    todos[todo_id] = new_todo
+    return new_todo
+
+@app.patch("/todos/{todo_id}", response_model=Todo)
+def update_todo(todo_id: str, updates: TodoUpdate):
+    if todo_id not in todos:
+        raise HTTPException(status_code=404, detail="Todo not found")
+    
+    for key, value in updates.model_dump(exclude_unset=True).items():
+        todos[todo_id][key] = value
+    
+    return todos[todo_id]
+
+@app.delete("/todos/{todo_id}")
+def delete_todo(todo_id: str):
+    if todo_id not in todos:
+        raise HTTPException(status_code=404, detail="Todo not found")
+    del todos[todo_id]
+    return {"message": "Deleted"}
+
+print("Todo API ready!")`,
+
+            userapi: `# Exercise: User Registration API
+from fastapi import FastAPI, HTTPException
+from pydantic import BaseModel, Field, EmailStr, field_validator
+from typing import Optional
+from datetime import datetime
+import re
+
+app = FastAPI(title="User API")
+
+class UserCreate(BaseModel):
+    email: EmailStr
+    username: str = Field(..., min_length=3, max_length=30)
+    password: str = Field(..., min_length=8)
+    full_name: Optional[str] = None
+    
+    @field_validator('password')
+    @classmethod
+    def password_strength(cls, v):
+        if not re.search(r'[A-Z]', v):
+            raise ValueError('Password must contain uppercase')
+        if not re.search(r'[0-9]', v):
+            raise ValueError('Password must contain a number')
+        return v
+
+class UserResponse(BaseModel):
+    id: str
+    email: EmailStr
+    username: str
+    full_name: Optional[str]
+    created_at: datetime
+    # Note: password is NOT included!
+
+users: dict[str, dict] = {}
+
+@app.post("/register", response_model=UserResponse, status_code=201)
+def register(user: UserCreate):
+    # Check if email exists
+    for u in users.values():
+        if u["email"] == user.email:
+            raise HTTPException(400, "Email already registered")
+    
+    user_id = f"user_{len(users) + 1}"
+    new_user = {
+        "id": user_id,
+        "email": user.email,
+        "username": user.username,
+        "password": user.password,  # Would hash in production!
+        "full_name": user.full_name,
+        "created_at": datetime.now()
+    }
+    users[user_id] = new_user
+    return new_user  # Password excluded by response_model
+
+print("User API with validation!")`,
+
+            weather: `# Exercise: Async Weather Fetcher
+from fastapi import FastAPI
+import asyncio
+import random
+
+app = FastAPI(title="Weather API")
+
+async def fetch_weather(city: str) -> dict:
+    """Simulate fetching weather from external API"""
+    await asyncio.sleep(random.uniform(0.2, 0.5))  # Simulate network delay
+    return {
+        "city": city,
+        "temp": random.randint(50, 90),
+        "condition": random.choice(["sunny", "cloudy", "rainy"])
+    }
+
+@app.get("/weather/{city}")
+async def get_weather(city: str):
+    """Get weather for a single city"""
+    return await fetch_weather(city)
+
+@app.get("/weather-multi")
+async def get_weather_multi(cities: str):
+    """
+    Get weather for multiple cities concurrently.
+    Pass cities as comma-separated: ?cities=NYC,LA,Chicago
+    """
+    city_list = [c.strip() for c in cities.split(",")]
+    
+    # Fetch all concurrently
+    results = await asyncio.gather(
+        *[fetch_weather(city) for city in city_list]
+    )
+    
+    return {"cities": results}
+
+print("Async Weather API!")
+print("/weather/{city} - single city")
+print("/weather-multi?cities=NYC,LA - multiple cities")`,
+
+            fileupload: `# Exercise: File Upload API
+from fastapi import FastAPI, UploadFile, HTTPException, File
+from pydantic import BaseModel
+from typing import Optional
+import mimetypes
+
+app = FastAPI(title="File Upload API")
+
+ALLOWED_TYPES = ["image/png", "image/jpeg", "application/pdf", "text/plain"]
+MAX_SIZE = 5 * 1024 * 1024  # 5MB
+
+class FileMetadata(BaseModel):
+    filename: str
+    content_type: str
+    size: int
+    size_readable: str
+
+def format_size(size: int) -> str:
+    for unit in ['B', 'KB', 'MB', 'GB']:
+        if size < 1024:
+            return f"{size:.2f} {unit}"
+        size /= 1024
+    return f"{size:.2f} TB"
+
+@app.post("/upload", response_model=FileMetadata)
+async def upload_file(file: UploadFile = File(...)):
+    # Check content type
+    if file.content_type not in ALLOWED_TYPES:
+        raise HTTPException(
+            400, 
+            f"File type {file.content_type} not allowed"
+        )
+    
+    # Read and check size
+    content = await file.read()
+    size = len(content)
+    
+    if size > MAX_SIZE:
+        raise HTTPException(400, "File too large (max 5MB)")
+    
+    return {
+        "filename": file.filename,
+        "content_type": file.content_type,
+        "size": size,
+        "size_readable": format_size(size)
+    }
+
+@app.post("/upload-multiple")
+async def upload_multiple(files: list[UploadFile] = File(...)):
+    results = []
+    for file in files:
+        content = await file.read()
+        results.append({
+            "filename": file.filename,
+            "size": len(content)
+        })
+    return {"files": results, "count": len(results)}
+
+print("File Upload API!")
+print("POST /upload - single file")
+print("POST /upload-multiple - multiple files")`,
+
+            challenge: `# 🚀 CHALLENGE: FastAPI Bookmarks API v2
+from fastapi import FastAPI, HTTPException, Query
+from pydantic import BaseModel, Field, HttpUrl
+from typing import Optional
+from datetime import datetime
+from uuid import uuid4
+
+# ==================== MODELS ====================
+
+class BookmarkCreate(BaseModel):
+    """Schema for creating a bookmark"""
+    title: str = Field(..., min_length=1, max_length=200)
+    url: HttpUrl
+    description: Optional[str] = Field(None, max_length=500)
+    tags: list[str] = Field(default=[], max_length=10)
+
+class BookmarkUpdate(BaseModel):
+    """Schema for updating a bookmark"""
+    title: Optional[str] = Field(None, min_length=1, max_length=200)
+    url: Optional[HttpUrl] = None
+    description: Optional[str] = Field(None, max_length=500)
+    tags: Optional[list[str]] = Field(None, max_length=10)
+
+class Bookmark(BookmarkCreate):
+    """Full bookmark with metadata"""
+    id: str
+    created_at: datetime
+    updated_at: datetime
+
+# ==================== APP ====================
+
+app = FastAPI(
+    title="Bookmarks API v2",
+    description="Modern bookmarks API built with FastAPI",
+    version="2.0.0"
+)
+
+bookmarks: dict[str, dict] = {}
+
+# ==================== ENDPOINTS ====================
+
+@app.get("/api/bookmarks", response_model=list[Bookmark], tags=["bookmarks"])
+def list_bookmarks(
+    q: Optional[str] = Query(None, min_length=2, description="Search query"),
+    tag: Optional[str] = Query(None, description="Filter by tag"),
+    skip: int = Query(0, ge=0),
+    limit: int = Query(10, ge=1, le=100)
+):
+    """List bookmarks with search and pagination"""
+    results = list(bookmarks.values())
+    
+    if q:
+        q = q.lower()
+        results = [b for b in results if q in b["title"].lower() or q in str(b["url"]).lower()]
+    
+    if tag:
+        results = [b for b in results if tag.lower() in [t.lower() for t in b["tags"]]]
+    
+    return results[skip:skip + limit]
+
+@app.get("/api/bookmarks/{bookmark_id}", response_model=Bookmark, tags=["bookmarks"])
+def get_bookmark(bookmark_id: str):
+    """Get a single bookmark by ID"""
+    if bookmark_id not in bookmarks:
+        raise HTTPException(status_code=404, detail="Bookmark not found")
+    return bookmarks[bookmark_id]
+
+@app.post("/api/bookmarks", response_model=Bookmark, status_code=201, tags=["bookmarks"])
+def create_bookmark(bookmark: BookmarkCreate):
+    """Create a new bookmark"""
+    bookmark_id = str(uuid4())[:8]
+    now = datetime.now()
+    
+    new_bookmark = {
+        "id": bookmark_id,
+        **bookmark.model_dump(),
+        "url": str(bookmark.url),
+        "created_at": now,
+        "updated_at": now
+    }
+    bookmarks[bookmark_id] = new_bookmark
+    return new_bookmark
+
+@app.put("/api/bookmarks/{bookmark_id}", response_model=Bookmark, tags=["bookmarks"])
+def update_bookmark(bookmark_id: str, updates: BookmarkUpdate):
+    """Update a bookmark"""
+    if bookmark_id not in bookmarks:
+        raise HTTPException(status_code=404, detail="Bookmark not found")
+    
+    for key, value in updates.model_dump(exclude_unset=True).items():
+        if key == "url" and value:
+            bookmarks[bookmark_id][key] = str(value)
+        elif value is not None:
+            bookmarks[bookmark_id][key] = value
+    
+    bookmarks[bookmark_id]["updated_at"] = datetime.now()
+    return bookmarks[bookmark_id]
+
+@app.delete("/api/bookmarks/{bookmark_id}", tags=["bookmarks"])
+def delete_bookmark(bookmark_id: str):
+    """Delete a bookmark"""
+    if bookmark_id not in bookmarks:
+        raise HTTPException(status_code=404, detail="Bookmark not found")
+    del bookmarks[bookmark_id]
+    return {"message": "Deleted successfully"}
+
+@app.get("/api/stats", tags=["stats"])
+def get_stats():
+    """Get bookmark statistics"""
+    all_tags = []
+    for b in bookmarks.values():
+        all_tags.extend(b["tags"])
+    
+    tag_counts = {}
+    for tag in all_tags:
+        tag_counts[tag] = tag_counts.get(tag, 0) + 1
+    
+    return {
+        "total": len(bookmarks),
+        "tags": tag_counts
+    }
+
+# Run: uvicorn main:app --reload
+print("🚀 FastAPI Bookmarks API v2 Ready!")
+print()
+print("Features:")
+print("  ✓ Pydantic validation")
+print("  ✓ URL validation with HttpUrl")
+print("  ✓ Search & filter")
+print("  ✓ Pagination")
+print("  ✓ Auto documentation")
+print()
+print("Run: uvicorn main:app --reload")
+print("Docs: http://localhost:8000/docs")`
+        };
+
+        function loadExercise(name) {
+            if (exercises[name]) {
+                document.getElementById('codeEditor').value = exercises[name];
+                document.getElementById('editorFilename').textContent = 'main.py';
+                document.getElementById('outputContent').innerHTML = 
+                    '<span style="color: var(--text-muted);">Exercise loaded! Click "Run" to test...</span>';
+            }
+        }
+
+        // Handle tab key
+        document.getElementById('codeEditor').addEventListener('keydown', function(e) {
+            if (e.key === 'Tab') {
+                e.preventDefault();
+                const start = this.selectionStart;
+                this.value = this.value.substring(0, start) + '    ' + this.value.substring(this.selectionEnd);
+                this.selectionStart = this.selectionEnd = start + 4;
+            }
+            if (e.ctrlKey && e.key === 'Enter') runCode();
+        });
+
+        updateProgress('overview');
+    </script>
+</body>
+</html>
